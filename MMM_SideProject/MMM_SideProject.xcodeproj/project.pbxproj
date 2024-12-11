@@ -56,6 +56,7 @@
 		262F9AA32D09B75500AA7EA2 /* MMM_SideProject */ = {
 			isa = PBXGroup;
 			children = (
+				262F9ABC2D09BECF00AA7EA2 /* Constants */,
 				262F9AA42D09B75600AA7EA2 /* AppDelegate.swift */,
 				262F9AA62D09B75600AA7EA2 /* SceneDelegate.swift */,
 				262F9AB82D09B76C00AA7EA2 /* MainViewController.swift */,
@@ -65,6 +66,13 @@
 				262F9AB22D09B75700AA7EA2 /* Info.plist */,
 			);
 			path = MMM_SideProject;
+			sourceTree = "<group>";
+		};
+		262F9ABC2D09BECF00AA7EA2 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Constants;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
