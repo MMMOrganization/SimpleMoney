@@ -6,14 +6,19 @@
 //
 
 import UIKit
-import RxSwift
-import RxRelay
 
 class MainViewController: UIViewController {
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setLayout()
         // Do any additional setup after loading the view.
+    }
+    
+    func setLayout() {
+        self.view.backgroundColor = .white
     }
     
 
