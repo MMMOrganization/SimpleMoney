@@ -90,6 +90,72 @@ class MainViewController: UIViewController {
         return button
     }()
     
+    lazy var recentlyStackView : UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [recentlyConstantExpendLabel, recentlyView])
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.axis = .vertical
+        sv.distribution = .fill
+        sv.spacing = 5
+        sv.alignment = .fill
+        return sv
+    }()
+    
+    let recentlyConstantExpendLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "가장 최근 지출은?"
+        label.font = UIFont(name: FontConst.mainFont, size: 18.0)
+        label.textColor = UIColor(hexCode: ColorConst.blackColorString)
+        return label
+    }()
+    
+    let recentlyView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 30
+        view.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.10)
+        // 가로로 8만큼, 높이로 8만큼 띄어서 그림자 생성
+        return view
+    }()
+    
+    let recentlyTodayDateLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor(hexCode: ColorConst.grayColorString)
+        label.text = "12/6"
+        label.font = UIFont(name: FontConst.mainFont, size: 16)
+        return label
+    }()
+    
+    let recentlyImage : UIImageView = {
+        let image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.image = UIImage(named: "Vector")
+        image.backgroundColor = .clear
+        return image
+    }()
+    
+    let recentlyImageTypeLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont(name: FontConst.mainFont, size: 14)
+        label.textColor = UIColor(hexCode: ColorConst.grayColorString, alpha: 0.80)
+        label.textAlignment = .center
+        label.text = "카페 음료"
+        return label
+    }()
+    
+    let recentlyAmountLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont(name: FontConst.mainFont, size: 25)
+        label.textColor = UIColor(hexCode: ColorConst.blackColorString)
+        label.textAlignment = .right
+        label.text = "5,300원"
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setLayout()
@@ -107,11 +173,18 @@ class MainViewController: UIViewController {
         self.contentView.addSubview(topConstantLabel)
         self.contentView.addSubview(topExpendLabel)
         
+        self.contentView.addSubview(recentlyStackView)
+        
         self.topView.addSubview(topDateView)
         
         self.topDateView.addSubview(topDateLabel)
         self.topDateView.addSubview(previousDateButton)
         self.topDateView.addSubview(followingDateButton)
+        
+        self.recentlyView.addSubview(recentlyTodayDateLabel)
+        self.recentlyView.addSubview(recentlyImage)
+        self.recentlyView.addSubview(recentlyImageTypeLabel)
+        self.recentlyView.addSubview(recentlyAmountLabel)
         
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
@@ -164,9 +237,30 @@ class MainViewController: UIViewController {
             followingDateButton.heightAnchor.constraint(equalToConstant: 17),
             followingDateButton.widthAnchor.constraint(equalToConstant: 17),
             followingDateButton.leadingAnchor.constraint(equalTo: self.topDateLabel.trailingAnchor, constant: 9),
-            followingDateButton.centerYAnchor.constraint(equalTo: self.topDateView.centerYAnchor)
+            followingDateButton.centerYAnchor.constraint(equalTo: self.topDateView.centerYAnchor),
             
+            // MARK: - recentlyStackView Layout
+            recentlyStackView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 24),
+            recentlyStackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -24),
+            recentlyStackView.heightAnchor.constraint(equalToConstant: 190),
+            recentlyStackView.topAnchor.constraint(equalTo: self.topView.bottomAnchor, constant: 10),
             
+            // MARK: - recentlyView Layout
+            recentlyView.heightAnchor.constraint(equalToConstant: 145),
+            
+            recentlyTodayDateLabel.leadingAnchor.constraint(equalTo: self.recentlyView.leadingAnchor, constant: 20),
+            recentlyTodayDateLabel.topAnchor.constraint(equalTo: self.recentlyView.topAnchor, constant: 10),
+            
+            recentlyImage.widthAnchor.constraint(equalToConstant: 40),
+            recentlyImage.heightAnchor.constraint(equalToConstant: 40),
+            recentlyImage.centerYAnchor.constraint(equalTo: self.recentlyView.centerYAnchor),
+            recentlyImage.leadingAnchor.constraint(equalTo: self.recentlyView.leadingAnchor, constant: 40),
+            
+            recentlyImageTypeLabel.centerXAnchor.constraint(equalTo: self.recentlyImage.centerXAnchor),
+            recentlyImageTypeLabel.topAnchor.constraint(equalTo: self.recentlyImage.bottomAnchor, constant: 5),
+            
+            recentlyAmountLabel.trailingAnchor.constraint(equalTo: self.recentlyView.trailingAnchor, constant: -20),
+            recentlyAmountLabel.bottomAnchor.constraint(equalTo: self.recentlyView.bottomAnchor, constant: -20)
         ])
     }
 }
