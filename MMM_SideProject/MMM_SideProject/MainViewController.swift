@@ -207,13 +207,80 @@ class MainViewController: UIViewController {
         return label
     }()
     
+    lazy var pieChartStackView : UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [pieChartConstantLabel, pieChartBackgroundView])
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.axis = .vertical
+        sv.distribution = .fill
+        sv.spacing = 5
+        sv.alignment = .fill
+        return sv
+    }()
+    let pieChartConstantLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont(name: FontConst.mainFont, size: 18)
+        label.text = "지출 통계 차트를 확인해보세요."
+        return label
+    }()
+    let pieChartBackgroundView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.10)
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 30
+        return view
+    }()
+    let pieChartView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.clipsToBounds = true
+        return view
+    }()
     
+    lazy var barChartStackView : UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [barChartTitleView, barChartView])
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.axis = .vertical
+        sv.distribution = .fill
+        sv.alignment = .fill
+        sv.spacing = 5
+        return sv
+    }()
     
+    let barChartTitleView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 20
+        view.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.10)
+        return view
+    }()
+    
+    let barChartTitleLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont(name: FontConst.mainFont, size: 15.0)
+        label.text = "지출 내역을 막대 그래프로 확인해보세요."
+        return label
+    }()
+    
+    let barChartView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .lightGray
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setLayout()
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidLayoutSubviews() {
+        pieChartView.layer.cornerRadius = pieChartView.frame.width / 2
     }
     
     func setLayout() {
@@ -229,6 +296,8 @@ class MainViewController: UIViewController {
         
         self.contentView.addSubview(recentlyStackView)
         self.contentView.addSubview(mostStackView)
+        self.contentView.addSubview(pieChartStackView)
+        self.contentView.addSubview(barChartStackView)
         
         self.topView.addSubview(topDateView)
         
@@ -246,6 +315,10 @@ class MainViewController: UIViewController {
         self.mostView.addSubview(mostImageTypeLabel)
         self.mostView.addSubview(mostAmountLabel)
         
+        self.pieChartBackgroundView.addSubview(pieChartView)
+        
+        self.barChartTitleView.addSubview(barChartTitleLabel)
+        
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
@@ -258,24 +331,24 @@ class MainViewController: UIViewController {
             contentView.bottomAnchor.constraint(equalTo: self.scrollView.bottomAnchor),
             
             // 스크롤 가능한 높이 설정 (1300까지)
-            contentView.heightAnchor.constraint(equalToConstant: 1300),
+            contentView.heightAnchor.constraint(equalToConstant: 1400),
             
             // 세로 방향의 스크롤뷰 설정
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
             // MARK: - topView Layout
-            topView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            topView.topAnchor.constraint(equalTo: self.contentView.topAnchor),
             topView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
             topView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
             topView.heightAnchor.constraint(equalToConstant: 193),
             
             // MARK: - topConstantLabel Layout
-            topConstantLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 90),
+            topConstantLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 90),
             topConstantLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -24),
             
             // MARK: - topExpendLabel Layout
-            topExpendLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 115),
-            topExpendLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -24),
+            topExpendLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 115),
+            topExpendLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -24),
             
             // MARK: - topDateView Layout
             topDateView.bottomAnchor.constraint(equalTo: self.topView.bottomAnchor),
@@ -344,6 +417,32 @@ class MainViewController: UIViewController {
             
             mostAmountLabel.trailingAnchor.constraint(equalTo: self.mostView.trailingAnchor, constant: -20),
             mostAmountLabel.bottomAnchor.constraint(equalTo: self.mostView.bottomAnchor, constant: -20),
+            
+            // MARK: - pieChartStackView Layout
+            pieChartStackView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 24),
+            pieChartStackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -24),
+            pieChartStackView.heightAnchor.constraint(equalToConstant: 390),
+            pieChartStackView.topAnchor.constraint(equalTo: self.mostView.bottomAnchor, constant: 10),
+            
+            // MARK: - pieChartView Layout
+            pieChartBackgroundView.heightAnchor.constraint(equalToConstant: 340),
+            
+            pieChartView.widthAnchor.constraint(equalToConstant: 270),
+            pieChartView.heightAnchor.constraint(equalToConstant: 270),
+            pieChartView.centerXAnchor.constraint(equalTo: self.pieChartBackgroundView.centerXAnchor),
+            pieChartView.topAnchor.constraint(equalTo: self.pieChartBackgroundView.topAnchor, constant: 10),
+            
+            // MARK: - barChartStackView Layout
+            barChartStackView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 24),
+            barChartStackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -24),
+            barChartStackView.heightAnchor.constraint(equalToConstant: 240),
+            barChartStackView.topAnchor.constraint(equalTo: self.pieChartStackView.bottomAnchor, constant: 10),
+            
+            // MARK: - barChartView Layout
+            barChartTitleView.heightAnchor.constraint(equalToConstant: 35),
+            
+            barChartTitleLabel.centerXAnchor.constraint(equalTo: self.barChartTitleView.centerXAnchor),
+            barChartTitleLabel.centerYAnchor.constraint(equalTo: self.barChartTitleView.centerYAnchor)
         ])
     }
 }
