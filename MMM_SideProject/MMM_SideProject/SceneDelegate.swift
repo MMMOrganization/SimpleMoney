@@ -23,10 +23,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabBarVC = UITabBarController()
         
         let mainVC = MainViewController()
+        let detailVC = UINavigationController(rootViewController: DetailViewController())
         
         mainVC.title = "메인화면"
+        detailVC.title = "디테일화면"
         
-        tabBarVC.setViewControllers([mainVC], animated: true)
+        tabBarVC.setViewControllers([mainVC, detailVC], animated: true)
         tabBarVC.modalPresentationStyle = .fullScreen
         tabBarVC.tabBar.backgroundColor = .white
         
@@ -35,6 +37,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         items[0].image = UIImage(systemName: "trash")
+        items[1].image = UIImage(systemName: "trash")
         
         window?.rootViewController = tabBarVC
         window?.makeKeyAndVisible()
