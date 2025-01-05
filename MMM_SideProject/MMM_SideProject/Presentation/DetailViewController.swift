@@ -13,6 +13,16 @@ class DetailViewController: UIViewController {
     
     let dataList : [Int] = [3, 5, 4]
     
+    lazy var barButton : UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
+        button.setImage(UIImage(named: "DateImage2"), for: .normal)
+        button.addTarget(self, action: #selector(dateButtonTapped), for: .touchUpInside)
+        button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
+        return button
+    }()
+    
+    lazy var barButtonItem = UIBarButtonItem(customView : barButton)
+    
     let topView : UIView = {
         // 160 height
         let view = UIView()
@@ -78,17 +88,6 @@ class DetailViewController: UIViewController {
         return button
     }()
     
-//    lazy var showStackView : UIStackView = {
-//        let sv = UIStackView(arrangedSubviews: [totalShowButton, incomeShowButton, expendShowButton])
-//        sv.translatesAutoresizingMaskIntoConstraints = false
-//        sv.axis = .horizontal
-//        sv.spacing = 6
-//        sv.distribution = .fillEqually
-//        sv.alignment = .fill
-//        sv.backgroundColor = .clear
-//        return sv
-//    }()
-    
     let buttonView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -150,6 +149,7 @@ class DetailViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "addImage"), for: .normal)
+        button.contentMode = .scaleAspectFit
         button.backgroundColor = .white
         button.clipsToBounds = true
         return button
@@ -168,22 +168,30 @@ class DetailViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         contentAddButton.layer.cornerRadius = contentAddButton.frame.width / 2
+        
         totalShowButton.layer.cornerRadius = totalShowButton.frame.height / 2
         incomeShowButton.layer.cornerRadius = incomeShowButton.frame.height / 2
         expendShowButton.layer.cornerRadius = expendShowButton.frame.height / 2
+    }
+    
+    @objc func dateButtonTapped() {
+        print("dd")
+        
+        self.navigationController?.pushViewController(CalendarViewController(), animated: true)
     }
     
     func setTableView() {
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.rowHeight = 65
+        tableView.rowHeight = 50
     }
     
     func setLayout() {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.scrollEdgeAppearance = 
         navigationController?.navigationBar.standardAppearance
+        navigationItem.rightBarButtonItem = barButtonItem
         view.backgroundColor = .white
         
         view.addSubview(topView)
@@ -280,16 +288,17 @@ extension DetailViewController : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as! DetailTableViewCell
         
+        cell.configure(with: .compact)
         return cell
-    }
-    
-    // Section의 개수를 반환
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
     }
     
     // Section 의 제목 반환
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "12/20"
+    }
+    
+    // Section의 개수를 반환
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 3
     }
 }
