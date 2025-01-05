@@ -7,35 +7,50 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		262F9AA52D09B75600AA7EA2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262F9AA42D09B75600AA7EA2 /* AppDelegate.swift */; };
-		262F9AA72D09B75600AA7EA2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262F9AA62D09B75600AA7EA2 /* SceneDelegate.swift */; };
-		262F9AAC2D09B75600AA7EA2 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 262F9AAB2D09B75600AA7EA2 /* Base */; };
-		262F9AAE2D09B75700AA7EA2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 262F9AAD2D09B75700AA7EA2 /* Assets.xcassets */; };
-		262F9AB12D09B75700AA7EA2 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 262F9AB02D09B75700AA7EA2 /* Base */; };
-		262F9AB92D09B76C00AA7EA2 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262F9AB82D09B76C00AA7EA2 /* MainViewController.swift */; };
-		262F9ABE2D09C6E800AA7EA2 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262F9ABD2D09C6E800AA7EA2 /* UIColor+Extension.swift */; };
-		262F9AC02D09C7A700AA7EA2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262F9ABF2D09C7A700AA7EA2 /* Constants.swift */; };
-		262F9AC42D09CC3C00AA7EA2 /* Moneygraphy-Rounded.otf in Resources */ = {isa = PBXBuildFile; fileRef = 262F9AC22D09CC3C00AA7EA2 /* Moneygraphy-Rounded.otf */; };
-		262F9AC52D09CC3C00AA7EA2 /* Moneygraphy-Pixel.otf in Resources */ = {isa = PBXBuildFile; fileRef = 262F9AC32D09CC3C00AA7EA2 /* Moneygraphy-Pixel.otf */; };
-		262F9AC72D09E2E300AA7EA2 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262F9AC62D09E2E200AA7EA2 /* UIView+Extension.swift */; };
-		262F9ACA2D1067ED00AA7EA2 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262F9AC92D1067ED00AA7EA2 /* DetailViewController.swift */; };
+		267DD9CB2D211AF800F66CB8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9B52D211AF800F66CB8 /* Constants.swift */; };
+		267DD9CC2D211AF800F66CB8 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9B62D211AF800F66CB8 /* UIButton+Extension.swift */; };
+		267DD9CD2D211AF800F66CB8 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9B72D211AF800F66CB8 /* UIColor+Extension.swift */; };
+		267DD9CE2D211AF800F66CB8 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9B82D211AF800F66CB8 /* UIView+Extension.swift */; };
+		267DD9CF2D211AF800F66CB8 /* Moneygraphy-Pixel.otf in Resources */ = {isa = PBXBuildFile; fileRef = 267DD9BA2D211AF800F66CB8 /* Moneygraphy-Pixel.otf */; };
+		267DD9D02D211AF800F66CB8 /* Moneygraphy-Rounded.otf in Resources */ = {isa = PBXBuildFile; fileRef = 267DD9BB2D211AF800F66CB8 /* Moneygraphy-Rounded.otf */; };
+		267DD9D12D211AF800F66CB8 /* CreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9BD2D211AF800F66CB8 /* CreateViewController.swift */; };
+		267DD9D22D211AF800F66CB8 /* DetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9BE2D211AF800F66CB8 /* DetailTableViewCell.swift */; };
+		267DD9D32D211AF800F66CB8 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9BF2D211AF800F66CB8 /* DetailViewController.swift */; };
+		267DD9D42D211AF800F66CB8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9C02D211AF800F66CB8 /* MainViewController.swift */; };
+		267DD9D52D211AF800F66CB8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9C22D211AF800F66CB8 /* AppDelegate.swift */; };
+		267DD9D62D211AF800F66CB8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 267DD9C32D211AF800F66CB8 /* Assets.xcassets */; };
+		267DD9D82D211AF800F66CB8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 267DD9C62D211AF800F66CB8 /* LaunchScreen.storyboard */; };
+		267DD9D92D211AF800F66CB8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 267DD9C82D211AF800F66CB8 /* Main.storyboard */; };
+		267DD9DA2D211AF800F66CB8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9C92D211AF800F66CB8 /* SceneDelegate.swift */; };
+		267DD9E52D2124F800F66CB8 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 267DD9E42D2124F800F66CB8 /* RxBlocking */; };
+		267DD9E72D2124F800F66CB8 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 267DD9E62D2124F800F66CB8 /* RxCocoa */; };
+		267DD9E92D2124F800F66CB8 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 267DD9E82D2124F800F66CB8 /* RxRelay */; };
+		267DD9EB2D2124F800F66CB8 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 267DD9EA2D2124F800F66CB8 /* RxSwift */; };
+		267DD9F02D24405900F66CB8 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9EF2D24405900F66CB8 /* CalendarViewController.swift */; };
+		267DD9F32D2695D000F66CB8 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 267DD9F22D2695D000F66CB8 /* FSCalendar */; };
+		267DD9F52D29108C00F66CB8 /* CalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9F42D29108C00F66CB8 /* CalendarTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		262F9AA12D09B75500AA7EA2 /* MMM_SideProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMM_SideProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		262F9AA42D09B75600AA7EA2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		262F9AA62D09B75600AA7EA2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		262F9AAB2D09B75600AA7EA2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		262F9AAD2D09B75700AA7EA2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		262F9AB02D09B75700AA7EA2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		262F9AB22D09B75700AA7EA2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		262F9AB82D09B76C00AA7EA2 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
-		262F9ABD2D09C6E800AA7EA2 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
-		262F9ABF2D09C7A700AA7EA2 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		262F9AC22D09CC3C00AA7EA2 /* Moneygraphy-Rounded.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moneygraphy-Rounded.otf"; sourceTree = "<group>"; };
-		262F9AC32D09CC3C00AA7EA2 /* Moneygraphy-Pixel.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moneygraphy-Pixel.otf"; sourceTree = "<group>"; };
-		262F9AC62D09E2E200AA7EA2 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
-		262F9AC92D1067ED00AA7EA2 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		267DD9B52D211AF800F66CB8 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		267DD9B62D211AF800F66CB8 /* UIButton+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
+		267DD9B72D211AF800F66CB8 /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		267DD9B82D211AF800F66CB8 /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		267DD9BA2D211AF800F66CB8 /* Moneygraphy-Pixel.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moneygraphy-Pixel.otf"; sourceTree = "<group>"; };
+		267DD9BB2D211AF800F66CB8 /* Moneygraphy-Rounded.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moneygraphy-Rounded.otf"; sourceTree = "<group>"; };
+		267DD9BD2D211AF800F66CB8 /* CreateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateViewController.swift; sourceTree = "<group>"; };
+		267DD9BE2D211AF800F66CB8 /* DetailTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailTableViewCell.swift; sourceTree = "<group>"; };
+		267DD9BF2D211AF800F66CB8 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		267DD9C02D211AF800F66CB8 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		267DD9C22D211AF800F66CB8 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		267DD9C32D211AF800F66CB8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		267DD9C42D211AF800F66CB8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		267DD9C52D211AF800F66CB8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		267DD9C72D211AF800F66CB8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		267DD9C92D211AF800F66CB8 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		267DD9EF2D24405900F66CB8 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
+		267DD9F42D29108C00F66CB8 /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +58,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				267DD9E92D2124F800F66CB8 /* RxRelay in Frameworks */,
+				267DD9E72D2124F800F66CB8 /* RxCocoa in Frameworks */,
+				267DD9EB2D2124F800F66CB8 /* RxSwift in Frameworks */,
+				267DD9F32D2695D000F66CB8 /* FSCalendar in Frameworks */,
+				267DD9E52D2124F800F66CB8 /* RxBlocking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,8 +72,9 @@
 		262F9A982D09B75500AA7EA2 = {
 			isa = PBXGroup;
 			children = (
-				262F9AA32D09B75500AA7EA2 /* MMM_SideProject */,
+				267DD9CA2D211AF800F66CB8 /* MMM_SideProject */,
 				262F9AA22D09B75500AA7EA2 /* Products */,
+				267DD9DB2D211B5B00F66CB8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,48 +86,68 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		262F9AA32D09B75500AA7EA2 /* MMM_SideProject */ = {
+		267DD9B92D211AF800F66CB8 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
-				262F9AC82D0F164700AA7EA2 /* Presentation */,
-				262F9AC12D09CBDF00AA7EA2 /* Font */,
-				262F9ABC2D09BECF00AA7EA2 /* Constants */,
-				262F9AA42D09B75600AA7EA2 /* AppDelegate.swift */,
-				262F9AA62D09B75600AA7EA2 /* SceneDelegate.swift */,
-				262F9AAA2D09B75600AA7EA2 /* Main.storyboard */,
-				262F9AAD2D09B75700AA7EA2 /* Assets.xcassets */,
-				262F9AAF2D09B75700AA7EA2 /* LaunchScreen.storyboard */,
-				262F9AB22D09B75700AA7EA2 /* Info.plist */,
-			);
-			path = MMM_SideProject;
-			sourceTree = "<group>";
-		};
-		262F9ABC2D09BECF00AA7EA2 /* Constants */ = {
-			isa = PBXGroup;
-			children = (
-				262F9ABD2D09C6E800AA7EA2 /* UIColor+Extension.swift */,
-				262F9AC62D09E2E200AA7EA2 /* UIView+Extension.swift */,
-				262F9ABF2D09C7A700AA7EA2 /* Constants.swift */,
+				267DD9B52D211AF800F66CB8 /* Constants.swift */,
+				267DD9B62D211AF800F66CB8 /* UIButton+Extension.swift */,
+				267DD9B72D211AF800F66CB8 /* UIColor+Extension.swift */,
+				267DD9B82D211AF800F66CB8 /* UIView+Extension.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
 		};
-		262F9AC12D09CBDF00AA7EA2 /* Font */ = {
+		267DD9BC2D211AF800F66CB8 /* Font */ = {
 			isa = PBXGroup;
 			children = (
-				262F9AC32D09CC3C00AA7EA2 /* Moneygraphy-Pixel.otf */,
-				262F9AC22D09CC3C00AA7EA2 /* Moneygraphy-Rounded.otf */,
+				267DD9BA2D211AF800F66CB8 /* Moneygraphy-Pixel.otf */,
+				267DD9BB2D211AF800F66CB8 /* Moneygraphy-Rounded.otf */,
 			);
 			path = Font;
 			sourceTree = "<group>";
 		};
-		262F9AC82D0F164700AA7EA2 /* Presentation */ = {
+		267DD9C12D211AF800F66CB8 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				262F9AB82D09B76C00AA7EA2 /* MainViewController.swift */,
-				262F9AC92D1067ED00AA7EA2 /* DetailViewController.swift */,
+				267DD9BD2D211AF800F66CB8 /* CreateViewController.swift */,
+				267DD9BF2D211AF800F66CB8 /* DetailViewController.swift */,
+				267DD9C02D211AF800F66CB8 /* MainViewController.swift */,
+				267DD9EF2D24405900F66CB8 /* CalendarViewController.swift */,
+				267DD9EE2D226C1600F66CB8 /* CellView */,
 			);
 			path = Presentation;
+			sourceTree = "<group>";
+		};
+		267DD9CA2D211AF800F66CB8 /* MMM_SideProject */ = {
+			isa = PBXGroup;
+			children = (
+				267DD9C22D211AF800F66CB8 /* AppDelegate.swift */,
+				267DD9C92D211AF800F66CB8 /* SceneDelegate.swift */,
+				267DD9C82D211AF800F66CB8 /* Main.storyboard */,
+				267DD9C62D211AF800F66CB8 /* LaunchScreen.storyboard */,
+				267DD9C12D211AF800F66CB8 /* Presentation */,
+				267DD9B92D211AF800F66CB8 /* Constants */,
+				267DD9BC2D211AF800F66CB8 /* Font */,
+				267DD9C32D211AF800F66CB8 /* Assets.xcassets */,
+				267DD9C42D211AF800F66CB8 /* Info.plist */,
+			);
+			path = MMM_SideProject;
+			sourceTree = "<group>";
+		};
+		267DD9DB2D211B5B00F66CB8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		267DD9EE2D226C1600F66CB8 /* CellView */ = {
+			isa = PBXGroup;
+			children = (
+				267DD9BE2D211AF800F66CB8 /* DetailTableViewCell.swift */,
+				267DD9F42D29108C00F66CB8 /* CalendarTableViewCell.swift */,
+			);
+			path = CellView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,6 +166,13 @@
 			dependencies = (
 			);
 			name = MMM_SideProject;
+			packageProductDependencies = (
+				267DD9E42D2124F800F66CB8 /* RxBlocking */,
+				267DD9E62D2124F800F66CB8 /* RxCocoa */,
+				267DD9E82D2124F800F66CB8 /* RxRelay */,
+				267DD9EA2D2124F800F66CB8 /* RxSwift */,
+				267DD9F22D2695D000F66CB8 /* FSCalendar */,
+			);
 			productName = MMM_SideProject;
 			productReference = 262F9AA12D09B75500AA7EA2 /* MMM_SideProject.app */;
 			productType = "com.apple.product-type.application";
@@ -155,6 +203,7 @@
 			mainGroup = 262F9A982D09B75500AA7EA2;
 			packageReferences = (
 				262F9ABA2D09BB6800AA7EA2 /* XCRemoteSwiftPackageReference "RxSwift" */,
+				267DD9F12D2695D000F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 			);
 			productRefGroup = 262F9AA22D09B75500AA7EA2 /* Products */;
 			projectDirPath = "";
@@ -170,11 +219,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				262F9AAE2D09B75700AA7EA2 /* Assets.xcassets in Resources */,
-				262F9AB12D09B75700AA7EA2 /* Base in Resources */,
-				262F9AAC2D09B75600AA7EA2 /* Base in Resources */,
-				262F9AC42D09CC3C00AA7EA2 /* Moneygraphy-Rounded.otf in Resources */,
-				262F9AC52D09CC3C00AA7EA2 /* Moneygraphy-Pixel.otf in Resources */,
+				267DD9CF2D211AF800F66CB8 /* Moneygraphy-Pixel.otf in Resources */,
+				267DD9D62D211AF800F66CB8 /* Assets.xcassets in Resources */,
+				267DD9D92D211AF800F66CB8 /* Main.storyboard in Resources */,
+				267DD9D82D211AF800F66CB8 /* LaunchScreen.storyboard in Resources */,
+				267DD9D02D211AF800F66CB8 /* Moneygraphy-Rounded.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,33 +234,38 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				262F9AC72D09E2E300AA7EA2 /* UIView+Extension.swift in Sources */,
-				262F9AC02D09C7A700AA7EA2 /* Constants.swift in Sources */,
-				262F9AB92D09B76C00AA7EA2 /* MainViewController.swift in Sources */,
-				262F9AA52D09B75600AA7EA2 /* AppDelegate.swift in Sources */,
-				262F9AA72D09B75600AA7EA2 /* SceneDelegate.swift in Sources */,
-				262F9ABE2D09C6E800AA7EA2 /* UIColor+Extension.swift in Sources */,
-				262F9ACA2D1067ED00AA7EA2 /* DetailViewController.swift in Sources */,
+				267DD9F02D24405900F66CB8 /* CalendarViewController.swift in Sources */,
+				267DD9D22D211AF800F66CB8 /* DetailTableViewCell.swift in Sources */,
+				267DD9D12D211AF800F66CB8 /* CreateViewController.swift in Sources */,
+				267DD9CD2D211AF800F66CB8 /* UIColor+Extension.swift in Sources */,
+				267DD9D52D211AF800F66CB8 /* AppDelegate.swift in Sources */,
+				267DD9F52D29108C00F66CB8 /* CalendarTableViewCell.swift in Sources */,
+				267DD9CB2D211AF800F66CB8 /* Constants.swift in Sources */,
+				267DD9DA2D211AF800F66CB8 /* SceneDelegate.swift in Sources */,
+				267DD9CE2D211AF800F66CB8 /* UIView+Extension.swift in Sources */,
+				267DD9CC2D211AF800F66CB8 /* UIButton+Extension.swift in Sources */,
+				267DD9D32D211AF800F66CB8 /* DetailViewController.swift in Sources */,
+				267DD9D42D211AF800F66CB8 /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		262F9AAA2D09B75600AA7EA2 /* Main.storyboard */ = {
+		267DD9C62D211AF800F66CB8 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				262F9AAB2D09B75600AA7EA2 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		262F9AAF2D09B75700AA7EA2 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				262F9AB02D09B75700AA7EA2 /* Base */,
+				267DD9C52D211AF800F66CB8 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		267DD9C82D211AF800F66CB8 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				267DD9C72D211AF800F66CB8 /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -430,7 +484,43 @@
 				minimumVersion = 6.8.0;
 			};
 		};
+		267DD9F12D2695D000F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.4;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		267DD9E42D2124F800F66CB8 /* RxBlocking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 262F9ABA2D09BB6800AA7EA2 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxBlocking;
+		};
+		267DD9E62D2124F800F66CB8 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 262F9ABA2D09BB6800AA7EA2 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		267DD9E82D2124F800F66CB8 /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 262F9ABA2D09BB6800AA7EA2 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+		267DD9EA2D2124F800F66CB8 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 262F9ABA2D09BB6800AA7EA2 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		267DD9F22D2695D000F66CB8 /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 267DD9F12D2695D000F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 262F9A992D09B75500AA7EA2 /* Project object */;
 }

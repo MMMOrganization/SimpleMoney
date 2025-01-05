@@ -5,7 +5,7 @@
 //  Created by 강대훈 on 12/11/24.
 //
 
-import Foundation
+import UIKit
 
 public enum ColorConst {
     static let mainColorString = "4300D1"
@@ -16,3 +16,5 @@ public enum ColorConst {
 public enum FontConst {
     static let mainFont = "Moneygraphy-Pixel"
 }
+
+

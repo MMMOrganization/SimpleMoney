@@ -7,14 +7,22 @@
 
 import UIKit
 
+enum DetailCellStyle {
+    case compact // 간격 X
+    case spacious // 간격 O
+}
+
 class DetailTableViewCell: UITableViewCell {
 
+    var cellStyle : DetailCellStyle = .compact
+    
     static let identifier = "DetailCell"
     
     let imageBorderView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.clipsToBounds = true
+        view.layer.borderWidth = 1
         view.layer.borderColor = UIColor(hexCode: ColorConst.mainColorString).cgColor
         return view
     }()
@@ -22,8 +30,7 @@ class DetailTableViewCell: UITableViewCell {
     let mainImageView : UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        image.tintColor = UIColor(hexCode: ColorConst.mainColorString)
-        image.layer.borderColor = UIColor(hexCode: ColorConst.mainColorString).cgColor
+        image.image = UIImage(named: "DateImage")
         return image
     }()
     
@@ -31,7 +38,7 @@ class DetailTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "정기 결제"
-        label.font = UIFont(name: FontConst.mainFont, size: 16)
+        label.font = .systemFont(ofSize: 16, weight: .semibold)
         label.textColor = UIColor(hexCode: ColorConst.blackColorString)
         return label
     }()
@@ -55,6 +62,19 @@ class DetailTableViewCell: UITableViewCell {
         return label
     }()
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        switch cellStyle {
+        case .compact:
+            contentView.frame = bounds
+        case .spacious:
+            contentView.frame = bounds.inset(by: UIEdgeInsets(top: 10, left: 0, bottom: 5, right: 0))
+        }
+        
+        imageBorderView.layer.cornerRadius = imageBorderView.frame.height / 2
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -69,11 +89,15 @@ class DetailTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setLayout()
-        print(imageBorderView.frame.width / 2)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(with style : DetailCellStyle) {
+        self.cellStyle = style
+        setNeedsLayout()
     }
     
     func setLayout() {
@@ -91,19 +115,19 @@ class DetailTableViewCell: UITableViewCell {
             imageBorderView.heightAnchor.constraint(equalToConstant: 30),
             imageBorderView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
             
-            mainImageView.widthAnchor.constraint(equalToConstant: 14),
-            mainImageView.heightAnchor.constraint(equalToConstant: 14),
+            mainImageView.widthAnchor.constraint(equalToConstant: 20),
+            mainImageView.heightAnchor.constraint(equalToConstant: 20),
             mainImageView.centerXAnchor.constraint(equalTo: self.imageBorderView.centerXAnchor),
             mainImageView.centerYAnchor.constraint(equalTo: self.imageBorderView.centerYAnchor),
             
             mainLabel.leadingAnchor.constraint(equalTo: self.mainImageView.trailingAnchor, constant: 15),
-            mainLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10),
+            mainLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5),
             
             dateLabel.leadingAnchor.constraint(equalTo: self.mainLabel.leadingAnchor),
-            dateLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10),
+            dateLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -3),
             
             moneyLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -5),
-            moneyLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10)
+            moneyLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -3)
         ])
     }
 }

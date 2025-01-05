@@ -26,3 +26,7 @@ extension UIColor {
                   alpha: alpha)
     }
 }
+
+extension UIColor {
+    static let mainColor = UIColor(hexCode: ColorConst.mainColorString)
+}
