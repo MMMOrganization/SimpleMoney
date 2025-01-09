@@ -28,5 +28,10 @@ extension UIColor {
 }
 
 extension UIColor {
+    /// Custom Color - hex : 4300D1
     static let mainColor = UIColor(hexCode: ColorConst.mainColorString)
+    /// Custom Color - hex : 111111
+    static let blackColor = UIColor(hexCode: ColorConst.blackColorString)
+    /// Custom Color - hex : 767676
+    static let grayColor = UIColor(hexCode: ColorConst.grayColorString)
 }

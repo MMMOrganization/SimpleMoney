@@ -17,4 +17,4 @@ public enum FontConst {
     static let mainFont = "Moneygraphy-Pixel"
 }
 
-
+public enum 
