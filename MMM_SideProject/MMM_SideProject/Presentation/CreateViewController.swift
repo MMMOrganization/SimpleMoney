@@ -127,7 +127,7 @@ class CreateViewController: UIViewController {
         
         iconCollectionView.register(CreateCollectionViewCell.self, forCellWithReuseIdentifier: CreateCollectionViewCell.identifier)
     }
-    
+
     func setLayout() {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.scrollEdgeAppearance =
