@@ -145,13 +145,14 @@ class DetailViewController: UIViewController {
         return tv
     }()
     
-    var contentAddButton : UIButton = {
+    lazy var contentAddButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "addImage"), for: .normal)
         button.contentMode = .scaleAspectFit
         button.backgroundColor = .white
         button.clipsToBounds = true
+        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -175,9 +176,11 @@ class DetailViewController: UIViewController {
     }
     
     @objc func dateButtonTapped() {
-        print("dd")
-        
         self.navigationController?.pushViewController(CalendarViewController(), animated: true)
+    }
+    
+    @objc func addButtonTapped() {
+        self.navigationController?.pushViewController(CreateViewController(), animated: true)
     }
     
     func setTableView() {
