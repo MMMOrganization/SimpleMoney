@@ -22,7 +22,7 @@
 		267DD9D82D211AF800F66CB8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 267DD9C62D211AF800F66CB8 /* LaunchScreen.storyboard */; };
 		267DD9D92D211AF800F66CB8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 267DD9C82D211AF800F66CB8 /* Main.storyboard */; };
 		267DD9DA2D211AF800F66CB8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9C92D211AF800F66CB8 /* SceneDelegate.swift */; };
-		267DD9E52D2124F800F66CB8 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 267DD9E42D2124F800F66CB8 /* RxBlocking */; };
+		267DD9E52D2124F800F66CB8 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 267DD9E42D2124F800F66CB8 /* RxBlocking */; settings = {ATTRIBUTES = (Required, ); }; };
 		267DD9E72D2124F800F66CB8 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 267DD9E62D2124F800F66CB8 /* RxCocoa */; };
 		267DD9E92D2124F800F66CB8 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 267DD9E82D2124F800F66CB8 /* RxRelay */; };
 		267DD9EB2D2124F800F66CB8 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 267DD9EA2D2124F800F66CB8 /* RxSwift */; };
@@ -32,10 +32,24 @@
 		267DDA242D2AD23D00F66CB8 /* CALayer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDA232D2AD23D00F66CB8 /* CALayer+Extension.swift */; };
 		267DDA262D2ADA1000F66CB8 /* UIFont+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDA252D2ADA1000F66CB8 /* UIFont+Extension.swift */; };
 		267DDA2A2D2FCEC000F66CB8 /* CreateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDA292D2FCEC000F66CB8 /* CreateCollectionViewCell.swift */; };
-		267DDA2D2D300F4E00F66CB8 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA2C2D300F4E00F66CB8 /* Realm */; };
-		267DDA2F2D300F4E00F66CB8 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA2E2D300F4E00F66CB8 /* RealmSwift */; };
 		267DDA322D300F9E00F66CB8 /* RealmDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDA312D300F9E00F66CB8 /* RealmDB.swift */; };
+		267DDA572D313B7800F66CB8 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA562D313B7800F66CB8 /* Realm */; };
+		267DDA592D313B7800F66CB8 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA582D313B7800F66CB8 /* RealmSwift */; };
+		267DDA5B2D313ED300F66CB8 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDA5A2D313ED300F66CB8 /* UIViewController+Extension.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		267DDA402D31337300F66CB8 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		262F9AA12D09B75500AA7EA2 /* MMM_SideProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMM_SideProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +75,7 @@
 		267DDA252D2ADA1000F66CB8 /* UIFont+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extension.swift"; sourceTree = "<group>"; };
 		267DDA292D2FCEC000F66CB8 /* CreateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCollectionViewCell.swift; sourceTree = "<group>"; };
 		267DDA312D300F9E00F66CB8 /* RealmDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmDB.swift; sourceTree = "<group>"; };
+		267DDA5A2D313ED300F66CB8 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,9 +83,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				267DDA2D2D300F4E00F66CB8 /* Realm in Frameworks */,
+				267DDA572D313B7800F66CB8 /* Realm in Frameworks */,
 				267DD9E92D2124F800F66CB8 /* RxRelay in Frameworks */,
-				267DDA2F2D300F4E00F66CB8 /* RealmSwift in Frameworks */,
+				267DDA592D313B7800F66CB8 /* RealmSwift in Frameworks */,
 				267DD9E72D2124F800F66CB8 /* RxCocoa in Frameworks */,
 				267DD9EB2D2124F800F66CB8 /* RxSwift in Frameworks */,
 				267DD9F32D2695D000F66CB8 /* FSCalendar in Frameworks */,
@@ -107,6 +122,7 @@
 				267DD9B82D211AF800F66CB8 /* UIView+Extension.swift */,
 				267DDA232D2AD23D00F66CB8 /* CALayer+Extension.swift */,
 				267DDA252D2ADA1000F66CB8 /* UIFont+Extension.swift */,
+				267DDA5A2D313ED300F66CB8 /* UIViewController+Extension.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -184,6 +200,7 @@
 				262F9A9D2D09B75500AA7EA2 /* Sources */,
 				262F9A9E2D09B75500AA7EA2 /* Frameworks */,
 				262F9A9F2D09B75500AA7EA2 /* Resources */,
+				267DDA402D31337300F66CB8 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,8 +213,8 @@
 				267DD9E82D2124F800F66CB8 /* RxRelay */,
 				267DD9EA2D2124F800F66CB8 /* RxSwift */,
 				267DD9F22D2695D000F66CB8 /* FSCalendar */,
-				267DDA2C2D300F4E00F66CB8 /* Realm */,
-				267DDA2E2D300F4E00F66CB8 /* RealmSwift */,
+				267DDA562D313B7800F66CB8 /* Realm */,
+				267DDA582D313B7800F66CB8 /* RealmSwift */,
 			);
 			productName = MMM_SideProject;
 			productReference = 262F9AA12D09B75500AA7EA2 /* MMM_SideProject.app */;
@@ -230,7 +247,7 @@
 			packageReferences = (
 				262F9ABA2D09BB6800AA7EA2 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				267DD9F12D2695D000F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */,
-				267DDA2B2D300F4E00F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				267DDA552D313B7800F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 262F9AA22D09B75500AA7EA2 /* Products */;
 			projectDirPath = "";
@@ -265,6 +282,7 @@
 				267DD9F02D24405900F66CB8 /* CalendarViewController.swift in Sources */,
 				267DD9D22D211AF800F66CB8 /* DetailTableViewCell.swift in Sources */,
 				267DD9D12D211AF800F66CB8 /* CreateViewController.swift in Sources */,
+				267DDA5B2D313ED300F66CB8 /* UIViewController+Extension.swift in Sources */,
 				267DDA2A2D2FCEC000F66CB8 /* CreateCollectionViewCell.swift in Sources */,
 				267DD9CD2D211AF800F66CB8 /* UIColor+Extension.swift in Sources */,
 				267DD9D52D211AF800F66CB8 /* AppDelegate.swift in Sources */,
@@ -523,12 +541,12 @@
 				minimumVersion = 2.8.4;
 			};
 		};
-		267DDA2B2D300F4E00F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+		267DDA552D313B7800F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = exactVersion;
+				version = 10.33.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -559,14 +577,14 @@
 			package = 267DD9F12D2695D000F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */;
 			productName = FSCalendar;
 		};
-		267DDA2C2D300F4E00F66CB8 /* Realm */ = {
+		267DDA562D313B7800F66CB8 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 267DDA2B2D300F4E00F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			package = 267DDA552D313B7800F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = Realm;
 		};
-		267DDA2E2D300F4E00F66CB8 /* RealmSwift */ = {
+		267DDA582D313B7800F66CB8 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 267DDA2B2D300F4E00F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			package = 267DDA552D313B7800F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */

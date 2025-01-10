@@ -8,6 +8,8 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import Realm
+import RealmSwift
 
 class DetailViewController: UIViewController {
     
@@ -160,7 +162,6 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         setLayout()
         setTableView()
-        // Do any additional setup after loading the view.
     }
     
     override func viewDidAppear(_ animated: Bool) {
