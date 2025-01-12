@@ -7,8 +7,8 @@
 
 import UIKit
 
-class DetailCoordinator : Coordinator {
-    var parentCoordinator : Coordinator?
+class DetailCoordinator : Coordinator, DetailViewControllerDelegate {
+    weak var parentCoordinator : Coordinator?
     var childCoordinators : [Coordinator] = []
     var navigationController : UINavigationController
     
@@ -20,12 +20,33 @@ class DetailCoordinator : Coordinator {
         
     }
     
+    func pushCalendarVC() {
+        let calendarCoordinator = CalendarCoordinator(navigationController : navigationController)
+        calendarCoordinator.parentCoordinator = self
+        addChild(calendarCoordinator)
+        
+        calendarCoordinator.start()
+    }
+    
+    func pushCreateVC() {
+        let createCoordinator = CreateCoordinator(navigationController : navigationController)
+        createCoordinator.parentCoordinator = self
+        addChild(createCoordinator)
+        
+        createCoordinator.start()
+    }
+    
     // MainVC 객체를 생성하여 반환함.
     func startPush() -> UINavigationController {
-        let detailViewController : UIViewController = DetailViewController()
+        let detailViewController = DetailViewController()
+        detailViewController.delegate = self
         detailViewController.view.backgroundColor = .white
         navigationController.setViewControllers([detailViewController], animated: true)
         
         return navigationController
+    }
+    
+    deinit {
+        print("DetailCoordinator 메모리 해제")
     }
 }

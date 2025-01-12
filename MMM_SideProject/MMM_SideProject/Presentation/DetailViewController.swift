@@ -9,7 +9,14 @@ import UIKit
 import RxCocoa
 import RxSwift
 
+protocol DetailViewControllerDelegate : AnyObject {
+    func pushCalendarVC()
+    func pushCreateVC()
+}
+
 class DetailViewController: UIViewController {
+    
+    weak var delegate : DetailViewControllerDelegate?
     
     let dataList : [Int] = [3, 5, 4]
     
@@ -160,7 +167,8 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         setLayout()
         setTableView()
-        // Do any additional setup after loading the view.
+        
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -175,12 +183,14 @@ class DetailViewController: UIViewController {
         expendShowButton.layer.cornerRadius = expendShowButton.frame.height / 2
     }
     
+    // MARK: - ViewModel이 해야할 일임. (MVVM 형태로 바꿀 때 변화 필요)
     @objc func dateButtonTapped() {
-        self.navigationController?.pushViewController(CalendarViewController(), animated: true)
+        self.delegate?.pushCalendarVC()
     }
     
+    // MARK: - ViewModel이 해야할 일임. (MVVM 형태로 바꿀 때 변화 필요)
     @objc func addButtonTapped() {
-        self.navigationController?.pushViewController(CreateViewController(), animated: true)
+        self.delegate?.pushCreateVC()
     }
     
     func setTableView() {

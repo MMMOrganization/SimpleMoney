@@ -8,9 +8,23 @@
 import UIKit
 import FSCalendar
 
-
+protocol CalendarViewControllerDelegate : AnyObject {
+    func popCalendarVC()
+}
 
 class CalendarViewController: UIViewController {
+    
+    weak var delegate : CalendarViewControllerDelegate?
+    
+    lazy var dismissButton : UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
+        button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        button.addTarget(self, action: #selector(dismissButtonTapped), for: .touchUpInside)
+        button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
+        return button
+    }()
+    
+    lazy var dismissButtonItem = UIBarButtonItem(customView: dismissButton)
     
     let topView : UIView = {
         let view = UIView()
@@ -121,6 +135,7 @@ class CalendarViewController: UIViewController {
     }
     
     func setLayout() {
+        navigationItem.leftBarButtonItem = dismissButtonItem
         view.backgroundColor = .white
         
         view.addSubview(topView)
@@ -162,6 +177,10 @@ class CalendarViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
             tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+    
+    @objc func dismissButtonTapped() {
+        self.delegate?.popCalendarVC()
     }
     
     @objc func previousButtonTapped() {

@@ -7,7 +7,14 @@
 
 import UIKit
 
+// AnyObject 를 사용하여 Class만을 강제해서, weak의 사용이 가능해짐.
+protocol CreateViewControllerDelegate : AnyObject {
+    func popCreateVC()
+}
+
 class CreateViewController: UIViewController {
+    
+    weak var delegate : CreateViewControllerDelegate?
 
     lazy var topStackView : UIStackView = {
         let sv = UIStackView(arrangedSubviews: [expendButton, incomeButton])
@@ -18,6 +25,16 @@ class CreateViewController: UIViewController {
         sv.spacing = 0
         return sv
     }()
+    
+    lazy var dismissButton : UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
+        button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        button.addTarget(self, action: #selector(dismissButtonTapped), for: .touchUpInside)
+        button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
+        return button
+    }()
+    
+    lazy var dismissButtonItem = UIBarButtonItem(customView: dismissButton)
     
     let expendButton : UIButton = {
         let button = UIButton()
@@ -121,6 +138,10 @@ class CreateViewController: UIViewController {
         expendButton.layer.addBorder([.bottom])
     }
     
+    @objc func dismissButtonTapped() {
+        self.delegate?.popCreateVC()
+    }
+    
     func setCollectionView() {
         iconCollectionView.dataSource = self
         iconCollectionView.delegate = self
@@ -132,6 +153,7 @@ class CreateViewController: UIViewController {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.scrollEdgeAppearance =
         navigationController?.navigationBar.standardAppearance
+        navigationItem.leftBarButtonItem = dismissButtonItem
         view.backgroundColor = .white
         
         view.addSubview(topStackView)

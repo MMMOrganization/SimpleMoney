@@ -8,7 +8,7 @@
 import UIKit
 
 class MainCoordinator : Coordinator {
-    var parentCoordinator : Coordinator?
+    weak var parentCoordinator : Coordinator?
     var childCoordinators : [Coordinator] = []
     var navigationController : UINavigationController
     
@@ -27,5 +27,9 @@ class MainCoordinator : Coordinator {
         navigationController.setViewControllers([mainViewController], animated: true)
         
         return navigationController
+    }
+    
+    deinit {
+        print("MainCoordinator 메모리 해제")
     }
 }

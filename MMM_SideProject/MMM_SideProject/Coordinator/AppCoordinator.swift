@@ -43,4 +43,8 @@ class AppCoordinator : Coordinator {
         
         return tabBarController
     }
+    
+    deinit {
+        print("AppCoordinator 메모리 해제")
+    }
 }
