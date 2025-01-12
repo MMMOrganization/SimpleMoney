@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
-class CalendarCoordinator : Coordinator, CalendarViewControllerDelegate {
+class CalendarCoordinator : Coordinator, CalendarViewModelDelegate {
     weak var parentCoordinator : Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController : UINavigationController
@@ -17,8 +19,9 @@ class CalendarCoordinator : Coordinator, CalendarViewControllerDelegate {
     }
     
     func start() {
-        let calendarViewController = CalendarViewController()
-        calendarViewController.delegate = self
+        let calendarViewModel = CalendarViewModel()
+        calendarViewModel.delegate = self
+        let calendarViewController = CalendarViewController(viewModel: calendarViewModel)
         
         self.navigationController.pushViewController(calendarViewController, animated: true)
     }

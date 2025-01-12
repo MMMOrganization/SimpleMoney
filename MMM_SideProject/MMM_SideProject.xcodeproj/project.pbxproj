@@ -167,6 +167,7 @@
 				267DD9B92D211AF800F66CB8 /* Constants */,
 				267DD9BC2D211AF800F66CB8 /* Font */,
 				267DDAC22D33C8CF00F66CB8 /* Assets */,
+				267DD9C42D211AF800F66CB8 /* Info.plist */,
 			);
 			path = MMM_SideProject;
 			sourceTree = "<group>";
@@ -249,7 +250,6 @@
 			isa = PBXGroup;
 			children = (
 				267DD9C32D211AF800F66CB8 /* Assets.xcassets */,
-				267DD9C42D211AF800F66CB8 /* Info.plist */,
 			);
 			path = Assets;
 			sourceTree = "<group>";

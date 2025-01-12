@@ -9,26 +9,21 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-protocol DetailViewControllerDelegate : AnyObject {
-    func pushCalendarVC()
-    func pushCreateVC()
-}
-
 class DetailViewController: UIViewController {
     
-    weak var delegate : DetailViewControllerDelegate?
-    
     let dataList : [Int] = [3, 5, 4]
+    var disposeBag : DisposeBag = DisposeBag()
     
-    lazy var barButton : UIButton = {
+    var viewModel : DetailViewModelInterface!
+    
+    lazy var calendarBarButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
         button.setImage(UIImage(named: "DateImage2"), for: .normal)
-        button.addTarget(self, action: #selector(dateButtonTapped), for: .touchUpInside)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
     }()
     
-    lazy var barButtonItem = UIBarButtonItem(customView : barButton)
+    lazy var barButtonItem = UIBarButtonItem(customView : calendarBarButton)
     
     let topView : UIView = {
         // 160 height
@@ -159,16 +154,25 @@ class DetailViewController: UIViewController {
         button.contentMode = .scaleAspectFit
         button.backgroundColor = .white
         button.clipsToBounds = true
-        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         return button
     }()
+    
+    // MARK: - Initializer
+    init(viewModel : DetailViewModelInterface) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        print("DetailViewController - Initializer 에러")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setLayout()
         setTableView()
-        
-        
+        setReactive()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -184,14 +188,6 @@ class DetailViewController: UIViewController {
     }
     
     // MARK: - ViewModel이 해야할 일임. (MVVM 형태로 바꿀 때 변화 필요)
-    @objc func dateButtonTapped() {
-        self.delegate?.pushCalendarVC()
-    }
-    
-    // MARK: - ViewModel이 해야할 일임. (MVVM 형태로 바꿀 때 변화 필요)
-    @objc func addButtonTapped() {
-        self.delegate?.pushCreateVC()
-    }
     
     func setTableView() {
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
@@ -290,6 +286,18 @@ class DetailViewController: UIViewController {
             contentAddButton.widthAnchor.constraint(equalToConstant: 60),
             contentAddButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+    }
+    
+    func setReactive() {
+        calendarBarButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .bind(to: viewModel.dateButtonObserver)
+            .disposed(by: disposeBag)
+        
+        contentAddButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .bind(to: viewModel.plusButtonObserver)
+            .disposed(by: disposeBag)
     }
 }
 

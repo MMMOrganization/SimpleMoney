@@ -7,19 +7,18 @@
 
 import UIKit
 import FSCalendar
+import RxSwift
+import RxCocoa
 
-protocol CalendarViewControllerDelegate : AnyObject {
-    func popCalendarVC()
-}
 
 class CalendarViewController: UIViewController {
     
-    weak var delegate : CalendarViewControllerDelegate?
+    var disposeBag : DisposeBag = DisposeBag()
+    var viewModel : CalendarViewModelInterface!
     
     lazy var dismissButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
-        button.addTarget(self, action: #selector(dismissButtonTapped), for: .touchUpInside)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
     }()
@@ -113,11 +112,22 @@ class CalendarViewController: UIViewController {
         return tv
     }()
     
+    init(viewModel: CalendarViewModelInterface) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        print("CalendarViewController - Initializer 에러")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setCalendar()
         setLayout()
         setTableView()
+        setReactive()
     }
     
     func setTableView() {
@@ -179,8 +189,11 @@ class CalendarViewController: UIViewController {
         ])
     }
     
-    @objc func dismissButtonTapped() {
-        self.delegate?.popCalendarVC()
+    func setReactive() {
+        dismissButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .bind(to: viewModel.dismissButtonObserver)
+            .disposed(by: disposeBag)
     }
     
     @objc func previousButtonTapped() {

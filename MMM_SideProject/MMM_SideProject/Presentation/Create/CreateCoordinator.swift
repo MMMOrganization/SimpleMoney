@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CreateCoordinator : Coordinator, CreateViewControllerDelegate {
+class CreateCoordinator : Coordinator, CreateViewModelDelegate {
     weak var parentCoordinator : Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController : UINavigationController
@@ -17,9 +17,10 @@ class CreateCoordinator : Coordinator, CreateViewControllerDelegate {
     }
     
     func start() {
-        let createViewController = CreateViewController()
-        createViewController.delegate = self
+        let createViewModel = CreateViewModel()
+        createViewModel.delegate = self
         
+        let createViewController = CreateViewController(viewModel: createViewModel)
         self.navigationController.pushViewController(createViewController, animated: true)
     }
     

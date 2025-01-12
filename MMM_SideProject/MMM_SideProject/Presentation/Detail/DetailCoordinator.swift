@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailCoordinator : Coordinator, DetailViewControllerDelegate {
+class DetailCoordinator : Coordinator, DetailViewModelDelegate {
     weak var parentCoordinator : Coordinator?
     var childCoordinators : [Coordinator] = []
     var navigationController : UINavigationController
@@ -38,8 +38,10 @@ class DetailCoordinator : Coordinator, DetailViewControllerDelegate {
     
     // MainVC 객체를 생성하여 반환함.
     func startPush() -> UINavigationController {
-        let detailViewController = DetailViewController()
-        detailViewController.delegate = self
+        let detailViewModel = DetailViewModel()
+        detailViewModel.delegate = self
+        
+        let detailViewController = DetailViewController(viewModel : detailViewModel)
         detailViewController.view.backgroundColor = .white
         navigationController.setViewControllers([detailViewController], animated: true)
         
