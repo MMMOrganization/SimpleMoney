@@ -6,9 +6,16 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+
+// AnyObject 를 사용하여 Class만을 강제해서, weak의 사용이 가능해짐.
 
 class CreateViewController: UIViewController {
-
+    
+    let disposeBag : DisposeBag = DisposeBag()
+    var viewModel : CreateViewModelInterface!
+    
     lazy var topStackView : UIStackView = {
         let sv = UIStackView(arrangedSubviews: [expendButton, incomeButton])
         sv.translatesAutoresizingMaskIntoConstraints = false
@@ -18,6 +25,15 @@ class CreateViewController: UIViewController {
         sv.spacing = 0
         return sv
     }()
+    
+    lazy var dismissButton : UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
+        button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
+        return button
+    }()
+    
+    lazy var dismissButtonItem = UIBarButtonItem(customView: dismissButton)
     
     let expendButton : UIButton = {
         let button = UIButton()
@@ -108,10 +124,22 @@ class CreateViewController: UIViewController {
         return cv
     }()
     
+    // MARK: - Initializer
+    init(viewModel: CreateViewModelInterface) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        print("CreateViewController - Initializer 에러")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setLayout()
         setCollectionView()
+        setReactive()
         // Do any additional setup after loading the view.
     }
     
@@ -132,6 +160,7 @@ class CreateViewController: UIViewController {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.scrollEdgeAppearance =
         navigationController?.navigationBar.standardAppearance
+        navigationItem.leftBarButtonItem = dismissButtonItem
         view.backgroundColor = .white
         
         view.addSubview(topStackView)
@@ -183,6 +212,13 @@ class CreateViewController: UIViewController {
             iconCollectionView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
             
         ])
+    }
+    
+    func setReactive() {
+        dismissButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .bind(to: viewModel.dismissButtonObserver)
+            .disposed(by: disposeBag)
     }
 }
 

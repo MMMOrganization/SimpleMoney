@@ -7,10 +7,23 @@
 
 import UIKit
 import FSCalendar
-
+import RxSwift
+import RxCocoa
 
 
 class CalendarViewController: UIViewController {
+    
+    var disposeBag : DisposeBag = DisposeBag()
+    var viewModel : CalendarViewModelInterface!
+    
+    lazy var dismissButton : UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
+        button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
+        return button
+    }()
+    
+    lazy var dismissButtonItem = UIBarButtonItem(customView: dismissButton)
     
     let topView : UIView = {
         let view = UIView()
@@ -99,11 +112,22 @@ class CalendarViewController: UIViewController {
         return tv
     }()
     
+    init(viewModel: CalendarViewModelInterface) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        print("CalendarViewController - Initializer 에러")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setCalendar()
         setLayout()
         setTableView()
+        setReactive()
     }
     
     func setTableView() {
@@ -121,6 +145,7 @@ class CalendarViewController: UIViewController {
     }
     
     func setLayout() {
+        navigationItem.leftBarButtonItem = dismissButtonItem
         view.backgroundColor = .white
         
         view.addSubview(topView)
@@ -162,6 +187,13 @@ class CalendarViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
             tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+    
+    func setReactive() {
+        dismissButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .bind(to: viewModel.dismissButtonObserver)
+            .disposed(by: disposeBag)
     }
     
     @objc func previousButtonTapped() {

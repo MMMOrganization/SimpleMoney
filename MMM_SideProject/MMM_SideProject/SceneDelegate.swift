@@ -10,6 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var appCoordinator : AppCoordinator?
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -19,28 +20,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
+        appCoordinator = AppCoordinator(window)
         
-        let tabBarVC = UITabBarController()
-        
-        let mainVC = MainViewController()
-        let detailVC = UINavigationController(rootViewController: DetailViewController())
-        
-        mainVC.title = "메인화면"
-        detailVC.title = "디테일화면"
-        
-        tabBarVC.setViewControllers([mainVC, detailVC], animated: true)
-        tabBarVC.modalPresentationStyle = .fullScreen
-        tabBarVC.tabBar.backgroundColor = .white
-        
-        guard let items = tabBarVC.tabBar.items else {
-            return
-        }
-        
-        items[0].image = UIImage(systemName: "trash")
-        items[1].image = UIImage(systemName: "trash")
-        
-        window?.rootViewController = tabBarVC
-        window?.makeKeyAndVisible()
+        appCoordinator?.start()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

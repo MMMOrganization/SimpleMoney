@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RealmSwift
+import Realm
 
 public enum ColorConst {
     static let mainColorString = "4300D1"
@@ -17,4 +19,7 @@ public enum FontConst {
     static let mainFont = "Moneygraphy-Pixel"
 }
 
-public enum 
+public enum CreateType : String, PersistableEnum {
+    case income
+    case expend
+}
