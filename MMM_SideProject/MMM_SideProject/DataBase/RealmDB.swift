@@ -9,8 +9,16 @@ import Foundation
 import Realm
 import RealmSwift
 
-class RealmDTO : Object {
-    @Persisted(primaryKey: true) var id : UUID
+class UserDB : Object {
+    @Persisted(primaryKey: true) var id : ObjectId
     @Persisted var date : Date
-    @Persisted var type : 
+    @Persisted var type : CreateType
+    @Persisted var amount : Int
+    @Persisted var iconImageURL : String?
+
+    convenience init(type : CreateType, amount : Int) {
+        self.init()
+        self.type = type
+        self.amount = amount
+    }
 }
