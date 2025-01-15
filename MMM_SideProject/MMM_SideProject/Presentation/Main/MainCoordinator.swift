@@ -25,7 +25,6 @@ class MainCoordinator : Coordinator {
         let mainViewController : UIViewController = MainViewController()
         mainViewController.view.backgroundColor = .white
         navigationController.setViewControllers([mainViewController], animated: true)
-        
         return navigationController
     }
     

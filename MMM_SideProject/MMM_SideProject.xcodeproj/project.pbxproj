@@ -45,6 +45,7 @@
 		267DDAC42D33C92700F66CB8 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAC32D33C92700F66CB8 /* DetailViewModel.swift */; };
 		267DDAC62D33C93200F66CB8 /* CreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAC52D33C93200F66CB8 /* CreateViewModel.swift */; };
 		267DDAC82D33C93A00F66CB8 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAC72D33C93A00F66CB8 /* CalendarViewModel.swift */; };
+		267DDAF72D3564E300F66CB8 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAF62D3564E300F66CB8 /* Entity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -82,6 +83,7 @@
 		267DDAC32D33C92700F66CB8 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		267DDAC52D33C93200F66CB8 /* CreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateViewModel.swift; sourceTree = "<group>"; };
 		267DDAC72D33C93A00F66CB8 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
+		267DDAF62D3564E300F66CB8 /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,6 +259,7 @@
 		267DDAC92D33C94700F66CB8 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				267DDAF62D3564E300F66CB8 /* Entity.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -363,6 +366,7 @@
 				267DD9CB2D211AF800F66CB8 /* Constants.swift in Sources */,
 				267DDAC42D33C92700F66CB8 /* DetailViewModel.swift in Sources */,
 				267DD9DA2D211AF800F66CB8 /* SceneDelegate.swift in Sources */,
+				267DDAF72D3564E300F66CB8 /* Entity.swift in Sources */,
 				267DD9CE2D211AF800F66CB8 /* UIView+Extension.swift in Sources */,
 				267DDAB42D32798600F66CB8 /* DetailCoordinator.swift in Sources */,
 				267DD9CC2D211AF800F66CB8 /* UIButton+Extension.swift in Sources */,
