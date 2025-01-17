@@ -20,6 +20,7 @@ public enum FontConst {
 }
 
 public enum CreateType : String, PersistableEnum {
+    case total
     case income
     case expend
 }

@@ -30,7 +30,11 @@ class DetailViewModel : DetailViewModelInterface {
     
     weak var delegate : DetailViewModelDelegate?
     
-    init() {
+    var repository : DataRepositoryInterface
+    
+    init(repository : DataRepositoryInterface) {
+        self.repository = repository
+        
         dateButtonSubject = PublishSubject<Void>()
         plusButtonSubject = PublishSubject<Void>()
         
