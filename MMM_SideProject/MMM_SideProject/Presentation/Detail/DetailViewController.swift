@@ -108,7 +108,7 @@ class DetailViewController: UIViewController {
         button.setTitleColor(UIColor(hexCode: ColorConst.blackColorString), for: .normal)
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor(hexCode: ColorConst.mainColorString).cgColor
-        button.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.20)
+        button.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.15)
         return button
     }()
     
@@ -332,8 +332,23 @@ class DetailViewController: UIViewController {
             .subscribe { [weak self] selectedIndex in
                 guard let selectedIndex = selectedIndex.element, let self = self else { return }
                 showButtons.forEach { $0.backgroundColor = .white }
-                showButtons[selectedIndex].backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.20)
+                showButtons[selectedIndex].backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.10)
             }.disposed(by: disposeBag)
+        
+        // MARK: - DateLabel 바인딩
+        topChangeLeftButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .bind(to: viewModel.dateDecreaseButtonObserver)
+            .disposed(by: disposeBag)
+        
+        topChangeRightButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .bind(to: viewModel.dateIncreaseButtonObserver)
+            .disposed(by: disposeBag)
+        
+        viewModel.dateObservable
+            .bind(to: topChangeMonthLabel.rx.text)
+            .disposed(by: disposeBag)
     }
 }
 

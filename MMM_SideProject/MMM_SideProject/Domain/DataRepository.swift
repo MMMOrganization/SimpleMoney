@@ -11,8 +11,10 @@ import Realm
 
 class DataRepository : DataRepositoryInterface {
     
-    private let stateType : CreateType = .total
-    private var setDate : String?
+    private var stateType : ButtonType = .total
+    
+    // 현재 날짜를 "YYYY년 MM월로 가져오는 로직 필요
+    private var dateType : YearMonth = .init()
     
     /// total Read
     /// -> Entity 객체로 이번 달의 전체 엔티티를 리스트로 전달해야 함.
@@ -45,11 +47,16 @@ class DataRepository : DataRepositoryInterface {
     
     /// 현재 어떤 버튼이 눌려있는지 상태를 보관해야 함. (Interface 에서는 제공하지 않음.)
     /// -> 현재 상태에 따라서 호출되는 함수는 다름
-    func setStateType() {
+    func setStateType(_ stateType : ButtonType) {
         // Button 을 누름으로 stateType의 변경.
+        self.stateType = stateType
     }
     
-    func setUserDate() {
-        // setData의 변경.
+    func readDate() -> String {
+        return ""
+    }
+    
+    func setDate(type: DateButtonType) {
+        
     }
 }
