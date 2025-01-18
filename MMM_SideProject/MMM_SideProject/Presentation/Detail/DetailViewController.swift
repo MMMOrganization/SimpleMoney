@@ -38,7 +38,7 @@ class DetailViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: FontConst.mainFont, size: 16)
         label.textColor = UIColor(hexCode: ColorConst.grayColorString, alpha: 1.00)
-        label.text = "1월 통계"
+        label.text = "\(YearMonth().month)월 통계"
         label.textAlignment = .right
         return label
     }()
@@ -68,7 +68,7 @@ class DetailViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
-        label.text = "2024년12월"
+        label.text = YearMonth().toString()
         label.font = UIFont(name: FontConst.mainFont, size: 15)
         label.textColor = UIColor(hexCode: ColorConst.blackColorString, alpha: 1.00)
         return label
@@ -193,8 +193,7 @@ class DetailViewController: UIViewController {
     
     func setTableView() {
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
-        tableView.dataSource = self
-        tableView.delegate = self
+        tableView.dataSource = nil
         tableView.rowHeight = 50
     }
     
@@ -304,31 +303,35 @@ class DetailViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // MARK: - 전체 데이터 바인딩
-        let willAppearObservable = rx.methodInvoked(#selector(self.viewWillAppear))
+        let viewDidLoadObservable = rx.methodInvoked(#selector(self.viewDidLoad))
             .map { _ in }
         
         let totalButtonObservable = totalShowButton.rx.tap.asObservable()
             .map { _ in }
         
-        let _ = [willAppearObservable, totalButtonObservable]
-            .map { $0.observe(on: MainScheduler.instance)
-                .bind(to: viewModel.totalDataObserver)
-                .disposed(by: disposeBag) }
+        [viewDidLoadObservable, totalButtonObservable]
+            .forEach { $0.observe(on: MainScheduler.instance)
+            .map { ButtonType.total }
+            .bind(to: viewModel.totalDataObserver)
+            .disposed(by: disposeBag) }
         
         // MARK: - 수입 데이터 바인딩
         incomeShowButton.rx.tap
             .observe(on: MainScheduler.instance)
+            .map { ButtonType.income }
             .bind(to: viewModel.incomeDataObserver)
             .disposed(by: disposeBag)
         
         // MARK: - 지출 데이터 바인딩
         expendShowButton.rx.tap
             .observe(on: MainScheduler.instance)
+            .map { ButtonType.expend }
             .bind(to: viewModel.expendDataObserver)
             .disposed(by: disposeBag)
         
         // MARK: - Button Color 바인딩
         viewModel.selectedButtonIndexObservable
+            .observe(on: MainScheduler.instance)
             .subscribe { [weak self] selectedIndex in
                 guard let selectedIndex = selectedIndex.element, let self = self else { return }
                 showButtons.forEach { $0.backgroundColor = .white }
@@ -347,30 +350,34 @@ class DetailViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.dateObservable
+            .observe(on: MainScheduler.instance)
             .bind(to: topChangeMonthLabel.rx.text)
             .disposed(by: disposeBag)
+        
+        viewModel.monthObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: topMonthLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // MARK: - Cell 바인딩
+        viewModel.entityObservable.bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
+            print(item)
+        }.disposed(by: disposeBag)
     }
 }
 
-extension DetailViewController : UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataList[section]
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as! DetailTableViewCell
-        
-        cell.configure(with: .compact)
-        return cell
-    }
-    
-    // Section 의 제목 반환
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "12/20"
-    }
-    
-    // Section의 개수를 반환
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
-    }
+extension DetailViewController {
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return dataList[section]
+//    }
+//    
+//    // Section 의 제목 반환
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        return "12/20"
+//    }
+//    
+//    // Section의 개수를 반환
+//    func numberOfSections(in tableView: UITableView) -> Int {
+//        return 3
+//    }
 }

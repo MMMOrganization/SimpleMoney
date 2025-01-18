@@ -8,11 +8,9 @@
 import Foundation
 
 protocol DataRepositoryInterface {
-    func readTotalData() -> [Entity]
-    func readIncomeData() -> [Entity]
-    func readExpendData() -> [Entity]
-    
+    func readData() -> [Entity]
     func readDate() -> String
     
     func setDate(type : DateButtonType)
+    func setState(type : ButtonType)
 }

@@ -12,14 +12,16 @@ import RxCocoa
 protocol DetailViewModelInterface {
     var dateButtonObserver : AnyObserver<Void> { get }
     var plusButtonObserver : AnyObserver<Void> { get }
-    var totalDataObserver : AnyObserver<Void> { get }
-    var incomeDataObserver : AnyObserver<Void> { get }
-    var expendDataObserver : AnyObserver<Void> { get }
+    var totalDataObserver : AnyObserver<ButtonType> { get }
+    var incomeDataObserver : AnyObserver<ButtonType> { get }
+    var expendDataObserver : AnyObserver<ButtonType> { get }
     var dateIncreaseButtonObserver : AnyObserver<Void> { get }
     var dateDecreaseButtonObserver : AnyObserver<Void> { get }
     
+    var entityObservable : Observable<[Entity]> { get }
     var selectedButtonIndexObservable : Observable<Int> { get }
     var dateObservable : Observable<String> { get }
+    var monthObservable : Observable<String> { get }
 }
 
 protocol DetailViewModelDelegate : AnyObject {
@@ -34,9 +36,9 @@ class DetailViewModel : DetailViewModelInterface {
     // MARK: - Observer (Subject)
     var dateButtonSubject : PublishSubject<Void>
     var plusButtonSubject : PublishSubject<Void>
-    var totalDataSubject : PublishSubject<Void>
-    var incomeDataSubject : PublishSubject<Void>
-    var expendDataSubject : PublishSubject<Void>
+    var totalDataSubject : BehaviorSubject<ButtonType>
+    var incomeDataSubject : BehaviorSubject<ButtonType>
+    var expendDataSubject : BehaviorSubject<ButtonType>
     var dateIncreaseButtonSubject : PublishSubject<Void>
     var dateDecreaseButtonSubject : PublishSubject<Void>
     
@@ -44,20 +46,26 @@ class DetailViewModel : DetailViewModelInterface {
     // MARK: - Observable (Subject)
     var selectedButtonIndexSubject : PublishSubject<Int>
     var dateSubject : PublishSubject<String>
+    var entitySubject : BehaviorSubject<[Entity]> = BehaviorSubject<[Entity]>(value: [])
     
     // MARK: - Observer
     var dateButtonObserver: AnyObserver<Void>
     var plusButtonObserver: AnyObserver<Void>
-    var totalDataObserver: AnyObserver<Void>
-    var incomeDataObserver: AnyObserver<Void>
-    var expendDataObserver: AnyObserver<Void>
+    var totalDataObserver: AnyObserver<ButtonType>
+    var incomeDataObserver: AnyObserver<ButtonType>
+    var expendDataObserver: AnyObserver<ButtonType>
     var dateIncreaseButtonObserver: AnyObserver<Void>
     var dateDecreaseButtonObserver: AnyObserver<Void>
     
     
     // MARK: - Observable
+    var entityObservable: Observable<[Entity]>
     var selectedButtonIndexObservable: Observable<Int>
     var dateObservable: Observable<String>
+    
+    // MARK: - Lazy Observable (다른 Observable에 스트림이 이어진 관계)
+    lazy var monthObservable: Observable<String> = dateObservable
+        .map { String($0.split(separator: "년 ")[1] + " 통계") }
     
     weak var delegate : DetailViewModelDelegate?
     
@@ -69,9 +77,9 @@ class DetailViewModel : DetailViewModelInterface {
         // MARK: - Observer (Subject)
         dateButtonSubject = PublishSubject<Void>()
         plusButtonSubject = PublishSubject<Void>()
-        totalDataSubject = PublishSubject<Void>()
-        incomeDataSubject = PublishSubject<Void>()
-        expendDataSubject = PublishSubject<Void>()
+        totalDataSubject = BehaviorSubject<ButtonType>(value: .total)
+        incomeDataSubject = BehaviorSubject<ButtonType>(value: .income)
+        expendDataSubject = BehaviorSubject<ButtonType>(value: .expend)
         dateDecreaseButtonSubject = PublishSubject<Void>()
         dateIncreaseButtonSubject = PublishSubject<Void>()
         
@@ -91,6 +99,7 @@ class DetailViewModel : DetailViewModelInterface {
         // MARK: - Observable
         selectedButtonIndexObservable = selectedButtonIndexSubject
         dateObservable = dateSubject
+        entityObservable = entitySubject
         
         setCoordinator()
         setBind()
@@ -108,31 +117,28 @@ class DetailViewModel : DetailViewModelInterface {
     
     func setBind() {
         // MARK: - showButton <-> Data 바인딩
-        totalDataSubject.subscribe { [weak self] _ in
-            guard let entityList = self?.repository.readTotalData() else { return }
-            dump(entityList)
-        }.disposed(by: disposeBag)
         
-        incomeDataSubject.subscribe { [weak self] _ in
-            guard let entityList = self?.repository.readIncomeData() else { return }
-            dump(entityList)
-        }.disposed(by: disposeBag)
+        // TODO: Button 클릭시에 entitySubject 에 어떻게 보내야할까? - 트랜잭션
+        [totalDataSubject, incomeDataSubject, expendDataSubject].forEach { $0.subscribe { [weak self] selectedButton in
+            guard let self = self else { return }
+            // TODO: 왜 total을 눌러도 income이 찍힐까?
+            print(selectedButton.element!)
+            self.repository.setState(type: selectedButton.element!)
+            self.entitySubject.onNext(self.repository.readData())
+        }.disposed(by: disposeBag) }
         
-        expendDataSubject.subscribe { [weak self] _ in
-            guard let entityList = self?.repository.readExpendData() else { return }
-            dump(entityList)
-        }.disposed(by: disposeBag)
+        
         
         // MARK: - showButton <-> Color 바인딩
-        totalDataSubject.map { ButtonType.total.rawValue }
+        totalDataSubject.map { $0.rawValue }
             .subscribe(onNext: selectedButtonIndexSubject.onNext)
             .disposed(by: disposeBag)
         
-        incomeDataSubject.map { ButtonType.income.rawValue }
+        incomeDataSubject.map { $0.rawValue }
             .subscribe(onNext: selectedButtonIndexSubject.onNext)
             .disposed(by: disposeBag)
         
-        expendDataSubject.map { ButtonType.expend.rawValue }
+        expendDataSubject.map { $0.rawValue }
             .subscribe(onNext: selectedButtonIndexSubject.onNext)
             .disposed(by: disposeBag)
         
@@ -145,13 +151,27 @@ class DetailViewModel : DetailViewModelInterface {
             self?.repository.setDate(type: .increase)
         }.disposed(by: disposeBag)
         
-        // 전파될 때 그 날짜의 데이터로 가져와야 함.
+        // MARK: - Date 버튼 클릭 -> 해당 날짜의 [Entity] 전파
         dateDecreaseButtonSubject.map { self.repository.readDate() }
-            .subscribe(onNext: dateSubject.onNext)
-            .disposed(by: disposeBag)
+            .subscribe { [weak self] stringDate in
+                guard let stringDate = stringDate.element, let self = self else {
+                    return
+                }
+                // TODO: 트랜지션을 고려할 필요가 있음. readTotalData() 가 만약 실패하면??
+                dateSubject.onNext(stringDate)
+                entitySubject.onNext(self.repository.readData())
+            }.disposed(by: disposeBag)
         
         dateIncreaseButtonSubject.map { self.repository.readDate() }
-            .subscribe(onNext: dateSubject.onNext)
-            .disposed(by: disposeBag)
+            .subscribe { [weak self] stringDate in
+                guard let stringDate = stringDate.element, let self = self else {
+                    return
+                }
+                // TODO: 트랜지션을 고려할 필요가 있음. readTotalData() 가 만약 실패하면??
+                dateSubject.onNext(stringDate)
+                entitySubject.onNext(self.repository.readData())
+            }.disposed(by: disposeBag)
+        
+        // TODO: 셀을 바인딩해야 함.
     }
 }

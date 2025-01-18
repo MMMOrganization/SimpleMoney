@@ -33,6 +33,14 @@ class DataRepository : DataRepositoryInterface {
         return []
     }
     
+    func readData() -> [Entity] {
+        return []
+    }
+    
+    func setState(type: ButtonType) {
+        
+    }
+    
     /// income Read
     /// -> Entity 객체로 이번 달의 수입 엔티티를 리스트로 전달해야 함.
     func readIncomeData() -> [Entity] {
