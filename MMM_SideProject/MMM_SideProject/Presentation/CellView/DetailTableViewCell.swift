@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 enum DetailCellStyle {
     case compact // 간격 X
@@ -15,6 +16,8 @@ enum DetailCellStyle {
 class DetailTableViewCell: UITableViewCell {
 
     var cellStyle : DetailCellStyle = .compact
+    
+    var disposeBag : DisposeBag = .init()
     
     static let identifier = "DetailCell"
     
@@ -30,7 +33,6 @@ class DetailTableViewCell: UITableViewCell {
     let mainImageView : UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = UIImage(named: "DateImage")
         return image
     }()
     
@@ -48,7 +50,6 @@ class DetailTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: FontConst.mainFont, size: 12)
         label.textColor = UIColor(hexCode: ColorConst.grayColorString, alpha: 0.90)
-        label.text = "2024-10-21"
         return label
     }()
     
@@ -56,7 +57,6 @@ class DetailTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .right
-        label.text = "-12,000원"
         label.font = UIFont(name: FontConst.mainFont, size: 18)
         label.textColor = UIColor(hexCode: ColorConst.blackColorString)
         return label
@@ -95,8 +95,21 @@ class DetailTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with style : DetailCellStyle) {
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.disposeBag = .init()
+    }
+    
+    func configure(with style : DetailCellStyle, item : Entity) {
+        // MARK: - 이전 재활용 될 셀들의 스트림 모두 끊어주기.
+        disposeBag = .init()
+        
         self.cellStyle = style
+        
+        self.mainImageView.image = item.iconImage
+        //self.mainLabel.text = "정기 결제"
+        self.dateLabel.text = item.dateStr
+        self.moneyLabel.text = item.amount
         setNeedsLayout()
     }
     

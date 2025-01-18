@@ -12,17 +12,16 @@ import RxDataSources
 
 final class DetailViewController: UIViewController {
     
-    private let dataList : [Int] = [3, 5, 4]
     private var disposeBag : DisposeBag = DisposeBag()
     private var viewModel : DetailViewModelInterface!
     
     // MARK: - Section 사용을 위한 TableView DataSource
     private let dataSource =
     RxTableViewSectionedReloadDataSource<SectionModel>(configureCell: { dataSource, tableView, indexPath, item in
-        let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath)
-        
-        print(cell)
-        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
+            return UITableViewCell()
+        }
+        cell.configure(with: .compact, item: item)
         return cell
     }) { dataSource, index in
         return dataSource.sectionModels[index].header
@@ -377,20 +376,4 @@ final class DetailViewController: UIViewController {
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
-}
-
-extension DetailViewController {
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return dataList[section]
-//    }
-//    
-//    // Section 의 제목 반환
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        return "12/20"
-//    }
-//    
-//    // Section의 개수를 반환
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return 3
-//    }
 }

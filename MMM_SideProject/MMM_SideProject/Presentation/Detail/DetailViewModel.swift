@@ -18,7 +18,6 @@ protocol DetailViewModelInterface {
     var dateIncreaseButtonObserver : AnyObserver<Void> { get }
     var dateDecreaseButtonObserver : AnyObserver<Void> { get }
     
-    var entityObservable : Observable<[Entity]> { get }
     var sectionModelObservable : Observable<[SectionModel]> { get }
     var selectedButtonIndexObservable : Observable<Int> { get }
     var dateObservable : Observable<String> { get }
@@ -70,12 +69,15 @@ class DetailViewModel : DetailViewModelInterface {
         .map { String($0.split(separator: "년 ")[1] + " 통계") }
     
     lazy var sectionModelObservable: Observable<[SectionModel]> = entityObservable.map {
-        let tempDictionary = [String : Entity]()
+        var tempDictionary = [String : [Entity]]()
         $0.forEach { entity in
-            print(entity.dateStr)
+            if (tempDictionary[entity.dateStr] == nil) { tempDictionary[entity.dateStr] = [entity] }
+            else { tempDictionary[entity.dateStr]?.append(entity) }
         }
         
-        return []
+        return tempDictionary.map {
+            SectionModel(header: $0.key, items: $0.value)
+        }
     }
     
     weak var delegate : DetailViewModelDelegate?
@@ -178,7 +180,5 @@ class DetailViewModel : DetailViewModelInterface {
                 dateSubject.onNext(stringDate)
                 entitySubject.onNext(self.repository.readData())
             }.disposed(by: disposeBag)
-        
-        // TODO: 셀을 바인딩해야 함.
     }
 }

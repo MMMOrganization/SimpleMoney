@@ -257,7 +257,7 @@ extension CalendarViewController : UITableViewDelegate, UITableViewDataSource {
         cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.02)
         
         // 그림자 추가
-        cell.configure(with: .spacious)
+        //cell.configure(with: .spacious)
         
         return cell
     }
