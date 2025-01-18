@@ -352,11 +352,13 @@ final class DetailViewController: UIViewController {
         // MARK: - DateLabel 바인딩
         topChangeLeftButton.rx.tap
             .observe(on: MainScheduler.instance)
+            .map { .decrease }
             .bind(to: viewModel.dateDecreaseButtonObserver)
             .disposed(by: disposeBag)
         
         topChangeRightButton.rx.tap
             .observe(on: MainScheduler.instance)
+            .map { .increase }
             .bind(to: viewModel.dateIncreaseButtonObserver)
             .disposed(by: disposeBag)
         

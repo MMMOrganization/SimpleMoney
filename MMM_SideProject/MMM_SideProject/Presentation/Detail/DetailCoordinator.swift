@@ -16,9 +16,7 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
         self.navigationController = .init()
     }
     
-    func start() {
-        
-    }
+    func start() {}
     
     func pushCalendarVC() {
         let calendarCoordinator = CalendarCoordinator(navigationController : navigationController)

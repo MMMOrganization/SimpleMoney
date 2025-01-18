@@ -16,9 +16,7 @@ class MainCoordinator : Coordinator {
         self.navigationController = .init()
     }
     
-    func start() {
-        
-    }
+    func start() {}
     
     // MainVC 객체를 생성하여 반환함.
     func startPush() -> UINavigationController {

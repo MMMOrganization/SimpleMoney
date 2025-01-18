@@ -15,13 +15,14 @@ protocol DetailViewModelInterface {
     var totalDataObserver : AnyObserver<ButtonType> { get }
     var incomeDataObserver : AnyObserver<ButtonType> { get }
     var expendDataObserver : AnyObserver<ButtonType> { get }
-    var dateIncreaseButtonObserver : AnyObserver<Void> { get }
-    var dateDecreaseButtonObserver : AnyObserver<Void> { get }
+    var dateIncreaseButtonObserver : AnyObserver<DateButtonType> { get }
+    var dateDecreaseButtonObserver : AnyObserver<DateButtonType> { get }
     
     var sectionModelObservable : Observable<[SectionModel]> { get }
     var selectedButtonIndexObservable : Observable<Int> { get }
     var dateObservable : Observable<String> { get }
     var monthObservable : Observable<String> { get }
+    var totalAmountObservable : Observable<String> { get }
 }
 
 protocol DetailViewModelDelegate : AnyObject {
@@ -39,8 +40,8 @@ class DetailViewModel : DetailViewModelInterface {
     var totalDataSubject : BehaviorSubject<ButtonType>
     var incomeDataSubject : BehaviorSubject<ButtonType>
     var expendDataSubject : BehaviorSubject<ButtonType>
-    var dateIncreaseButtonSubject : PublishSubject<Void>
-    var dateDecreaseButtonSubject : PublishSubject<Void>
+    var dateIncreaseButtonSubject : BehaviorSubject<DateButtonType>
+    var dateDecreaseButtonSubject : BehaviorSubject<DateButtonType>
     
     
     // MARK: - Observable (Subject)
@@ -55,8 +56,8 @@ class DetailViewModel : DetailViewModelInterface {
     var totalDataObserver: AnyObserver<ButtonType>
     var incomeDataObserver: AnyObserver<ButtonType>
     var expendDataObserver: AnyObserver<ButtonType>
-    var dateIncreaseButtonObserver: AnyObserver<Void>
-    var dateDecreaseButtonObserver: AnyObserver<Void>
+    var dateIncreaseButtonObserver: AnyObserver<DateButtonType>
+    var dateDecreaseButtonObserver: AnyObserver<DateButtonType>
     
     
     // MARK: - Observable
@@ -74,11 +75,12 @@ class DetailViewModel : DetailViewModelInterface {
             if (tempDictionary[entity.dateStr] == nil) { tempDictionary[entity.dateStr] = [entity] }
             else { tempDictionary[entity.dateStr]?.append(entity) }
         }
-        
         return tempDictionary.map {
             SectionModel(header: $0.key, items: $0.value)
         }
     }
+    
+    lazy var totalAmountObservable: Observable<String> = entityObservable.map { "\($0.count)" }
     
     weak var delegate : DetailViewModelDelegate?
     
@@ -93,8 +95,8 @@ class DetailViewModel : DetailViewModelInterface {
         totalDataSubject = BehaviorSubject<ButtonType>(value: .total)
         incomeDataSubject = BehaviorSubject<ButtonType>(value: .income)
         expendDataSubject = BehaviorSubject<ButtonType>(value: .expend)
-        dateDecreaseButtonSubject = PublishSubject<Void>()
-        dateIncreaseButtonSubject = PublishSubject<Void>()
+        dateDecreaseButtonSubject = BehaviorSubject<DateButtonType>(value: .decrease)
+        dateIncreaseButtonSubject = BehaviorSubject<DateButtonType>(value: .increase)
         
         // MARK: - Observable (Subject)
         selectedButtonIndexSubject = PublishSubject<Int>()
@@ -130,7 +132,6 @@ class DetailViewModel : DetailViewModelInterface {
     
     func setBind() {
         // MARK: - showButton <-> Data 바인딩
-        // TODO: Button 클릭시에 entitySubject 에 어떻게 보내야할까? - 트랜잭션
         [totalDataSubject, incomeDataSubject, expendDataSubject].forEach { $0.subscribe { [weak self] selectedButton in
             guard let self = self, let selectedButtonType = selectedButton.element else { return }
             repository.setState(type: selectedButtonType)
@@ -138,30 +139,19 @@ class DetailViewModel : DetailViewModelInterface {
         }.disposed(by: disposeBag) }
         
         // MARK: - showButton <-> Color 바인딩
-        // TODO: 묶어서 간략하게 코드를 작성할 수 있을 것 같음. (위에랑도 결합이 가능할 거 같음.)
-        totalDataSubject.map { $0.rawValue }
-            .subscribe(onNext: selectedButtonIndexSubject.onNext)
-            .disposed(by: disposeBag)
-        
-        incomeDataSubject.map { $0.rawValue }
-            .subscribe(onNext: selectedButtonIndexSubject.onNext)
-            .disposed(by: disposeBag)
-        
-        expendDataSubject.map { $0.rawValue }
-            .subscribe(onNext: selectedButtonIndexSubject.onNext)
-            .disposed(by: disposeBag)
+        [totalDataSubject, incomeDataSubject, expendDataSubject].forEach { $0.subscribe { [weak self] buttonType in
+            guard let self = self, let buttonType = buttonType.element else { return }
+            selectedButtonIndexSubject.onNext(buttonType.rawValue)
+        }.disposed(by: disposeBag) }
         
         // MARK: - Date 버튼, DateString 바인딩
-        dateDecreaseButtonSubject.subscribe { [weak self] _ in
-            self?.repository.setDate(type: .decrease)
-        }.disposed(by: disposeBag)
-        
-        dateIncreaseButtonSubject.subscribe { [weak self] _ in
-            self?.repository.setDate(type: .increase)
-        }.disposed(by: disposeBag)
+        [dateDecreaseButtonSubject, dateIncreaseButtonSubject].forEach { $0.subscribe { [weak self] dateButtonType in
+                guard let dateButtonType = dateButtonType.element, let self = self else { return }
+                self.repository.setDate(type: dateButtonType)
+            }.disposed(by: disposeBag) }
         
         // MARK: - Date 버튼 클릭 -> 해당 날짜의 [Entity] 전파
-        dateDecreaseButtonSubject.map { self.repository.readDate() }
+        dateDecreaseButtonSubject.map { _ in self.repository.readDate() }
             .subscribe { [weak self] stringDate in
                 guard let stringDate = stringDate.element, let self = self else {
                     return
@@ -171,7 +161,7 @@ class DetailViewModel : DetailViewModelInterface {
                 entitySubject.onNext(self.repository.readData())
             }.disposed(by: disposeBag)
         
-        dateIncreaseButtonSubject.map { self.repository.readDate() }
+        dateIncreaseButtonSubject.map { _ in self.repository.readDate() }
             .subscribe { [weak self] stringDate in
                 guard let stringDate = stringDate.element, let self = self else {
                     return
