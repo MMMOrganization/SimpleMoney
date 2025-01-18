@@ -24,3 +24,9 @@ public enum CreateType : String, PersistableEnum {
     case income
     case expend
 }
+
+public enum ButtonType : Int {
+    case total = 0
+    case income = 1
+    case expend = 2
+}

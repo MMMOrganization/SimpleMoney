@@ -97,6 +97,8 @@ class DetailViewController: UIViewController {
         return view
     }()
     
+    lazy var showButtons : [UIButton] = [totalShowButton, incomeShowButton, expendShowButton]
+    
     let totalShowButton : UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -289,15 +291,49 @@ class DetailViewController: UIViewController {
     }
     
     func setReactive() {
+        // MARK: - 네비게이션 캘린더 버튼 바인딩
         calendarBarButton.rx.tap
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.dateButtonObserver)
             .disposed(by: disposeBag)
         
+        // MARK: - contentAdd 버튼 바인딩
         contentAddButton.rx.tap
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.plusButtonObserver)
             .disposed(by: disposeBag)
+        
+        // MARK: - 전체 데이터 바인딩
+        let willAppearObservable = rx.methodInvoked(#selector(self.viewWillAppear))
+            .map { _ in }
+        
+        let totalButtonObservable = totalShowButton.rx.tap.asObservable()
+            .map { _ in }
+        
+        let _ = [willAppearObservable, totalButtonObservable]
+            .map { $0.observe(on: MainScheduler.instance)
+                .bind(to: viewModel.totalDataObserver)
+                .disposed(by: disposeBag) }
+        
+        // MARK: - 수입 데이터 바인딩
+        incomeShowButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .bind(to: viewModel.incomeDataObserver)
+            .disposed(by: disposeBag)
+        
+        // MARK: - 지출 데이터 바인딩
+        expendShowButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .bind(to: viewModel.expendDataObserver)
+            .disposed(by: disposeBag)
+        
+        // MARK: - Button Color 바인딩
+        viewModel.selectedButtonIndexObservable
+            .subscribe { [weak self] selectedIndex in
+                guard let selectedIndex = selectedIndex.element, let self = self else { return }
+                showButtons.forEach { $0.backgroundColor = .white }
+                showButtons[selectedIndex].backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.20)
+            }.disposed(by: disposeBag)
     }
 }
 

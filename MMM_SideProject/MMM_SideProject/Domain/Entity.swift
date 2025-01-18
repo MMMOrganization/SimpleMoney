@@ -7,11 +7,10 @@
 
 import UIKit
 
-
 struct Entity {
     let id : UUID
     let dateStr : String
     let createType : CreateType
-    let amount : Int
+    let amount : String
     let iconImage : UIImage
 }

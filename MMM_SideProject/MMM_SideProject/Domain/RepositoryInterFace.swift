@@ -9,4 +9,6 @@ import Foundation
 
 protocol DataRepositoryInterface {
     func readTotalData() -> [Entity]
+    func readIncomeData() -> [Entity]
+    func readExpendData() -> [Entity]
 }
