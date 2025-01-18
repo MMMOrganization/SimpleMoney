@@ -8,13 +8,24 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import RxDataSources
 
-class DetailViewController: UIViewController {
+final class DetailViewController: UIViewController {
     
-    let dataList : [Int] = [3, 5, 4]
-    var disposeBag : DisposeBag = DisposeBag()
+    private var disposeBag : DisposeBag = DisposeBag()
+    private var viewModel : DetailViewModelInterface!
     
-    var viewModel : DetailViewModelInterface!
+    // MARK: - Section 사용을 위한 TableView DataSource
+    private let dataSource =
+    RxTableViewSectionedReloadDataSource<SectionModel>(configureCell: { dataSource, tableView, indexPath, item in
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
+            return UITableViewCell()
+        }
+        cell.configure(with: .compact, item: item)
+        return cell
+    }) { dataSource, index in
+        return dataSource.sectionModels[index].header
+    }
     
     lazy var calendarBarButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
@@ -38,7 +49,7 @@ class DetailViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: FontConst.mainFont, size: 16)
         label.textColor = UIColor(hexCode: ColorConst.grayColorString, alpha: 1.00)
-        label.text = "1월 통계"
+        label.text = "\(YearMonth().month)월 통계"
         label.textAlignment = .right
         return label
     }()
@@ -68,7 +79,7 @@ class DetailViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
-        label.text = "2024년12월"
+        label.text = YearMonth().toString()
         label.font = UIFont(name: FontConst.mainFont, size: 15)
         label.textColor = UIColor(hexCode: ColorConst.blackColorString, alpha: 1.00)
         return label
@@ -97,6 +108,8 @@ class DetailViewController: UIViewController {
         return view
     }()
     
+    lazy var showButtons : [UIButton] = [totalShowButton, incomeShowButton, expendShowButton]
+    
     let totalShowButton : UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -106,7 +119,7 @@ class DetailViewController: UIViewController {
         button.setTitleColor(UIColor(hexCode: ColorConst.blackColorString), for: .normal)
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor(hexCode: ColorConst.mainColorString).cgColor
-        button.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.20)
+        button.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.15)
         return button
     }()
     
@@ -191,8 +204,7 @@ class DetailViewController: UIViewController {
     
     func setTableView() {
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
-        tableView.dataSource = self
-        tableView.delegate = self
+        tableView.dataSource = nil
         tableView.rowHeight = 50
     }
     
@@ -289,37 +301,81 @@ class DetailViewController: UIViewController {
     }
     
     func setReactive() {
+        // MARK: - 네비게이션 캘린더 버튼 바인딩
         calendarBarButton.rx.tap
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.dateButtonObserver)
             .disposed(by: disposeBag)
         
+        // MARK: - contentAdd 버튼 바인딩
         contentAddButton.rx.tap
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.plusButtonObserver)
             .disposed(by: disposeBag)
-    }
-}
-
-extension DetailViewController : UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataList[section]
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as! DetailTableViewCell
         
-        cell.configure(with: .compact)
-        return cell
-    }
-    
-    // Section 의 제목 반환
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "12/20"
-    }
-    
-    // Section의 개수를 반환
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        // MARK: - 전체 데이터 바인딩
+        let viewDidLoadObservable = rx.methodInvoked(#selector(self.viewDidLoad))
+            .map { _ in }
+        
+        let totalButtonObservable = totalShowButton.rx.tap.asObservable()
+            .map { _ in }
+        
+        [viewDidLoadObservable, totalButtonObservable]
+            .forEach { $0.observe(on: MainScheduler.instance)
+            .map { ButtonType.total }
+            .bind(to: viewModel.totalDataObserver)
+            .disposed(by: disposeBag) }
+        
+        // MARK: - 수입 데이터 바인딩
+        incomeShowButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { ButtonType.income }
+            .bind(to: viewModel.incomeDataObserver)
+            .disposed(by: disposeBag)
+        
+        // MARK: - 지출 데이터 바인딩
+        expendShowButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { ButtonType.expend }
+            .bind(to: viewModel.expendDataObserver)
+            .disposed(by: disposeBag)
+        
+        // MARK: - Button Color 바인딩
+        viewModel.selectedButtonIndexObservable
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] selectedIndex in
+                guard let selectedIndex = selectedIndex.element, let self = self else { return }
+                showButtons.forEach { $0.backgroundColor = .white }
+                showButtons[selectedIndex].backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.10)
+            }.disposed(by: disposeBag)
+        
+        // MARK: - DateLabel 바인딩
+        topChangeLeftButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { .decrease }
+            .bind(to: viewModel.dateDecreaseButtonObserver)
+            .disposed(by: disposeBag)
+        
+        topChangeRightButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { .increase }
+            .bind(to: viewModel.dateIncreaseButtonObserver)
+            .disposed(by: disposeBag)
+        
+        viewModel.dateObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: topChangeMonthLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        viewModel.monthObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: topMonthLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // MARK: - Section 을 포함한 TableView 바인딩
+        viewModel.sectionModelObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
     }
 }

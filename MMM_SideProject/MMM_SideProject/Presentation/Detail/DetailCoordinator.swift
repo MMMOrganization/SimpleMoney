@@ -16,9 +16,7 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
         self.navigationController = .init()
     }
     
-    func start() {
-        
-    }
+    func start() {}
     
     func pushCalendarVC() {
         let calendarCoordinator = CalendarCoordinator(navigationController : navigationController)
@@ -38,7 +36,8 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
     
     // MainVC 객체를 생성하여 반환함.
     func startPush() -> UINavigationController {
-        let detailViewModel = DetailViewModel()
+        let repository = MockDataRepository()
+        let detailViewModel = DetailViewModel(repository: repository)
         detailViewModel.delegate = self
         
         let detailViewController = DetailViewController(viewModel : detailViewModel)

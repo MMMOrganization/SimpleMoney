@@ -20,6 +20,18 @@ public enum FontConst {
 }
 
 public enum CreateType : String, PersistableEnum {
+    case total
     case income
     case expend
+}
+
+public enum ButtonType : Int {
+    case total = 0
+    case income = 1
+    case expend = 2
+}
+
+public enum DateButtonType {
+    case increase
+    case decrease
 }

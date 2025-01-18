@@ -45,6 +45,16 @@
 		267DDAC42D33C92700F66CB8 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAC32D33C92700F66CB8 /* DetailViewModel.swift */; };
 		267DDAC62D33C93200F66CB8 /* CreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAC52D33C93200F66CB8 /* CreateViewModel.swift */; };
 		267DDAC82D33C93A00F66CB8 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAC72D33C93A00F66CB8 /* CalendarViewModel.swift */; };
+		267DDAF72D3564E300F66CB8 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAF62D3564E300F66CB8 /* Entity.swift */; };
+		267DDAF92D37EE6A00F66CB8 /* RepositoryInterFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAF82D37EE6A00F66CB8 /* RepositoryInterFace.swift */; };
+		267DDAFB2D37EE8200F66CB8 /* DataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAFA2D37EE8200F66CB8 /* DataRepository.swift */; };
+		267DDB102D3A927600F66CB8 /* MockDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB0F2D3A927600F66CB8 /* MockDataRepository.swift */; };
+		267DDB122D3B694A00F66CB8 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB112D3B694A00F66CB8 /* Date+Extension.swift */; };
+		267DDB142D3B751100F66CB8 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB132D3B751100F66CB8 /* Int+Extension.swift */; };
+		267DDB172D3BC09C00F66CB8 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDB162D3BC09C00F66CB8 /* RxDataSources */; };
+		267DDB192D3BC0B600F66CB8 /* Differentiator in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDB182D3BC0B600F66CB8 /* Differentiator */; };
+		267DDB1C2D3BC3AD00F66CB8 /* YearMonth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB1B2D3BC3AD00F66CB8 /* YearMonth.swift */; };
+		267DDB1E2D3BC3D600F66CB8 /* SectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB1D2D3BC3D600F66CB8 /* SectionModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -82,6 +92,14 @@
 		267DDAC32D33C92700F66CB8 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		267DDAC52D33C93200F66CB8 /* CreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateViewModel.swift; sourceTree = "<group>"; };
 		267DDAC72D33C93A00F66CB8 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
+		267DDAF62D3564E300F66CB8 /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
+		267DDAF82D37EE6A00F66CB8 /* RepositoryInterFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryInterFace.swift; sourceTree = "<group>"; };
+		267DDAFA2D37EE8200F66CB8 /* DataRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRepository.swift; sourceTree = "<group>"; };
+		267DDB0F2D3A927600F66CB8 /* MockDataRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataRepository.swift; sourceTree = "<group>"; };
+		267DDB112D3B694A00F66CB8 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
+		267DDB132D3B751100F66CB8 /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
+		267DDB1B2D3BC3AD00F66CB8 /* YearMonth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearMonth.swift; sourceTree = "<group>"; };
+		267DDB1D2D3BC3D600F66CB8 /* SectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +111,8 @@
 				267DDA7E2D315C6B00F66CB8 /* RealmSwift in Frameworks */,
 				267DDA742D315C5700F66CB8 /* RxSwift in Frameworks */,
 				267DDA722D315C5700F66CB8 /* RxRelay in Frameworks */,
+				267DDB192D3BC0B600F66CB8 /* Differentiator in Frameworks */,
+				267DDB172D3BC09C00F66CB8 /* RxDataSources in Frameworks */,
 				267DDA792D315C5E00F66CB8 /* FSCalendar in Frameworks */,
 				267DDA702D315C5700F66CB8 /* RxCocoa in Frameworks */,
 			);
@@ -128,6 +148,8 @@
 				267DDA232D2AD23D00F66CB8 /* CALayer+Extension.swift */,
 				267DDA252D2ADA1000F66CB8 /* UIFont+Extension.swift */,
 				267DDA7F2D315DF900F66CB8 /* UIViewController+Extension.swift */,
+				267DDB112D3B694A00F66CB8 /* Date+Extension.swift */,
+				267DDB132D3B751100F66CB8 /* Int+Extension.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -165,6 +187,7 @@
 				267DD9C12D211AF800F66CB8 /* Presentation */,
 				267DDAC92D33C94700F66CB8 /* Domain */,
 				267DD9B92D211AF800F66CB8 /* Constants */,
+				267DDB1A2D3BC38D00F66CB8 /* Struct */,
 				267DD9BC2D211AF800F66CB8 /* Font */,
 				267DDAC22D33C8CF00F66CB8 /* Assets */,
 				267DD9C42D211AF800F66CB8 /* Info.plist */,
@@ -257,8 +280,21 @@
 		267DDAC92D33C94700F66CB8 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				267DDAF62D3564E300F66CB8 /* Entity.swift */,
+				267DDAF82D37EE6A00F66CB8 /* RepositoryInterFace.swift */,
+				267DDAFA2D37EE8200F66CB8 /* DataRepository.swift */,
+				267DDB0F2D3A927600F66CB8 /* MockDataRepository.swift */,
 			);
 			path = Domain;
+			sourceTree = "<group>";
+		};
+		267DDB1A2D3BC38D00F66CB8 /* Struct */ = {
+			isa = PBXGroup;
+			children = (
+				267DDB1B2D3BC3AD00F66CB8 /* YearMonth.swift */,
+				267DDB1D2D3BC3D600F66CB8 /* SectionModel.swift */,
+			);
+			path = Struct;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -284,6 +320,8 @@
 				267DDA782D315C5E00F66CB8 /* FSCalendar */,
 				267DDA7B2D315C6B00F66CB8 /* Realm */,
 				267DDA7D2D315C6B00F66CB8 /* RealmSwift */,
+				267DDB162D3BC09C00F66CB8 /* RxDataSources */,
+				267DDB182D3BC0B600F66CB8 /* Differentiator */,
 			);
 			productName = MMM_SideProject;
 			productReference = 262F9AA12D09B75500AA7EA2 /* MMM_SideProject.app */;
@@ -317,6 +355,7 @@
 				267DDA6E2D315C5700F66CB8 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				267DDA772D315C5E00F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				267DDA7A2D315C6B00F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				267DDB152D3BC09C00F66CB8 /* XCRemoteSwiftPackageReference "RxDataSources" */,
 			);
 			productRefGroup = 262F9AA22D09B75500AA7EA2 /* Products */;
 			projectDirPath = "";
@@ -355,6 +394,7 @@
 				267DD9D12D211AF800F66CB8 /* CreateViewController.swift in Sources */,
 				267DDA802D315DF900F66CB8 /* UIViewController+Extension.swift in Sources */,
 				267DDA2A2D2FCEC000F66CB8 /* CreateCollectionViewCell.swift in Sources */,
+				267DDB102D3A927600F66CB8 /* MockDataRepository.swift in Sources */,
 				267DDAB62D327A9D00F66CB8 /* AppCoordinator.swift in Sources */,
 				267DD9CD2D211AF800F66CB8 /* UIColor+Extension.swift in Sources */,
 				267DD9D52D211AF800F66CB8 /* AppDelegate.swift in Sources */,
@@ -362,17 +402,24 @@
 				267DD9F52D29108C00F66CB8 /* CalendarTableViewCell.swift in Sources */,
 				267DD9CB2D211AF800F66CB8 /* Constants.swift in Sources */,
 				267DDAC42D33C92700F66CB8 /* DetailViewModel.swift in Sources */,
+				267DDAF92D37EE6A00F66CB8 /* RepositoryInterFace.swift in Sources */,
 				267DD9DA2D211AF800F66CB8 /* SceneDelegate.swift in Sources */,
+				267DDAF72D3564E300F66CB8 /* Entity.swift in Sources */,
+				267DDB1C2D3BC3AD00F66CB8 /* YearMonth.swift in Sources */,
 				267DD9CE2D211AF800F66CB8 /* UIView+Extension.swift in Sources */,
 				267DDAB42D32798600F66CB8 /* DetailCoordinator.swift in Sources */,
+				267DDB122D3B694A00F66CB8 /* Date+Extension.swift in Sources */,
 				267DD9CC2D211AF800F66CB8 /* UIButton+Extension.swift in Sources */,
+				267DDAFB2D37EE8200F66CB8 /* DataRepository.swift in Sources */,
 				267DDAB22D32797B00F66CB8 /* MainCoordinator.swift in Sources */,
 				267DD9D32D211AF800F66CB8 /* DetailViewController.swift in Sources */,
 				267DDAB82D338ED100F66CB8 /* CalendarCoordinator.swift in Sources */,
+				267DDB142D3B751100F66CB8 /* Int+Extension.swift in Sources */,
 				267DD9D42D211AF800F66CB8 /* MainViewController.swift in Sources */,
 				267DDA242D2AD23D00F66CB8 /* CALayer+Extension.swift in Sources */,
 				267DDAC82D33C93A00F66CB8 /* CalendarViewModel.swift in Sources */,
 				267DDA322D300F9E00F66CB8 /* RealmDB.swift in Sources */,
+				267DDB1E2D3BC3D600F66CB8 /* SectionModel.swift in Sources */,
 				267DDABD2D33C7C900F66CB8 /* MainViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -630,6 +677,14 @@
 				version = 10.33.0;
 			};
 		};
+		267DDB152D3BC09C00F66CB8 /* XCRemoteSwiftPackageReference "RxDataSources" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -662,6 +717,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 267DDA7A2D315C6B00F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
+		};
+		267DDB162D3BC09C00F66CB8 /* RxDataSources */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 267DDB152D3BC09C00F66CB8 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = RxDataSources;
+		};
+		267DDB182D3BC0B600F66CB8 /* Differentiator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 267DDB152D3BC09C00F66CB8 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = Differentiator;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

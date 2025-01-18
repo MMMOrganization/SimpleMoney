@@ -16,16 +16,13 @@ class MainCoordinator : Coordinator {
         self.navigationController = .init()
     }
     
-    func start() {
-        
-    }
+    func start() {}
     
     // MainVC 객체를 생성하여 반환함.
     func startPush() -> UINavigationController {
         let mainViewController : UIViewController = MainViewController()
         mainViewController.view.backgroundColor = .white
         navigationController.setViewControllers([mainViewController], animated: true)
-        
         return navigationController
     }
     
