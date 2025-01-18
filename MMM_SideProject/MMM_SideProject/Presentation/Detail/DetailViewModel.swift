@@ -19,6 +19,7 @@ protocol DetailViewModelInterface {
     var dateDecreaseButtonObserver : AnyObserver<Void> { get }
     
     var entityObservable : Observable<[Entity]> { get }
+    var sectionModelObservable : Observable<[SectionModel]> { get }
     var selectedButtonIndexObservable : Observable<Int> { get }
     var dateObservable : Observable<String> { get }
     var monthObservable : Observable<String> { get }
@@ -47,6 +48,7 @@ class DetailViewModel : DetailViewModelInterface {
     var selectedButtonIndexSubject : PublishSubject<Int>
     var dateSubject : PublishSubject<String>
     var entitySubject : BehaviorSubject<[Entity]> = BehaviorSubject<[Entity]>(value: [])
+    var sectionModelSubject : BehaviorSubject<[SectionModel]> = BehaviorSubject<[SectionModel]>(value: [])
     
     // MARK: - Observer
     var dateButtonObserver: AnyObserver<Void>
@@ -66,6 +68,15 @@ class DetailViewModel : DetailViewModelInterface {
     // MARK: - Lazy Observable (다른 Observable에 스트림이 이어진 관계)
     lazy var monthObservable: Observable<String> = dateObservable
         .map { String($0.split(separator: "년 ")[1] + " 통계") }
+    
+    lazy var sectionModelObservable: Observable<[SectionModel]> = entityObservable.map {
+        let tempDictionary = [String : Entity]()
+        $0.forEach { entity in
+            print(entity.dateStr)
+        }
+        
+        return []
+    }
     
     weak var delegate : DetailViewModelDelegate?
     
@@ -117,19 +128,15 @@ class DetailViewModel : DetailViewModelInterface {
     
     func setBind() {
         // MARK: - showButton <-> Data 바인딩
-        
         // TODO: Button 클릭시에 entitySubject 에 어떻게 보내야할까? - 트랜잭션
         [totalDataSubject, incomeDataSubject, expendDataSubject].forEach { $0.subscribe { [weak self] selectedButton in
-            guard let self = self else { return }
-            // TODO: 왜 total을 눌러도 income이 찍힐까?
-            print(selectedButton.element!)
-            self.repository.setState(type: selectedButton.element!)
-            self.entitySubject.onNext(self.repository.readData())
+            guard let self = self, let selectedButtonType = selectedButton.element else { return }
+            repository.setState(type: selectedButtonType)
+            entitySubject.onNext(repository.readData())
         }.disposed(by: disposeBag) }
         
-        
-        
         // MARK: - showButton <-> Color 바인딩
+        // TODO: 묶어서 간략하게 코드를 작성할 수 있을 것 같음. (위에랑도 결합이 가능할 거 같음.)
         totalDataSubject.map { $0.rawValue }
             .subscribe(onNext: selectedButtonIndexSubject.onNext)
             .disposed(by: disposeBag)

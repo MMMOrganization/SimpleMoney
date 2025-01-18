@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: 뷰에 표시될 데이터 구조체의 역할
 struct Entity {
     let id : UUID
     let dateStr : String

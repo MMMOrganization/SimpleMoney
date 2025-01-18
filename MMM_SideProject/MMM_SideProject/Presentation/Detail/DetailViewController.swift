@@ -8,13 +8,25 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import RxDataSources
 
-class DetailViewController: UIViewController {
+final class DetailViewController: UIViewController {
     
-    let dataList : [Int] = [3, 5, 4]
-    var disposeBag : DisposeBag = DisposeBag()
+    private let dataList : [Int] = [3, 5, 4]
+    private var disposeBag : DisposeBag = DisposeBag()
+    private var viewModel : DetailViewModelInterface!
     
-    var viewModel : DetailViewModelInterface!
+    // MARK: - Section 사용을 위한 TableView DataSource
+    private let dataSource =
+    RxTableViewSectionedReloadDataSource<SectionModel>(configureCell: { dataSource, tableView, indexPath, item in
+        let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath)
+        
+        print(cell)
+        
+        return cell
+    }) { dataSource, index in
+        return dataSource.sectionModels[index].header
+    }
     
     lazy var calendarBarButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
@@ -359,10 +371,11 @@ class DetailViewController: UIViewController {
             .bind(to: topMonthLabel.rx.text)
             .disposed(by: disposeBag)
         
-        // MARK: - Cell 바인딩
-        viewModel.entityObservable.bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
-            print(item)
-        }.disposed(by: disposeBag)
+        // MARK: - Section 을 포함한 TableView 바인딩
+        viewModel.sectionModelObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
     }
 }
 
