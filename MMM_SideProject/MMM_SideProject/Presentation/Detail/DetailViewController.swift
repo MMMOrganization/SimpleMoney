@@ -312,20 +312,7 @@ final class DetailViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.plusButtonObserver)
             .disposed(by: disposeBag)
-        
-        // MARK: - 전체 데이터 바인딩
-        let viewDidLoadObservable = rx.methodInvoked(#selector(self.viewDidLoad))
-            .map { _ in }
-        
-        let totalButtonObservable = totalShowButton.rx.tap.asObservable()
-            .map { _ in }
-        
-        [viewDidLoadObservable, totalButtonObservable]
-            .forEach { $0.observe(on: MainScheduler.instance)
-            .map { ButtonType.total }
-            .bind(to: viewModel.totalDataObserver)
-            .disposed(by: disposeBag) }
-        
+    
         // MARK: - 수입 데이터 바인딩
         incomeShowButton.rx.tap
             .observe(on: MainScheduler.instance)
@@ -338,6 +325,13 @@ final class DetailViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .map { ButtonType.expend }
             .bind(to: viewModel.expendDataObserver)
+            .disposed(by: disposeBag)
+        
+        // MARK: - 전체 데이터 바인딩
+        totalShowButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { ButtonType.total }
+            .bind(to: viewModel.totalDataObserver)
             .disposed(by: disposeBag)
         
         // MARK: - Button Color 바인딩
@@ -376,6 +370,11 @@ final class DetailViewController: UIViewController {
         viewModel.sectionModelObservable
             .observe(on: MainScheduler.instance)
             .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        viewModel.totalAmountObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: topTotalPriceLabel.rx.text)
             .disposed(by: disposeBag)
     }
 }

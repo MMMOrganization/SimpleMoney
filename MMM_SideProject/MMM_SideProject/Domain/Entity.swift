@@ -12,6 +12,10 @@ struct Entity {
     let id : UUID
     let dateStr : String
     let createType : CreateType
-    let amount : String
+    let amount : Int
     let iconImage : UIImage
+}
+
+extension Entity {
+    
 }

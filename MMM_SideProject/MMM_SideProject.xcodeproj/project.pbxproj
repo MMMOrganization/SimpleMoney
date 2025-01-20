@@ -31,7 +31,6 @@
 		267DDA702D315C5700F66CB8 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA6F2D315C5700F66CB8 /* RxCocoa */; };
 		267DDA722D315C5700F66CB8 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA712D315C5700F66CB8 /* RxRelay */; };
 		267DDA742D315C5700F66CB8 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA732D315C5700F66CB8 /* RxSwift */; };
-		267DDA792D315C5E00F66CB8 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA782D315C5E00F66CB8 /* FSCalendar */; };
 		267DDA7C2D315C6B00F66CB8 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA7B2D315C6B00F66CB8 /* Realm */; };
 		267DDA7E2D315C6B00F66CB8 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA7D2D315C6B00F66CB8 /* RealmSwift */; };
 		267DDA802D315DF900F66CB8 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDA7F2D315DF900F66CB8 /* UIViewController+Extension.swift */; };
@@ -55,6 +54,7 @@
 		267DDB192D3BC0B600F66CB8 /* Differentiator in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDB182D3BC0B600F66CB8 /* Differentiator */; };
 		267DDB1C2D3BC3AD00F66CB8 /* YearMonth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB1B2D3BC3AD00F66CB8 /* YearMonth.swift */; };
 		267DDB1E2D3BC3D600F66CB8 /* SectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB1D2D3BC3D600F66CB8 /* SectionModel.swift */; };
+		267DDB232D3E751900F66CB8 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDB222D3E751900F66CB8 /* FSCalendar */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -112,8 +112,8 @@
 				267DDA742D315C5700F66CB8 /* RxSwift in Frameworks */,
 				267DDA722D315C5700F66CB8 /* RxRelay in Frameworks */,
 				267DDB192D3BC0B600F66CB8 /* Differentiator in Frameworks */,
+				267DDB232D3E751900F66CB8 /* FSCalendar in Frameworks */,
 				267DDB172D3BC09C00F66CB8 /* RxDataSources in Frameworks */,
-				267DDA792D315C5E00F66CB8 /* FSCalendar in Frameworks */,
 				267DDA702D315C5700F66CB8 /* RxCocoa in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -317,11 +317,11 @@
 				267DDA6F2D315C5700F66CB8 /* RxCocoa */,
 				267DDA712D315C5700F66CB8 /* RxRelay */,
 				267DDA732D315C5700F66CB8 /* RxSwift */,
-				267DDA782D315C5E00F66CB8 /* FSCalendar */,
 				267DDA7B2D315C6B00F66CB8 /* Realm */,
 				267DDA7D2D315C6B00F66CB8 /* RealmSwift */,
 				267DDB162D3BC09C00F66CB8 /* RxDataSources */,
 				267DDB182D3BC0B600F66CB8 /* Differentiator */,
+				267DDB222D3E751900F66CB8 /* FSCalendar */,
 			);
 			productName = MMM_SideProject;
 			productReference = 262F9AA12D09B75500AA7EA2 /* MMM_SideProject.app */;
@@ -353,9 +353,9 @@
 			mainGroup = 262F9A982D09B75500AA7EA2;
 			packageReferences = (
 				267DDA6E2D315C5700F66CB8 /* XCRemoteSwiftPackageReference "RxSwift" */,
-				267DDA772D315C5E00F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				267DDA7A2D315C6B00F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				267DDB152D3BC09C00F66CB8 /* XCRemoteSwiftPackageReference "RxDataSources" */,
+				267DDB212D3E751900F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 			);
 			productRefGroup = 262F9AA22D09B75500AA7EA2 /* Products */;
 			projectDirPath = "";
@@ -661,14 +661,6 @@
 				minimumVersion = 6.8.0;
 			};
 		};
-		267DDA772D315C5E00F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.8.4;
-			};
-		};
 		267DDA7A2D315C6B00F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift";
@@ -683,6 +675,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.0.2;
+			};
+		};
+		267DDB212D3E751900F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.4;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -703,11 +703,6 @@
 			package = 267DDA6E2D315C5700F66CB8 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
 		};
-		267DDA782D315C5E00F66CB8 /* FSCalendar */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 267DDA772D315C5E00F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */;
-			productName = FSCalendar;
-		};
 		267DDA7B2D315C6B00F66CB8 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 267DDA7A2D315C6B00F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */;
@@ -727,6 +722,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 267DDB152D3BC09C00F66CB8 /* XCRemoteSwiftPackageReference "RxDataSources" */;
 			productName = Differentiator;
+		};
+		267DDB222D3E751900F66CB8 /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 267DDB212D3E751900F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

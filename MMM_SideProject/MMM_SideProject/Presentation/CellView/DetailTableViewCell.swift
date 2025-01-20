@@ -109,7 +109,7 @@ class DetailTableViewCell: UITableViewCell {
         self.mainImageView.image = item.iconImage
         //self.mainLabel.text = "정기 결제"
         self.dateLabel.text = item.dateStr
-        self.moneyLabel.text = item.amount
+        self.moneyLabel.text = item.amount.toCurrency
         setNeedsLayout()
     }
     
