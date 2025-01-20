@@ -13,8 +13,15 @@ extension Int {
         return (self == 12 ? true : false)
     }
     
-    // month가 1월에서 감소됐을 때 year가 감소함.
+    /// month가 1월에서 감소됐을 때 year가 감소함.
     var isDecreaseYear : Bool {
         return (self == 1 ? true : false)
+    }
+    
+    var toCurrency : String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter.string(from: NSNumber(value: self)) ?? ""
     }
 }

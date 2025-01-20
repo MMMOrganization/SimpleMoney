@@ -38,10 +38,10 @@ class DetailViewModel : DetailViewModelInterface {
     var dateButtonSubject : PublishSubject<Void>
     var plusButtonSubject : PublishSubject<Void>
     var totalDataSubject : BehaviorSubject<ButtonType>
-    var incomeDataSubject : BehaviorSubject<ButtonType>
-    var expendDataSubject : BehaviorSubject<ButtonType>
-    var dateIncreaseButtonSubject : BehaviorSubject<DateButtonType>
-    var dateDecreaseButtonSubject : BehaviorSubject<DateButtonType>
+    var incomeDataSubject : PublishSubject<ButtonType>
+    var expendDataSubject : PublishSubject<ButtonType>
+    var dateIncreaseButtonSubject : PublishSubject<DateButtonType>
+    var dateDecreaseButtonSubject : PublishSubject<DateButtonType>
     
     
     // MARK: - Observable (Subject)
@@ -80,8 +80,11 @@ class DetailViewModel : DetailViewModelInterface {
         }
     }
     
-    lazy var totalAmountObservable: Observable<String> = entityObservable.map { "\($0.count)" }
+    lazy var totalAmountObservable: Observable<String> = entityObservable.map {
+        $0.map { $0.amount }.reduce(0, +).toCurrency
+    }
     
+    // MARK: - Delegate 및 Initializer
     weak var delegate : DetailViewModelDelegate?
     
     var repository : DataRepositoryInterface
@@ -93,10 +96,10 @@ class DetailViewModel : DetailViewModelInterface {
         dateButtonSubject = PublishSubject<Void>()
         plusButtonSubject = PublishSubject<Void>()
         totalDataSubject = BehaviorSubject<ButtonType>(value: .total)
-        incomeDataSubject = BehaviorSubject<ButtonType>(value: .income)
-        expendDataSubject = BehaviorSubject<ButtonType>(value: .expend)
-        dateDecreaseButtonSubject = BehaviorSubject<DateButtonType>(value: .decrease)
-        dateIncreaseButtonSubject = BehaviorSubject<DateButtonType>(value: .increase)
+        incomeDataSubject = PublishSubject<ButtonType>()
+        expendDataSubject = PublishSubject<ButtonType>()
+        dateDecreaseButtonSubject = PublishSubject<DateButtonType>()
+        dateIncreaseButtonSubject = PublishSubject<DateButtonType>()
         
         // MARK: - Observable (Subject)
         selectedButtonIndexSubject = PublishSubject<Int>()
@@ -132,6 +135,8 @@ class DetailViewModel : DetailViewModelInterface {
     
     func setBind() {
         // MARK: - showButton <-> Data 바인딩
+        
+        // 구독이 될 때 즉시 초기값을 던져주는 BehaivorSubject를 사용해서 처음에 total을 보여주도록 설정.
         [totalDataSubject, incomeDataSubject, expendDataSubject].forEach { $0.subscribe { [weak self] selectedButton in
             guard let self = self, let selectedButtonType = selectedButton.element else { return }
             repository.setState(type: selectedButtonType)
@@ -144,31 +149,21 @@ class DetailViewModel : DetailViewModelInterface {
             selectedButtonIndexSubject.onNext(buttonType.rawValue)
         }.disposed(by: disposeBag) }
         
-        // MARK: - Date 버튼, DateString 바인딩
+        // MARK: - Date 버튼 <-> DateString 바인딩
         [dateDecreaseButtonSubject, dateIncreaseButtonSubject].forEach { $0.subscribe { [weak self] dateButtonType in
-                guard let dateButtonType = dateButtonType.element, let self = self else { return }
-                self.repository.setDate(type: dateButtonType)
-            }.disposed(by: disposeBag) }
+            guard let dateButtonType = dateButtonType.element, let self = self else { return }
+            repository.setDate(type: dateButtonType)
+        }.disposed(by: disposeBag) }
         
-        // MARK: - Date 버튼 클릭 -> 해당 날짜의 [Entity] 전파
-        dateDecreaseButtonSubject.map { _ in self.repository.readDate() }
-            .subscribe { [weak self] stringDate in
-                guard let stringDate = stringDate.element, let self = self else {
-                    return
-                }
-                // TODO: 트랜지션을 고려할 필요가 있음. readTotalData() 가 만약 실패하면??
-                dateSubject.onNext(stringDate)
-                entitySubject.onNext(self.repository.readData())
-            }.disposed(by: disposeBag)
-        
-        dateIncreaseButtonSubject.map { _ in self.repository.readDate() }
-            .subscribe { [weak self] stringDate in
-                guard let stringDate = stringDate.element, let self = self else {
-                    return
-                }
-                // TODO: 트랜지션을 고려할 필요가 있음. readTotalData() 가 만약 실패하면??
-                dateSubject.onNext(stringDate)
-                entitySubject.onNext(self.repository.readData())
-            }.disposed(by: disposeBag)
+        // MARK: - Date 버튼 <-> Date에 따른 불러오는 Entity 바인딩
+        [dateDecreaseButtonSubject, dateIncreaseButtonSubject].forEach {
+            $0.map { _ in (self.repository.readDate(), self.repository.readData()) }
+            .subscribe { [weak self] emittedData in
+            guard let (date, data) = emittedData.element, let self = self else {
+                return
+            }
+            dateSubject.onNext(date)
+            entitySubject.onNext(data)
+        }.disposed(by: disposeBag) }
     }
 }

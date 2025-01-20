@@ -55,31 +55,31 @@ class MockDataRepository : DataRepositoryInterface {
 private extension MockDataRepository {
     private func readTotalData() -> [Entity] {
         return [
-            Entity(id: UUID(), dateStr: "2024-10-23", createType: .total, amount: "+12,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-10-24", createType: .total, amount: "+12,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-10-28", createType: .total, amount: "+12,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-10-31", createType: .total, amount: "+12,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-10-15", createType: .total, amount: "+12,000원", iconImage: UIImage(named: "DateImage")!)
+            Entity(id: UUID(), dateStr: "2024-10-23", createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-10-24", createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-10-28", createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-10-31", createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-10-15", createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!)
         ]
     }
     
     private func readIncomeData() -> [Entity] {
         return [
-            Entity(id: UUID(), dateStr: "2024-11-25", createType: .income, amount: "+24,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-11-23", createType: .income, amount: "+24,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-11-27", createType: .income, amount: "+24,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-11-29", createType: .income, amount: "+24,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-11-30", createType: .income, amount: "+24,000원", iconImage: UIImage(named: "DateImage")!)
+            Entity(id: UUID(), dateStr: "2024-11-25", createType: .income, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-11-23", createType: .income, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-11-27", createType: .income, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-11-29", createType: .income, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-11-30", createType: .income, amount: 12000, iconImage: UIImage(named: "DateImage")!)
         ]
     }
     
     private func readExpendData() -> [Entity] {
         return [
-            Entity(id: UUID(), dateStr: "2024-12-12", createType: .expend, amount: "-24,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-12-23", createType: .expend, amount: "-24,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-12-23", createType: .expend, amount: "-24,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-12-23", createType: .expend, amount: "-24,000원", iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-12-11", createType: .expend, amount: "-24,000원", iconImage: UIImage(named: "DateImage")!)
+            Entity(id: UUID(), dateStr: "2024-12-12", createType: .expend, amount: -13000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-12-23", createType: .expend, amount: -15000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-12-23", createType: .expend, amount: -18000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-12-23", createType: .expend, amount: -11000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-12-11", createType: .expend, amount: -13000, iconImage: UIImage(named: "DateImage")!)
         ]
     }
 }
