@@ -10,6 +10,10 @@ import FSCalendar
 import RxSwift
 import RxCocoa
 
+// CalendarVC 킬 때, 선택된 달의 지출 데이터 받아오기. (없으면 "-" 라고 표시)
+// 클릭한 날짜의 전체 데이터 받아오기.
+
+// 좌클릭, 우클릭 바인딩 하기 (달이 바뀐 것을 관찰하고 데이터 받아와야 함.)
 
 class CalendarViewController: UIViewController {
     
@@ -79,7 +83,6 @@ class CalendarViewController: UIViewController {
     let titleLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = ""
         label.textColor = .black
         label.textAlignment = .center
         label.font = UIFont(name: FontConst.mainFont, size: 13)
@@ -90,7 +93,6 @@ class CalendarViewController: UIViewController {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "previous"), for: .normal)
-        button.addTarget(self, action: #selector(previousButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -98,7 +100,6 @@ class CalendarViewController: UIViewController {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "following"), for: .normal)
-        button.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -141,7 +142,7 @@ class CalendarViewController: UIViewController {
     func setCalendar() {
         calendarView.delegate = self
         calendarView.dataSource = self
-        updateHeaderTitle()
+        //updateHeaderTitle()
     }
     
     func setLayout() {
@@ -190,36 +191,46 @@ class CalendarViewController: UIViewController {
     }
     
     func setReactive() {
+        // MARK: - Coordinator 바인딩
         dismissButton.rx.tap
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.dismissButtonObserver)
             .disposed(by: disposeBag)
-    }
-    
-    @objc func previousButtonTapped() {
-        let currentMonth = calendarView.currentPage
-        let previousMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentMonth)!
-        calendarView.setCurrentPage(previousMonth, animated: true)
-        updateHeaderTitle() // 헤더 타이틀 업데이트
-    }
-    
-    @objc func nextButtonTapped() {
-        let currentMonth = calendarView.currentPage
-        let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth)!
-        calendarView.setCurrentPage(nextMonth, animated: true)
-        updateHeaderTitle() // 헤더 타이틀 업데이트
-    }
-    
-    func updateHeaderTitle() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "YYYY년 MM월"
-        self.titleLabel.text = formatter.string(from: calendarView.currentPage)
+        
+        // MARK: - headerTitle UI 바인딩
+        previousButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { DateButtonType.decrease }
+            .bind(to: viewModel.decreaseObserver)
+            .disposed(by: disposeBag)
+        
+        nextButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { DateButtonType.increase }
+            .bind(to: viewModel.increaseObserver)
+            .disposed(by: disposeBag)
+        
+        viewModel.dateObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: titleLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        // MARK: - headerTitle 변경 시에 Calendar 바인딩
+        viewModel.dateButtonTypeObservable
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] dateButtonType in
+                guard let dateButtonType = dateButtonType.element, let self = self else { return }
+                
+                let currentMonth = calendarView.currentPage
+                let month = Calendar.current.date(byAdding: .month, value: dateButtonType.rawValue, to: currentMonth)!
+                calendarView.setCurrentPage(month, animated: true)
+            }.disposed(by: disposeBag)
     }
 }
 
 extension CalendarViewController : FSCalendarDataSource, FSCalendarDelegate {
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
-        updateHeaderTitle()
+        
     }
     
     // 날짜에 subTitle 넣을 수 있음.

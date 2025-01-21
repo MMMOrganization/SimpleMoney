@@ -13,6 +13,8 @@ enum DetailCellStyle {
     case spacious // 간격 O
 }
 
+//TODO: - Cell Remove, Change
+
 class DetailTableViewCell: UITableViewCell {
 
     var cellStyle : DetailCellStyle = .compact

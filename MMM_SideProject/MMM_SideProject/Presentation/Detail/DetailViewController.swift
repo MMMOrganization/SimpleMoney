@@ -49,7 +49,7 @@ final class DetailViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: FontConst.mainFont, size: 16)
         label.textColor = UIColor(hexCode: ColorConst.grayColorString, alpha: 1.00)
-        label.text = "\(YearMonth().month)월 통계"
+        label.text = "\(YearMonth().getMonth())월 통계"
         label.textAlignment = .right
         return label
     }()
@@ -301,13 +301,12 @@ final class DetailViewController: UIViewController {
     }
     
     func setReactive() {
-        // MARK: - 네비게이션 캘린더 버튼 바인딩
+        // MARK: - Coordinator 바인딩
         calendarBarButton.rx.tap
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.dateButtonObserver)
             .disposed(by: disposeBag)
         
-        // MARK: - contentAdd 버튼 바인딩
         contentAddButton.rx.tap
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.plusButtonObserver)
@@ -372,6 +371,7 @@ final class DetailViewController: UIViewController {
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
+        // MARK: - 통계 라벨 바인딩
         viewModel.totalAmountObservable
             .observe(on: MainScheduler.instance)
             .bind(to: topTotalPriceLabel.rx.text)

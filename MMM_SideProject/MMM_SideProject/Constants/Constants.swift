@@ -31,7 +31,7 @@ public enum ButtonType : Int {
     case expend = 2
 }
 
-public enum DateButtonType {
-    case increase
-    case decrease
+public enum DateButtonType : Int {
+    case increase = 1
+    case decrease = -1
 }

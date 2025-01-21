@@ -9,9 +9,9 @@ import UIKit
 
 class MockDataRepository : DataRepositoryInterface {
     
+    // MARK: - CalendarVM 에서 사용하는 repository에서는 항상 total 타입
     private var stateType : ButtonType = .total
     
-    // 현재 날짜를 "YYYY년 MM월로 가져오는 로직 필요
     private var dateType : YearMonth = .init()
     
     func readData() -> [Entity] {
@@ -23,6 +23,11 @@ class MockDataRepository : DataRepositoryInterface {
         case .expend:
             return readExpendData()
         }
+    }
+    
+    // TODO: - 따로 만들지 readData() 에서 상태 비교를 통해서 할지 고민
+    func readDataOfDay() -> [Entity] {
+        return []
     }
     
     func readDate() -> String {
@@ -49,6 +54,10 @@ class MockDataRepository : DataRepositoryInterface {
             dateType.decrease()
             return
         }
+    }
+    
+    func setDay(of day : Int) {
+        self.dateType.setDay(of: day)
     }
 }
 
