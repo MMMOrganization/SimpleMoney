@@ -14,5 +14,7 @@ protocol DataRepositoryInterface {
     
     func setDate(type : DateButtonType)
     func setState(type : ButtonType)
+    
+    func setDay(of day : Int)
 }
 

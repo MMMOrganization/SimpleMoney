@@ -67,4 +67,8 @@ class DataRepository : DataRepositoryInterface {
     func setDate(type: DateButtonType) {
         
     }
+    
+    func setDay(of day: Int) {
+        
+    }
 }
