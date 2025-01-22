@@ -9,12 +9,12 @@ import UIKit
 import RealmSwift
 import Realm
 
-class DataRepository : DataRepositoryInterface {
+class DataRepository {
     
     private var stateType : ButtonType = .total
     
     // 현재 날짜를 "YYYY년 MM월로 가져오는 로직 필요
-    private var dateType : YearMonth = .init()
+    private var dateType : YearMonthDay = .init()
     
     /// total Read
     /// -> Entity 객체로 이번 달의 전체 엔티티를 리스트로 전달해야 함.

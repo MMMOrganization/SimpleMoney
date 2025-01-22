@@ -11,10 +11,12 @@ import Foundation
 protocol DataRepositoryInterface {
     func readData() -> [Entity]
     func readDate() -> String
+    func readDataOfDay() -> [Entity]
     
     func setDate(type : DateButtonType)
     func setState(type : ButtonType)
     
     func setDay(of day : Int)
+    
 }
 

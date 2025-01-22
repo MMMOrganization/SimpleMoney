@@ -12,7 +12,7 @@ class MockDataRepository : DataRepositoryInterface {
     // MARK: - CalendarVM 에서 사용하는 repository에서는 항상 total 타입
     private var stateType : ButtonType = .total
     
-    private var dateType : YearMonth = .init()
+    private var dateType : YearMonthDay = .init()
     
     func readData() -> [Entity] {
         switch stateType {
@@ -25,9 +25,15 @@ class MockDataRepository : DataRepositoryInterface {
         }
     }
     
-    // TODO: - 따로 만들지 readData() 에서 상태 비교를 통해서 할지 고민
+    // MARK: - CalendarVC 에서는 항상 totalData와 하루의 데이터만 사용하기 때문에 이 함수를 사용한다.
+    
+    /// For Calendar Function
     func readDataOfDay() -> [Entity] {
-        return []
+        return [
+            Entity(id: UUID(), dateStr: "2024-10-24", createType: .total, amount: 12000, iconImage: UIImage(named:      "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-10-24", createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: "2024-10-24", createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+        ]
     }
     
     func readDate() -> String {

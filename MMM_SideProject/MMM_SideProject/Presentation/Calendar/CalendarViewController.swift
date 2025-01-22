@@ -228,7 +228,7 @@ class CalendarViewController: UIViewController {
         // TODO: - Calendar Day 클릭 이벤트 바인딩 viewModel.dayOfMonthClickObserver
         
         viewModel.dataObservable
-            .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
+            .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { [weak self] (index, item, cell) in
             print(item)
         }.disposed(by: disposeBag)
     }
@@ -237,6 +237,11 @@ class CalendarViewController: UIViewController {
 extension CalendarViewController : FSCalendarDataSource, FSCalendarDelegate {
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
         
+    }
+    
+    // Calendar 날자 클릭시에 작동하는 delegate 메소드
+    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        viewModel.dayOfMonthClickObserver.onNext(date.getDay)
     }
     
     // 날짜에 subTitle 넣을 수 있음.

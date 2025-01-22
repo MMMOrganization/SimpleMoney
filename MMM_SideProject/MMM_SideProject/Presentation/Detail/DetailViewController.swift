@@ -49,7 +49,7 @@ final class DetailViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: FontConst.mainFont, size: 16)
         label.textColor = UIColor(hexCode: ColorConst.grayColorString, alpha: 1.00)
-        label.text = "\(YearMonth().getMonth())월 통계"
+        label.text = "\(YearMonthDay().getMonth())월 통계"
         label.textAlignment = .right
         return label
     }()
@@ -79,7 +79,7 @@ final class DetailViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
-        label.text = YearMonth().toString()
+        label.text = YearMonthDay().toString()
         label.font = UIFont(name: FontConst.mainFont, size: 15)
         label.textColor = UIColor(hexCode: ColorConst.blackColorString, alpha: 1.00)
         return label

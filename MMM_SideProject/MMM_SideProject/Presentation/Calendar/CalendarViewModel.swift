@@ -68,7 +68,7 @@ class CalendarViewModel : CalendarViewModelInterface {
         
         dateSubject = BehaviorSubject<String>(value: repository.readDate())
         dateButtonTypeSubject = PublishSubject<DateButtonType>()
-        dataSubject = BehaviorSubject<[Entity]>(value: repository.readData())
+        dataSubject = BehaviorSubject<[Entity]>(value: repository.readDataOfDay())
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
         changeMonthObserver = changeMonthSubject.asObserver()
@@ -101,5 +101,12 @@ class CalendarViewModel : CalendarViewModelInterface {
             dateSubject.onNext(repository.readDate())
             dateButtonTypeSubject.onNext(dateButtonType)
         }.disposed(by: disposeBag) }
+        
+        dayOfMonthClickSubject.subscribe { [weak self] dayInteger in
+            guard let self = self, let dayInteger = dayInteger.element else {
+                return
+            }
+            print(dayInteger)
+        }.disposed(by: disposeBag)
     }
 }

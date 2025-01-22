@@ -12,9 +12,11 @@ import FSCalendar
 
 /// 어떤 뜻일까?
 extension Reactive where Base : FSCalendar {
-    var currentPage : Observable<Date> {
-        return methodInvoked(#selector(FSCalendarDelegate.calendarCurrentPageDidChange(_:)))
-            .map { _ in self.base.currentPage }
-            .startWith(base.currentPage)
+    var didSelectData : Observable<Int> {
+        return methodInvoked(#selector(FSCalendarDelegate.calendar(_:didSelect:at:)))
+            .map { parameters in
+                let tempDate = parameters[1] as? Date ?? Date()
+                return tempDate.getDay
+            }
     }
 }
