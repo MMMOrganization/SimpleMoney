@@ -102,7 +102,7 @@ class DetailTableViewCell: UITableViewCell {
         self.disposeBag = .init()
     }
     
-    func configure(with style : DetailCellStyle, item : Entity) {
+    func configure(with style : DetailCellStyle = .compact, item : Entity) {
         // MARK: - 이전 재활용 될 셀들의 스트림 모두 끊어주기.
         disposeBag = .init()
         

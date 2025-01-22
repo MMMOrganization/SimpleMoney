@@ -7,17 +7,17 @@
 
 import Foundation
 
-struct YearMonth {
+struct YearMonthDay {
     private var year : Int
     private var month : Int
-    private var day : Int?
+    private var day : Int
     
     init() {
-        (self.year, self.month) = Date.currentDate
+        (self.year, self.month, self.day) = Date.currentDate
     }
 }
 
-extension YearMonth {
+extension YearMonthDay {
     func toString() -> String {
         return "\(self.year)년 \(self.month)월"
     }
@@ -30,7 +30,7 @@ extension YearMonth {
         return self.month
     }
     
-    func getDay() -> Int? {
+    func getDay() -> Int {
         return self.day
     }
     

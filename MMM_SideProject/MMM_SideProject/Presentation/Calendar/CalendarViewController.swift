@@ -132,11 +132,10 @@ class CalendarViewController: UIViewController {
     }
     
     func setTableView() {
-        tableView.dataSource = self
-        tableView.delegate = self
+        tableView.dataSource = nil
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
         tableView.separatorStyle = .none
-        tableView.rowHeight = 70
+        tableView.rowHeight = 55
     }
     
     func setCalendar() {
@@ -225,6 +224,13 @@ class CalendarViewController: UIViewController {
                 let month = Calendar.current.date(byAdding: .month, value: dateButtonType.rawValue, to: currentMonth)!
                 calendarView.setCurrentPage(month, animated: true)
             }.disposed(by: disposeBag)
+        
+        // TODO: - Calendar Day 클릭 이벤트 바인딩 viewModel.dayOfMonthClickObserver
+        
+        viewModel.dataObservable
+            .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
+                cell.configure(item: item)
+        }.disposed(by: disposeBag)
     }
 }
 
@@ -233,9 +239,15 @@ extension CalendarViewController : FSCalendarDataSource, FSCalendarDelegate {
         
     }
     
+    // Calendar 날자 클릭시에 작동하는 delegate 메소드
+    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        viewModel.dayOfMonthClickObserver.onNext(date.getDay)
+    }
+    
     // 날짜에 subTitle 넣을 수 있음.
     func calendar(_ calendar: FSCalendar, subtitleFor date: Date) -> String? {
         // 여기서 원하는 날짜에 텍스트 추가
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM-dd"
         
@@ -251,28 +263,7 @@ extension CalendarViewController : FSCalendarDataSource, FSCalendarDelegate {
     }
 }
 
-extension CalendarViewController : UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as! DetailTableViewCell
-        
-        cell.selectionStyle = .none
-        cell.contentView.clipsToBounds = true
-        cell.contentView.layer.cornerRadius = 10
-        cell.contentView.layer.borderWidth = 0.8
-        cell.dateLabel.text = "" // Calendar에서 보여주기 때문에 필요없음. (나중에 추가예정)
-        cell.contentView.layer.borderColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.80).cgColor
-        cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.02)
-        
-        // 그림자 추가
-        //cell.configure(with: .spacious)
-        
-        return cell
-    }
-    
+extension CalendarViewController {
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let delete = UIContextualAction(style: .normal, title: "") { (_, _, success: @escaping (Bool) -> Void) in
             // 원하는 액션 추가
