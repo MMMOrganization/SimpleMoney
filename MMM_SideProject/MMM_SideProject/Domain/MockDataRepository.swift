@@ -30,9 +30,9 @@ class MockDataRepository : DataRepositoryInterface {
     /// For Calendar Function
     func readDataOfDay() -> [Entity] {
         return [
-            Entity(id: UUID(), dateStr: "2024-10-24", createType: .total, amount: 12000, iconImage: UIImage(named:      "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-10-24", createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: "2024-10-24", createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named:      "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
         ]
     }
     

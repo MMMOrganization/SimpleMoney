@@ -102,11 +102,11 @@ class CalendarViewModel : CalendarViewModelInterface {
             dateButtonTypeSubject.onNext(dateButtonType)
         }.disposed(by: disposeBag) }
         
+        // MARK: - Calendar Day Click 바인딩
         dayOfMonthClickSubject.subscribe { [weak self] dayInteger in
-            guard let self = self, let dayInteger = dayInteger.element else {
-                return
-            }
-            print(dayInteger)
+            guard let self = self, let dayInteger = dayInteger.element else { return }
+            repository.setDay(of: dayInteger)
+            dataSubject.onNext(repository.readDataOfDay())
         }.disposed(by: disposeBag)
     }
 }

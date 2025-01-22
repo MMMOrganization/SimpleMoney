@@ -135,7 +135,7 @@ class CalendarViewController: UIViewController {
         tableView.dataSource = nil
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
         tableView.separatorStyle = .none
-        tableView.rowHeight = 70
+        tableView.rowHeight = 55
     }
     
     func setCalendar() {
@@ -228,8 +228,8 @@ class CalendarViewController: UIViewController {
         // TODO: - Calendar Day 클릭 이벤트 바인딩 viewModel.dayOfMonthClickObserver
         
         viewModel.dataObservable
-            .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { [weak self] (index, item, cell) in
-            print(item)
+            .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
+                cell.configure(item: item)
         }.disposed(by: disposeBag)
     }
 }
