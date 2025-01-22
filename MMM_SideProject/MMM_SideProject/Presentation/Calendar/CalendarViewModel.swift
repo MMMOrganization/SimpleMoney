@@ -23,6 +23,7 @@ protocol CalendarViewModelInterface {
     var dateObservable : Observable<String> { get }
     var dateButtonTypeObservable : Observable<DateButtonType> { get }
     var dataObservable : Observable<[Entity]> { get }
+    var dailyAmountsObservable : Observable<[Int:Int]> { get }
 }
 
 class CalendarViewModel : CalendarViewModelInterface {
@@ -40,6 +41,7 @@ class CalendarViewModel : CalendarViewModelInterface {
     var dateSubject: BehaviorSubject<String>
     var dateButtonTypeSubject : PublishSubject<DateButtonType>
     var dataSubject: BehaviorSubject<[Entity]>
+    var dailyAmountsSubject : PublishSubject<[Int:Int]>
     
     // MARK: - Observer
     var dismissButtonObserver: AnyObserver<Void>
@@ -52,6 +54,7 @@ class CalendarViewModel : CalendarViewModelInterface {
     var dateObservable: Observable<String>
     var dateButtonTypeObservable: Observable<DateButtonType>
     var dataObservable: Observable<[Entity]>
+    var dailyAmountsObservable: Observable<[Int:Int]>
     
     weak var delegate : CalendarViewModelDelegate?
     
@@ -69,6 +72,7 @@ class CalendarViewModel : CalendarViewModelInterface {
         dateSubject = BehaviorSubject<String>(value: repository.readDate())
         dateButtonTypeSubject = PublishSubject<DateButtonType>()
         dataSubject = BehaviorSubject<[Entity]>(value: repository.readDataOfDay())
+        dailyAmountsSubject = PublishSubject<[Int:Int]>()
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
         changeMonthObserver = changeMonthSubject.asObserver()
@@ -79,6 +83,7 @@ class CalendarViewModel : CalendarViewModelInterface {
         dateObservable = dateSubject
         dateButtonTypeObservable = dateButtonTypeSubject
         dataObservable = dataSubject
+        dailyAmountsObservable = dailyAmountsSubject
         
         setCoordinator()
         setReactive()
