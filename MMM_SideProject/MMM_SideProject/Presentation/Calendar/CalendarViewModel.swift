@@ -18,9 +18,11 @@ protocol CalendarViewModelInterface {
     var changeMonthObserver : AnyObserver<Date> { get }
     var decreaseObserver : AnyObserver<DateButtonType> { get }
     var increaseObserver : AnyObserver<DateButtonType> { get }
+    var dayOfMonthClickObserver : AnyObserver<Int> { get }
     
     var dateObservable : Observable<String> { get }
     var dateButtonTypeObservable : Observable<DateButtonType> { get }
+    var dataObservable : Observable<[Entity]> { get }
 }
 
 class CalendarViewModel : CalendarViewModelInterface {
@@ -32,20 +34,24 @@ class CalendarViewModel : CalendarViewModelInterface {
     var changeMonthSubject: PublishSubject<Date>
     var decreaseSubject: PublishSubject<DateButtonType>
     var increaseSubject: PublishSubject<DateButtonType>
+    var dayOfMonthClickSubject : PublishSubject<Int>
     
     // MARK: - Observable (Subject)
     var dateSubject: BehaviorSubject<String>
     var dateButtonTypeSubject : PublishSubject<DateButtonType>
+    var dataSubject: BehaviorSubject<[Entity]>
     
     // MARK: - Observer
     var dismissButtonObserver: AnyObserver<Void>
     var changeMonthObserver: AnyObserver<Date>
     var decreaseObserver: AnyObserver<DateButtonType>
     var increaseObserver: AnyObserver<DateButtonType>
+    var dayOfMonthClickObserver: AnyObserver<Int>
     
     // MARK: - Observable
     var dateObservable: Observable<String>
     var dateButtonTypeObservable: Observable<DateButtonType>
+    var dataObservable: Observable<[Entity]>
     
     weak var delegate : CalendarViewModelDelegate?
     
@@ -58,17 +64,21 @@ class CalendarViewModel : CalendarViewModelInterface {
         changeMonthSubject = PublishSubject<Date>()
         decreaseSubject = PublishSubject<DateButtonType>()
         increaseSubject = PublishSubject<DateButtonType>()
+        dayOfMonthClickSubject = PublishSubject<Int>()
         
         dateSubject = BehaviorSubject<String>(value: repository.readDate())
         dateButtonTypeSubject = PublishSubject<DateButtonType>()
+        dataSubject = BehaviorSubject<[Entity]>(value: repository.readData())
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
         changeMonthObserver = changeMonthSubject.asObserver()
         decreaseObserver = decreaseSubject.asObserver()
         increaseObserver = increaseSubject.asObserver()
+        dayOfMonthClickObserver = dayOfMonthClickSubject.asObserver()
         
         dateObservable = dateSubject
         dateButtonTypeObservable = dateButtonTypeSubject
+        dataObservable = dataSubject
         
         setCoordinator()
         setReactive()
