@@ -66,7 +66,7 @@ class DetailTableViewCell: UITableViewCell {
         case .compact:
             contentView.frame = bounds
         case .spacious:
-            contentView.frame = bounds.inset(by: UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0))
+            contentView.frame = bounds.inset(by: UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0))
         }
         
         imageBorderView.layer.cornerRadius = imageBorderView.frame.height / 2
