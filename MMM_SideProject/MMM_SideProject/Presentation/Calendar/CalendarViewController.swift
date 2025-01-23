@@ -263,7 +263,7 @@ extension CalendarViewController : FSCalendarDataSource, FSCalendarDelegate {
     // 날짜에 Subtitle 넣는 delegate 메소드
     func calendar(_ calendar: FSCalendar, subtitleFor date: Date) -> String? {
         guard let amount = viewModel.getAmountForDay(date) else { return "-" }
-        
+      
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         return numberFormatter.string(from: NSNumber(value: amount))
