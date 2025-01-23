@@ -35,3 +35,8 @@ public enum DateButtonType : Int {
     case increase = 1
     case decrease = -1
 }
+
+public enum DetailCellStyle {
+    case compact // 간격 X
+    case spacious // 간격 O
+}

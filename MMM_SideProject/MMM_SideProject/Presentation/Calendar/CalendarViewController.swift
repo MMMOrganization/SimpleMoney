@@ -40,6 +40,7 @@ class CalendarViewController: UIViewController {
         return view
     }()
     
+    // TODO: - SelectionStyle UI 변경 필요
     let calendarView : FSCalendar = {
         let calendar = FSCalendar(frame: .zero)
         calendar.translatesAutoresizingMaskIntoConstraints = false
@@ -135,7 +136,7 @@ class CalendarViewController: UIViewController {
         tableView.dataSource = nil
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
         tableView.separatorStyle = .none
-        tableView.rowHeight = 55
+        tableView.rowHeight = 75
     }
     
     func setCalendar() {
@@ -225,14 +226,24 @@ class CalendarViewController: UIViewController {
                 calendarView.setCurrentPage(month, animated: true)
             }.disposed(by: disposeBag)
         
-        // TODO: - Calendar Day 클릭 이벤트 바인딩 viewModel.dayOfMonthClickObserver
-        
+        // MARK: - Cell Data 바인딩
+        // TODO: - Cell 크기 및 레이아웃 다시 조정 필요.
+        // TODO: - cell.configure() 함수 리팩토링 필요.
         viewModel.dataObservable
             .observe(on: MainScheduler.instance)
             .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
                 cell.configure(item: item)
+                cell.contentView.layer.cornerRadius = 15
+                cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.05)
+                //cell.contentView.layer.shadowColor = UIColor.mainColor.cgColor
+                //cell.layer.shadowOpacity = 0.20
+                //cell.layer.shadowRadius = 5
+                //cell.layer.shadowOffset = CGSize(width: -2, height: 2)
+                //cell.layer.masksToBounds = false
+                //cell.clipsToBounds = true
         }.disposed(by: disposeBag)
         
+        // MARK: - Calendar DayOfMonth Amount 바인딩
         viewModel.dailyAmountsObservable
             .observe(on: MainScheduler.instance)
             .subscribe { _ in
@@ -242,20 +253,16 @@ class CalendarViewController: UIViewController {
 }
 
 extension CalendarViewController : FSCalendarDataSource, FSCalendarDelegate {
-    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
-        
-    }
+    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {}
     
     // Calendar 날자 클릭시에 작동하는 delegate 메소드
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         viewModel.dayOfMonthClickObserver.onNext(date.getDay)
     }
     
-    // 날짜에 subTitle 넣을 수 있음.
+    // 날짜에 Subtitle 넣는 delegate 메소드
     func calendar(_ calendar: FSCalendar, subtitleFor date: Date) -> String? {
-        // 여기서 원하는 날짜에 텍스트 추가
-        
-        guard let amount = viewModel.getAmountForDay(date) else { return nil }
+        guard let amount = viewModel.getAmountForDay(date) else { return "-" }
         
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal

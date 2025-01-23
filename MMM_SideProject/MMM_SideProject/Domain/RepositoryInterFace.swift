@@ -18,6 +18,7 @@ protocol DataRepositoryInterface {
     func setState(type : ButtonType)
     
     func setDay(of day : Int)
-    
 }
+
+// TODO: - GraphRepositoryInterface 생성. -> MainViewModel
 

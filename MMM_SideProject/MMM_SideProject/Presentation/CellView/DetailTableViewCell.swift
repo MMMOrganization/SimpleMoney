@@ -8,11 +8,6 @@
 import UIKit
 import RxSwift
 
-enum DetailCellStyle {
-    case compact // 간격 X
-    case spacious // 간격 O
-}
-
 //TODO: - Cell Remove, Change
 
 class DetailTableViewCell: UITableViewCell {
@@ -71,7 +66,7 @@ class DetailTableViewCell: UITableViewCell {
         case .compact:
             contentView.frame = bounds
         case .spacious:
-            contentView.frame = bounds.inset(by: UIEdgeInsets(top: 10, left: 0, bottom: 5, right: 0))
+            contentView.frame = bounds.inset(by: UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0))
         }
         
         imageBorderView.layer.cornerRadius = imageBorderView.frame.height / 2
@@ -102,10 +97,11 @@ class DetailTableViewCell: UITableViewCell {
         self.disposeBag = .init()
     }
     
-    func configure(with style : DetailCellStyle = .compact, item : Entity) {
+    func configure(with style : DetailCellStyle = .spacious, item : Entity) {
         // MARK: - 이전 재활용 될 셀들의 스트림 모두 끊어주기.
         disposeBag = .init()
         
+        self.selectionStyle = .none
         self.cellStyle = style
         
         self.mainImageView.image = item.iconImage
