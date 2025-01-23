@@ -23,10 +23,14 @@ protocol CalendarViewModelInterface {
     var dateObservable : Observable<String> { get }
     var dateButtonTypeObservable : Observable<DateButtonType> { get }
     var dataObservable : Observable<[Entity]> { get }
-    var dailyAmountsObservable : Observable<[Int:Int]> { get }
+    var dailyAmountsObservable : Observable<[String:Int]> { get }
+    
+    func getAmountForDay(_ date : Date) -> Int?
 }
 
 class CalendarViewModel : CalendarViewModelInterface {
+    
+    var amountsDict : [String:Int] = .init()
     
     var disposeBag : DisposeBag = DisposeBag()
     
@@ -41,7 +45,7 @@ class CalendarViewModel : CalendarViewModelInterface {
     var dateSubject: BehaviorSubject<String>
     var dateButtonTypeSubject : PublishSubject<DateButtonType>
     var dataSubject: BehaviorSubject<[Entity]>
-    var dailyAmountsSubject : PublishSubject<[Int:Int]>
+    var dailyAmountsSubject : BehaviorSubject<[String:Int]>
     
     // MARK: - Observer
     var dismissButtonObserver: AnyObserver<Void>
@@ -54,7 +58,7 @@ class CalendarViewModel : CalendarViewModelInterface {
     var dateObservable: Observable<String>
     var dateButtonTypeObservable: Observable<DateButtonType>
     var dataObservable: Observable<[Entity]>
-    var dailyAmountsObservable: Observable<[Int:Int]>
+    var dailyAmountsObservable: Observable<[String:Int]>
     
     weak var delegate : CalendarViewModelDelegate?
     
@@ -72,7 +76,7 @@ class CalendarViewModel : CalendarViewModelInterface {
         dateSubject = BehaviorSubject<String>(value: repository.readDate())
         dateButtonTypeSubject = PublishSubject<DateButtonType>()
         dataSubject = BehaviorSubject<[Entity]>(value: repository.readDataOfDay())
-        dailyAmountsSubject = PublishSubject<[Int:Int]>()
+        dailyAmountsSubject = BehaviorSubject<[String:Int]>(value: repository.readAmountsDict())
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
         changeMonthObserver = changeMonthSubject.asObserver()
@@ -105,6 +109,7 @@ class CalendarViewModel : CalendarViewModelInterface {
             repository.setDate(type: dateButtonType)
             dateSubject.onNext(repository.readDate())
             dateButtonTypeSubject.onNext(dateButtonType)
+            dailyAmountsSubject.onNext(repository.readAmountsDict())
         }.disposed(by: disposeBag) }
         
         // MARK: - Calendar Day Click 바인딩
@@ -113,5 +118,21 @@ class CalendarViewModel : CalendarViewModelInterface {
             repository.setDay(of: dayInteger)
             dataSubject.onNext(repository.readDataOfDay())
         }.disposed(by: disposeBag)
+        
+        dailyAmountsSubject.subscribe { [weak self] amountsDict in
+            guard let amountsDict = amountsDict.element, let self = self else {
+                return
+            }
+            
+            self.amountsDict = amountsDict
+        }.disposed(by: disposeBag)
+    }
+    
+    func getAmountForDay(_ date : Date) -> Int? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        let dateString = formatter.string(from: date)
+        return amountsDict[dateString]
     }
 }

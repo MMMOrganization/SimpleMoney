@@ -40,6 +40,19 @@ class MockDataRepository : DataRepositoryInterface {
         return dateType.toString()
     }
     
+    func readAmountsDict() -> [String : Int] {
+        var amountsDict : [String : Int] = .init()
+        
+        amountsDict["2025-01-01"] = Int.random(in: -10000...10000)
+        amountsDict["2025-01-05"] = Int.random(in: -10000...10000)
+        amountsDict["2025-01-08"] = Int.random(in: -10000...10000)
+        amountsDict["2025-01-14"] = Int.random(in: -10000...10000)
+        amountsDict["2025-01-18"] = Int.random(in: -10000...10000)
+        amountsDict["2025-01-22"] = Int.random(in: -10000...10000)
+        
+        return amountsDict
+    }
+    
     func setState(type : ButtonType) {
         switch type {
         case .total:
