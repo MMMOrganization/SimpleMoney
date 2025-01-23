@@ -228,9 +228,16 @@ class CalendarViewController: UIViewController {
         // TODO: - Calendar Day 클릭 이벤트 바인딩 viewModel.dayOfMonthClickObserver
         
         viewModel.dataObservable
+            .observe(on: MainScheduler.instance)
             .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
                 cell.configure(item: item)
         }.disposed(by: disposeBag)
+        
+        viewModel.dailyAmountsObservable
+            .observe(on: MainScheduler.instance)
+            .subscribe { _ in
+                self.calendarView.reloadData()
+            }.disposed(by: disposeBag)
     }
 }
 
@@ -248,18 +255,11 @@ extension CalendarViewController : FSCalendarDataSource, FSCalendarDelegate {
     func calendar(_ calendar: FSCalendar, subtitleFor date: Date) -> String? {
         // 여기서 원하는 날짜에 텍스트 추가
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM-dd"
+        guard let amount = viewModel.getAmountForDay(date) else { return nil }
         
-        // 예시: 특정 날짜에 텍스트 추가
-        switch dateFormatter.string(from: date) {
-        case "01-01":
-            return ""
-        case "12-25":
-            return "크리스마스"
-        default:
-            return ""
-        }
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        return numberFormatter.string(from: NSNumber(value: amount))
     }
 }
 

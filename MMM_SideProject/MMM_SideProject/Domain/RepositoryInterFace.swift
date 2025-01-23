@@ -12,6 +12,7 @@ protocol DataRepositoryInterface {
     func readData() -> [Entity]
     func readDate() -> String
     func readDataOfDay() -> [Entity]
+    func readAmountsDict() -> [String : Int]
     
     func setDate(type : DateButtonType)
     func setState(type : ButtonType)
