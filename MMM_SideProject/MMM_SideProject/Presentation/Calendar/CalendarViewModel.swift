@@ -119,6 +119,7 @@ class CalendarViewModel : CalendarViewModelInterface {
             dataSubject.onNext(repository.readDataOfDay())
         }.disposed(by: disposeBag)
         
+        // MARK: - Calendar dayAmount 구독
         dailyAmountsSubject.subscribe { [weak self] amountsDict in
             guard let amountsDict = amountsDict.element, let self = self else {
                 return
@@ -128,6 +129,7 @@ class CalendarViewModel : CalendarViewModelInterface {
         }.disposed(by: disposeBag)
     }
     
+    // MARK: - Calendar Date Amount 딕셔너리 전달 해주는 메세지
     func getAmountForDay(_ date : Date) -> Int? {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"

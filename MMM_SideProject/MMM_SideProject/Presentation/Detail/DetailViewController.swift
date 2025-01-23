@@ -200,8 +200,6 @@ final class DetailViewController: UIViewController {
         expendShowButton.layer.cornerRadius = expendShowButton.frame.height / 2
     }
     
-    // MARK: - ViewModel이 해야할 일임. (MVVM 형태로 바꿀 때 변화 필요)
-    
     func setTableView() {
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
         tableView.dataSource = nil
