@@ -8,6 +8,7 @@
 import UIKit
 
 class DetailCoordinator : Coordinator, DetailViewModelDelegate {
+    
     weak var parentCoordinator : Coordinator?
     var childCoordinators : [Coordinator] = []
     var navigationController : UINavigationController
@@ -32,6 +33,14 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
         addChild(createCoordinator)
         
         createCoordinator.start()
+    }
+    
+    func pushGraphVC(graphType: GraphType) {
+        let graphCoordinator = GraphCoordinator(navigationController: navigationController, graphStyle: graphType)
+        graphCoordinator.parentCoordinator = self
+        addChild(graphCoordinator)
+        
+        graphCoordinator.start()
     }
     
     // MainVC 객체를 생성하여 반환함.

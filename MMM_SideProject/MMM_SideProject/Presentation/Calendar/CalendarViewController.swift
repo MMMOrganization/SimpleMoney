@@ -136,7 +136,7 @@ class CalendarViewController: UIViewController {
         tableView.dataSource = nil
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
         tableView.separatorStyle = .none
-        tableView.rowHeight = 75
+        tableView.rowHeight = 65
     }
     
     func setCalendar() {

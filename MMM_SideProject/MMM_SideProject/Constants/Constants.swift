@@ -36,6 +36,11 @@ public enum DateButtonType : Int {
     case decrease = -1
 }
 
+public enum GraphType : Int {
+    case bar
+    case circle
+}
+
 public enum DetailCellStyle {
     case compact // 간격 X
     case spacious // 간격 O

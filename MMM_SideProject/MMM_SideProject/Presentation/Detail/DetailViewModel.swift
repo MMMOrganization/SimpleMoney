@@ -12,6 +12,9 @@ import RxCocoa
 protocol DetailViewModelInterface {
     var dateButtonObserver : AnyObserver<Void> { get }
     var plusButtonObserver : AnyObserver<Void> { get }
+    var circleGraphButtonObserver : AnyObserver<GraphType> { get }
+    var barGraphButtonObserver : AnyObserver<GraphType> { get }
+    
     var totalDataObserver : AnyObserver<ButtonType> { get }
     var incomeDataObserver : AnyObserver<ButtonType> { get }
     var expendDataObserver : AnyObserver<ButtonType> { get }
@@ -28,6 +31,7 @@ protocol DetailViewModelInterface {
 protocol DetailViewModelDelegate : AnyObject {
     func pushCalendarVC()
     func pushCreateVC()
+    func pushGraphVC(graphType : GraphType)
 }
 
 class DetailViewModel : DetailViewModelInterface {
@@ -37,6 +41,8 @@ class DetailViewModel : DetailViewModelInterface {
     // MARK: - Observer (Subject)
     var dateButtonSubject : PublishSubject<Void>
     var plusButtonSubject : PublishSubject<Void>
+    var circleGraphButtonSubject : PublishSubject<GraphType>
+    var barGraphButtonSubject : PublishSubject<GraphType>
     var totalDataSubject : BehaviorSubject<ButtonType>
     var incomeDataSubject : PublishSubject<ButtonType>
     var expendDataSubject : PublishSubject<ButtonType>
@@ -53,6 +59,8 @@ class DetailViewModel : DetailViewModelInterface {
     // MARK: - Observer
     var dateButtonObserver: AnyObserver<Void>
     var plusButtonObserver: AnyObserver<Void>
+    var circleGraphButtonObserver: AnyObserver<GraphType>
+    var barGraphButtonObserver: AnyObserver<GraphType>
     var totalDataObserver: AnyObserver<ButtonType>
     var incomeDataObserver: AnyObserver<ButtonType>
     var expendDataObserver: AnyObserver<ButtonType>
@@ -95,6 +103,8 @@ class DetailViewModel : DetailViewModelInterface {
         // MARK: - Observer (Subject)
         dateButtonSubject = PublishSubject<Void>()
         plusButtonSubject = PublishSubject<Void>()
+        barGraphButtonSubject = PublishSubject<GraphType>()
+        circleGraphButtonSubject = PublishSubject<GraphType>()
         totalDataSubject = BehaviorSubject<ButtonType>(value: .total)
         incomeDataSubject = PublishSubject<ButtonType>()
         expendDataSubject = PublishSubject<ButtonType>()
@@ -108,6 +118,8 @@ class DetailViewModel : DetailViewModelInterface {
         // MARK: - Observer
         dateButtonObserver = dateButtonSubject.asObserver()
         plusButtonObserver = plusButtonSubject.asObserver()
+        barGraphButtonObserver = barGraphButtonSubject.asObserver()
+        circleGraphButtonObserver = circleGraphButtonSubject.asObserver()
         totalDataObserver = totalDataSubject.asObserver()
         incomeDataObserver = incomeDataSubject.asObserver()
         expendDataObserver = expendDataSubject.asObserver()
@@ -131,6 +143,13 @@ class DetailViewModel : DetailViewModelInterface {
         plusButtonSubject.subscribe { [weak self] _ in
             self?.delegate?.pushCreateVC()
         }.disposed(by: disposeBag)
+        
+        [circleGraphButtonSubject, barGraphButtonSubject].forEach {
+            $0.subscribe { graphType in
+                guard let graphType = graphType.element else { return }
+                self.delegate?.pushGraphVC(graphType: graphType)
+            }.disposed(by: disposeBag)
+        }
     }
     
     func setBind() {

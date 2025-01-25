@@ -56,6 +56,11 @@
 		267DDB1E2D3BC3D600F66CB8 /* SectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB1D2D3BC3D600F66CB8 /* SectionModel.swift */; };
 		267DDB282D3FBB6900F66CB8 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDB272D3FBB6900F66CB8 /* FSCalendar */; };
 		267DDB2A2D3FC59700F66CB8 /* Reactive+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB292D3FC59700F66CB8 /* Reactive+Extension.swift */; };
+		267DDB2C2D44C40A00F66CB8 /* GraphRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB2B2D44C40A00F66CB8 /* GraphRepository.swift */; };
+		267DDB2E2D44CAB600F66CB8 /* MockGraphRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB2D2D44CAB600F66CB8 /* MockGraphRepository.swift */; };
+		267DDB392D44F3F800F66CB8 /* GraphViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB382D44F3F800F66CB8 /* GraphViewModel.swift */; };
+		267DDB3D2D44FFB400F66CB8 /* GraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB3C2D44FFB400F66CB8 /* GraphViewController.swift */; };
+		267DDB3F2D44FFE100F66CB8 /* GraphCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB3E2D44FFE100F66CB8 /* GraphCoordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -102,6 +107,11 @@
 		267DDB1B2D3BC3AD00F66CB8 /* YearMonth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearMonth.swift; sourceTree = "<group>"; };
 		267DDB1D2D3BC3D600F66CB8 /* SectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionModel.swift; sourceTree = "<group>"; };
 		267DDB292D3FC59700F66CB8 /* Reactive+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reactive+Extension.swift"; sourceTree = "<group>"; };
+		267DDB2B2D44C40A00F66CB8 /* GraphRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphRepository.swift; sourceTree = "<group>"; };
+		267DDB2D2D44CAB600F66CB8 /* MockGraphRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGraphRepository.swift; sourceTree = "<group>"; };
+		267DDB382D44F3F800F66CB8 /* GraphViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphViewModel.swift; sourceTree = "<group>"; };
+		267DDB3C2D44FFB400F66CB8 /* GraphViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphViewController.swift; sourceTree = "<group>"; };
+		267DDB3E2D44FFE100F66CB8 /* GraphCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +179,7 @@
 		267DD9C12D211AF800F66CB8 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				267DDB2F2D44F38800F66CB8 /* Graph */,
 				267DDABF2D33C86200F66CB8 /* Main */,
 				267DDAC02D33C87300F66CB8 /* Detail */,
 				267DDABE2D33C84F00F66CB8 /* Create */,
@@ -286,7 +297,9 @@
 				267DDAF62D3564E300F66CB8 /* Entity.swift */,
 				267DDAF82D37EE6A00F66CB8 /* RepositoryInterFace.swift */,
 				267DDAFA2D37EE8200F66CB8 /* DataRepository.swift */,
+				267DDB2B2D44C40A00F66CB8 /* GraphRepository.swift */,
 				267DDB0F2D3A927600F66CB8 /* MockDataRepository.swift */,
+				267DDB2D2D44CAB600F66CB8 /* MockGraphRepository.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -298,6 +311,24 @@
 				267DDB1D2D3BC3D600F66CB8 /* SectionModel.swift */,
 			);
 			path = Struct;
+			sourceTree = "<group>";
+		};
+		267DDB2F2D44F38800F66CB8 /* Graph */ = {
+			isa = PBXGroup;
+			children = (
+				267DDB3A2D44F3FB00F66CB8 /* BarGraph */,
+				267DDB3C2D44FFB400F66CB8 /* GraphViewController.swift */,
+				267DDB382D44F3F800F66CB8 /* GraphViewModel.swift */,
+				267DDB3E2D44FFE100F66CB8 /* GraphCoordinator.swift */,
+			);
+			path = Graph;
+			sourceTree = "<group>";
+		};
+		267DDB3A2D44F3FB00F66CB8 /* BarGraph */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = BarGraph;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -393,12 +424,14 @@
 				267DDABA2D3391A500F66CB8 /* CreateCoordinator.swift in Sources */,
 				267DD9F02D24405900F66CB8 /* CalendarViewController.swift in Sources */,
 				267DD9D22D211AF800F66CB8 /* DetailTableViewCell.swift in Sources */,
+				267DDB2E2D44CAB600F66CB8 /* MockGraphRepository.swift in Sources */,
 				267DDAC62D33C93200F66CB8 /* CreateViewModel.swift in Sources */,
 				267DD9D12D211AF800F66CB8 /* CreateViewController.swift in Sources */,
 				267DDA802D315DF900F66CB8 /* UIViewController+Extension.swift in Sources */,
 				267DDA2A2D2FCEC000F66CB8 /* CreateCollectionViewCell.swift in Sources */,
 				267DDB102D3A927600F66CB8 /* MockDataRepository.swift in Sources */,
 				267DDAB62D327A9D00F66CB8 /* AppCoordinator.swift in Sources */,
+				267DDB3F2D44FFE100F66CB8 /* GraphCoordinator.swift in Sources */,
 				267DD9CD2D211AF800F66CB8 /* UIColor+Extension.swift in Sources */,
 				267DD9D52D211AF800F66CB8 /* AppDelegate.swift in Sources */,
 				267DDA832D31757100F66CB8 /* Coordinator.swift in Sources */,
@@ -414,7 +447,9 @@
 				267DDB2A2D3FC59700F66CB8 /* Reactive+Extension.swift in Sources */,
 				267DDB122D3B694A00F66CB8 /* Date+Extension.swift in Sources */,
 				267DD9CC2D211AF800F66CB8 /* UIButton+Extension.swift in Sources */,
+				267DDB392D44F3F800F66CB8 /* GraphViewModel.swift in Sources */,
 				267DDAFB2D37EE8200F66CB8 /* DataRepository.swift in Sources */,
+				267DDB2C2D44C40A00F66CB8 /* GraphRepository.swift in Sources */,
 				267DDAB22D32797B00F66CB8 /* MainCoordinator.swift in Sources */,
 				267DD9D32D211AF800F66CB8 /* DetailViewController.swift in Sources */,
 				267DDAB82D338ED100F66CB8 /* CalendarCoordinator.swift in Sources */,
@@ -423,6 +458,7 @@
 				267DDA242D2AD23D00F66CB8 /* CALayer+Extension.swift in Sources */,
 				267DDAC82D33C93A00F66CB8 /* CalendarViewModel.swift in Sources */,
 				267DDA322D300F9E00F66CB8 /* RealmDB.swift in Sources */,
+				267DDB3D2D44FFB400F66CB8 /* GraphViewController.swift in Sources */,
 				267DDB1E2D3BC3D600F66CB8 /* SectionModel.swift in Sources */,
 				267DDABD2D33C7C900F66CB8 /* MainViewModel.swift in Sources */,
 			);
