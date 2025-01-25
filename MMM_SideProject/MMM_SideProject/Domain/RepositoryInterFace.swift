@@ -21,4 +21,6 @@ protocol DataRepositoryInterface {
 }
 
 // TODO: - GraphRepositoryInterface 생성. -> MainViewModel
-
+protocol GraphRepositoryInterface {
+    
+}
