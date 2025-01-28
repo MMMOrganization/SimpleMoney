@@ -8,17 +8,26 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import SwiftUI
 
 class GraphViewController: UIViewController {
     
     var disposeBag : DisposeBag = DisposeBag()
     var viewModel : GraphViewModelInterface!
     
+    let hostingController = UIHostingController(rootView: CircleGraphView(entityData: iPhoneOperationSystem.dummyData()))
+    
     lazy var dismissButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
+    }()
+    
+    lazy var graphView : UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     lazy var dismissButtonItem = UIBarButtonItem(customView: dismissButton)
@@ -43,6 +52,21 @@ class GraphViewController: UIViewController {
     func setLayout() {
         self.view.backgroundColor = .white
         self.navigationItem.leftBarButtonItem = dismissButtonItem
+        
+        addChild(hostingController)
+        
+        view.addSubview(graphView)
+        graphView.addSubview(hostingController.view)
+        hostingController.view.frame = graphView.frame
+        hostingController.didMove(toParent: self)
+        
+        NSLayoutConstraint.activate([
+            graphView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+            graphView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            
+            hostingController.view.centerYAnchor.constraint(equalTo: self.graphView.centerYAnchor),
+            hostingController.view.centerXAnchor.constraint(equalTo: self.graphView.centerXAnchor),
+        ])
     }
     
     func setReactive() {

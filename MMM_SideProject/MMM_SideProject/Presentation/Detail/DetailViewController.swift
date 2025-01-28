@@ -36,14 +36,14 @@ final class DetailViewController: UIViewController {
     
     lazy var circleGraphBarButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setImage(UIImage(named: "DateImage2"), for: .normal)
+        button.setImage(UIImage(named: "circleGraph"), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
     }()
     
     lazy var barGraphBarButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setImage(UIImage(named: "DateImage2"), for: .normal)
+        button.setImage(UIImage(named: "barGraph"), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
     }()
