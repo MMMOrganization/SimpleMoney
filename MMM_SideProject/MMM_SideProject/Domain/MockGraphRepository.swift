@@ -8,7 +8,7 @@
 import Foundation
 
 class MockGraphRepository : GraphRepositoryInterface {
-
+    
 }
 
 // TODO: - 메인화면 없애고 다 네비게이션 화면으로 전환하는 것은 어떨까?

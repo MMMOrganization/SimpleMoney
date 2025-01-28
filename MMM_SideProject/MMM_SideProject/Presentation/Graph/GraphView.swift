@@ -7,33 +7,38 @@
 
 import SwiftUI
 import Charts
-import Combine
+
+struct iPhoneOperationSystem {
+    let version: String
+    let count: Int
+    
+    static func dummyData() -> [iPhoneOperationSystem] {
+        return [
+            iPhoneOperationSystem(version: "16.0", count: 81),
+            iPhoneOperationSystem(version: "15.0", count: 13),
+            iPhoneOperationSystem(version: "14.0", count: 6)
+        ]
+    }
+}
 
 struct CircleGraphView: View {
     @StateObject private var viewModel: GraphViewModelForSwiftUI
     
-    private var cancellables = Set<AnyCancellable>()
-    
-    init(viewModel: GraphViewModelForSwiftUI) {
+    init(viewModel: GraphViewModelForSwiftUI = GraphViewModelForSwiftUI()) {
         _viewModel = StateObject(wrappedValue: viewModel)
-        
-        viewModel.$selectedStyle
-            .sink { expendCount in
-                print(expendCount)
-            }.store(in: &cancellables)
     }
     
     var body: some View {
         VStack {
-            Chart(viewModel.getEntityData(), id: \.expendType) { element in
+            Chart(viewModel.entityData, id: \.version) { element in
                 SectorMark(
-                    angle: .value("지출 타입", element.count),
+                    angle: .value("Usage", element.count),
                     innerRadius: .ratio(0.618),
                     angularInset: 1.5
                 )
                 .cornerRadius(5.0)
-                .opacity((element.expendType.rawValue == viewModel.selectedStyle?.expendType.rawValue ?? "") ? 1 : 0.3)
-                .foregroundStyle(by: .value("expendType", element.expendType.rawValue))
+                .opacity((element.version == viewModel.selectedStyle?.version ?? "") ? 1 : 0.3)
+                .foregroundStyle(by: .value("Version", element.version))
             }
             .chartLegend(.hidden)
             .chartAngleSelection(value: $viewModel.selectedData)
@@ -45,10 +50,10 @@ struct CircleGraphView: View {
                     
                     VStack {
                         if let selectedStyle = viewModel.selectedStyle {
-                            Text("지출 타입")
+                            Text("Usage")
                                 .font(.callout)
                             
-                            Text("iOS \(selectedStyle.expendType.rawValue)")
+                            Text("iOS \(selectedStyle.version)")
                                 .font(.title.bold())
                             
                             Text("\(viewModel.calculatePercentage(for: selectedStyle)) %")
@@ -62,5 +67,9 @@ struct CircleGraphView: View {
             }
         }
     }
+}
+
+#Preview {
+    CircleGraphView()
 }
 
