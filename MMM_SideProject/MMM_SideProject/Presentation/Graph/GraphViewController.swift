@@ -15,7 +15,7 @@ class GraphViewController: UIViewController {
     var disposeBag : DisposeBag = DisposeBag()
     var viewModel : GraphViewModelInterface!
     
-    let hostingController = UIHostingController(rootView: CircleGraphView(entityData: iPhoneOperationSystem.dummyData()))
+    let hostingController = UIHostingController(rootView: CircleGraphView(viewModel: GraphViewModelForSwiftUI()))
     
     lazy var dismissButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))

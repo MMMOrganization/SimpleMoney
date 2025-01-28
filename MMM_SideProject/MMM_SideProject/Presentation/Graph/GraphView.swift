@@ -21,53 +21,27 @@ struct iPhoneOperationSystem {
     }
 }
 
-struct CircleGraphView : View {
+struct CircleGraphView: View {
+    @StateObject private var viewModel: GraphViewModelForSwiftUI
     
-    var entityData: [iPhoneOperationSystem]
-    
-    @State var selectedData: Double?
-    
-    let cumulativeSalesRangesForStyle: [(version: String, range: Range<Double>)]
-    
-    init(entityData: [iPhoneOperationSystem]) {
-        self.entityData = entityData
-        
-        var cumulative = 0.0
-        
-        self.cumulativeSalesRangesForStyle = entityData.map {
-            let newCumulative = cumulative + Double($0.count)
-            let result = (version: $0.version, range: cumulative..<newCumulative)
-            cumulative = newCumulative
-            return result
-            
-        }
-    }
-    
-    var selectedStyle: iPhoneOperationSystem? {
-        if let selectedData,
-           let selectedIndex = cumulativeSalesRangesForStyle
-            .firstIndex(where: { $0.range.contains(selectedData)}) {
-            return entityData[selectedIndex]
-        }
-        
-        return nil
+    init(viewModel: GraphViewModelForSwiftUI = GraphViewModelForSwiftUI()) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
         VStack {
-            
-            Chart(entityData, id: \.version) { element in
+            Chart(viewModel.entityData, id: \.version) { element in
                 SectorMark(
                     angle: .value("Usage", element.count),
                     innerRadius: .ratio(0.618),
                     angularInset: 1.5
                 )
                 .cornerRadius(5.0)
-                .opacity((element.version == selectedStyle?.version ?? "") ? 1 : 0.3)
+                .opacity((element.version == viewModel.selectedStyle?.version ?? "") ? 1 : 0.3)
                 .foregroundStyle(by: .value("Version", element.version))
             }
             .chartLegend(.hidden)
-            .chartAngleSelection(value: $selectedData)
+            .chartAngleSelection(value: $viewModel.selectedData)
             .padding()
             .scaledToFit()
             .chartBackground { chartProxy in
@@ -75,29 +49,27 @@ struct CircleGraphView : View {
                     let frame = geometry[chartProxy.plotFrame!]
                     
                     VStack {
-                        if let selectedStyle {
+                        if let selectedStyle = viewModel.selectedStyle {
                             Text("Usage")
                                 .font(.callout)
                             
                             Text("iOS \(selectedStyle.version)")
                                 .font(.title.bold())
                             
-                            let percentage = Int(Double(selectedStyle.count) / Double(entityData.reduce(into: 0) { $0 += $1.count}) * 100)
-                            
-                            Text("\(percentage) %")
-
+                            Text("\(viewModel.calculatePercentage(for: selectedStyle)) %")
                         }
-                        
                     }
                     .position(x: frame.midX, y: frame.midY)
                 }
-                
+            }
+            .onTapGesture {
+                viewModel.handleSelection()
             }
         }
     }
 }
 
 #Preview {
-    CircleGraphView(entityData: iPhoneOperationSystem.dummyData())
+    CircleGraphView()
 }
 
