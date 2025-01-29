@@ -14,8 +14,9 @@ class GraphViewController: UIViewController {
     
     var disposeBag : DisposeBag = DisposeBag()
     var viewModel : GraphViewModelInterface!
-    
-    let hostingController = UIHostingController(rootView: CircleGraphView(viewModel: GraphViewModelForSwiftUI(repository: MockDataRepository())))
+    // MARK: - Graph 클릭 이벤트를 받기 위해서 사용되는 ViewModel
+    // 동일한 인스턴스를 전달하여 GraphViewController 와, CircleGraphView 가 모두 참조할 수 있도록 함.
+    var graphViewModel : GraphViewModelForSwiftUI!
     
     lazy var dismissButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
@@ -24,16 +25,17 @@ class GraphViewController: UIViewController {
         return button
     }()
     
-    lazy var graphView : UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+    lazy var dismissButtonItem = UIBarButtonItem(customView: dismissButton)
+
+    lazy var graphView : GraphView = {
+        let view = GraphView(frame: CGRect(), viewModel: graphViewModel)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    lazy var dismissButtonItem = UIBarButtonItem(customView: dismissButton)
-
-    init(viewModel : GraphViewModelInterface) {
+    init(viewModel : GraphViewModelInterface, graphViewModel : GraphViewModelForSwiftUI) {
         self.viewModel = viewModel
+        self.graphViewModel = graphViewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -53,19 +55,13 @@ class GraphViewController: UIViewController {
         self.view.backgroundColor = .white
         self.navigationItem.leftBarButtonItem = dismissButtonItem
         
-        addChild(hostingController)
-        
-        view.addSubview(graphView)
-        graphView.addSubview(hostingController.view)
-        hostingController.view.frame = graphView.frame
-        hostingController.didMove(toParent: self)
+        self.view.addSubview(graphView)
         
         NSLayoutConstraint.activate([
-            graphView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+            graphView.widthAnchor.constraint(equalToConstant: 300),
+            graphView.heightAnchor.constraint(equalToConstant: 300),
+            graphView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 30),
             graphView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            
-            hostingController.view.centerYAnchor.constraint(equalTo: self.graphView.centerYAnchor),
-            hostingController.view.centerXAnchor.constraint(equalTo: self.graphView.centerXAnchor),
         ])
     }
     
