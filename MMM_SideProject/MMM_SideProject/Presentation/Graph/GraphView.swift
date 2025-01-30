@@ -44,11 +44,6 @@ struct CircleGraphView: View {
     
     init(viewModel: GraphViewModelForSwiftUI) {
         _viewModel = StateObject(wrappedValue: viewModel)
-        
-        viewModel.$selectedStyle
-            .sink { expendCount in
-                print(expendCount)
-            }.store(in: &cancellables)
     }
     
     var body: some View {

@@ -26,8 +26,8 @@ class MockDataRepository : DataRepositoryInterface {
     }
     
     // MARK: - CalendarVC 에서는 항상 totalData와 하루의 데이터만 사용하기 때문에 이 함수를 사용한다.
-    
     /// For Calendar Function
+    /// 하루치에 해당하는 데이터를 가져와야 함.
     func readDataOfDay() -> [Entity] {
         return [
             Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named:      "DateImage")!),
@@ -51,6 +51,16 @@ class MockDataRepository : DataRepositoryInterface {
         amountsDict["2025-01-22"] = Int.random(in: -10000...10000)
         
         return amountsDict
+    }
+    
+    // MARK: - GraphViewModel에서 사용하는 함수
+    /// ExpendType 에 따른 데이터를 가져와야 함.
+    func readDataForExpendType(of type : ExpendType) -> [Entity] {
+        return [
+            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+        ]
     }
     
     func setState(type : ButtonType) {

@@ -13,14 +13,10 @@ protocol DataRepositoryInterface {
     func readDate() -> String
     func readDataOfDay() -> [Entity]
     func readAmountsDict() -> [String : Int]
+    func readDataForExpendType(of type : ExpendType) -> [Entity]
     
     func setDate(type : DateButtonType)
     func setState(type : ButtonType)
     
     func setDay(of day : Int)
-}
-
-// TODO: - GraphRepositoryInterface 생성. -> MainViewModel
-protocol GraphRepositoryInterface {
-    
 }
