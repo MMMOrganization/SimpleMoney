@@ -64,6 +64,8 @@ class GraphViewController: UIViewController {
     func setTableView() {
         tableView.dataSource = nil
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
+        tableView.separatorStyle = .none
+        tableView.rowHeight = 65
     }
     
     func setLayout() {
@@ -79,8 +81,8 @@ class GraphViewController: UIViewController {
             graphView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 30),
             graphView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             
-            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
+            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
             tableView.topAnchor.constraint(equalTo: self.graphView.bottomAnchor, constant: 30),
             tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
         ])
@@ -114,4 +116,9 @@ class GraphViewController: UIViewController {
 // viewmodel anyobserver로 받고
 // cell에 뿌려주고
 // cell이 받으면 끗
+
+// TODO: - 날짜 만들어야 함.
+// TODO: - 1. 날짜 설정
+// TODO: - 2. 날짜 달에 맞춰서 그래프 다시 그리기
+// TODO: - 3. 다시 그려지면 Cell 데이터가 변경되며 다시 바인딩
 

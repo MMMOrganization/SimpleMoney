@@ -33,7 +33,15 @@ class CreateViewController: UIViewController {
         return button
     }()
     
+    lazy var saveButton : UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
+        button.setTitle("저장", for: .normal)
+        button.setTitleColor(.mainColor, for: .normal)
+        return button
+    }()
+    
     lazy var dismissButtonItem = UIBarButtonItem(customView: dismissButton)
+    lazy var saveButtonItem = UIBarButtonItem(customView: saveButton)
     
     let expendButton : UIButton = {
         let button = UIButton()
@@ -150,8 +158,7 @@ class CreateViewController: UIViewController {
     }
     
     func setCollectionView() {
-        iconCollectionView.dataSource = self
-        iconCollectionView.delegate = self
+        iconCollectionView.dataSource = nil
         
         iconCollectionView.register(CreateCollectionViewCell.self, forCellWithReuseIdentifier: CreateCollectionViewCell.identifier)
     }
@@ -219,22 +226,23 @@ class CreateViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.dismissButtonObserver)
             .disposed(by: disposeBag)
-    }
-}
-
-extension CreateViewController : UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 12
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = iconCollectionView.dequeueReusableCell(withReuseIdentifier: CreateCollectionViewCell.identifier, for: indexPath) as! CreateCollectionViewCell
+        expendButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { .expend }
+            .bind(to: viewModel.createTypeObserver)
+            .disposed(by: disposeBag)
         
-        cell.contentView.clipsToBounds = true
-        cell.contentView.layer.cornerRadius = 10
-        cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.grayColorString, alpha: 0.20)
+        incomeButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { .income }
+            .bind(to: viewModel.createTypeObserver)
+            .disposed(by: disposeBag)
         
-        return cell
+        viewModel.dataObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: iconCollectionView.rx.items(cellIdentifier: CreateCollectionViewCell.identifier, cellType: CreateCollectionViewCell.self)) { (index, item, cell) in
+                cell.configure(item : item)
+            }.disposed(by: disposeBag)
     }
 }
