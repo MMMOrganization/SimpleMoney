@@ -306,7 +306,7 @@ final class DetailViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: self.separatorLine.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             
             contentAddButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
             contentAddButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -10),

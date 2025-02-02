@@ -244,5 +244,8 @@ class CreateViewController: UIViewController {
             .bind(to: iconCollectionView.rx.items(cellIdentifier: CreateCollectionViewCell.identifier, cellType: CreateCollectionViewCell.self)) { (index, item, cell) in
                 cell.configure(item : item)
             }.disposed(by: disposeBag)
+        
+        // TODO: - DateButton 눌렀을 때 날짜 설정할 수 있도록.
+        // TODO: - ToolBar를 사용하여 날짜를 조절할 수 있도록.
     }
 }
