@@ -72,9 +72,15 @@ class ToastView : UIViewController {
     func setReactive() {
         // MARK: - Date를 설정할 때마다 Date를 추적하는 스트림
         datePicker.rx.date
-            .subscribe { date in
-                print(date.element)
+            .observe(on: MainScheduler.instance)
+            .map {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                let formattedDate = dateFormatter.string(from: $0)
+                return formattedDate.replacingOccurrences(of: "-", with: ".")
             }
+            .bind(to: viewModel.stringDateObserver)
+            .disposed(by: disposeBag)
     }
 }
 
