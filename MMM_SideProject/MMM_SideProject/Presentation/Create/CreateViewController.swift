@@ -11,6 +11,73 @@ import RxCocoa
 
 // AnyObject 를 사용하여 Class만을 강제해서, weak의 사용이 가능해짐.
 
+class ToastView : UIViewController {
+    
+    // TODO: - ViewModel을 받아서 DatePicker가 변경될 때마다 Date를 전달할 수 있도록 하자.
+    var viewModel : CreateViewModelInterface!
+    var disposeBag : DisposeBag = .init()
+    
+    init(viewModel: CreateViewModelInterface) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        print("CreateViewController ToastView - Initializer 에러")
+    }
+    
+    lazy var tempView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 20
+        view.backgroundColor = .white
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.mainColor.cgColor
+        return view
+    }()
+    
+    let datePicker : UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        picker.preferredDatePickerStyle = .wheels
+        picker.datePickerMode = .date
+        picker.locale = Locale(identifier: "ko_KR")
+        return picker
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .clear
+        
+        setLayout()
+        setReactive()
+    }
+    
+    func setLayout() {
+        view.addSubview(tempView)
+        tempView.addSubview(datePicker)
+        
+        NSLayoutConstraint.activate([
+            tempView.widthAnchor.constraint(equalToConstant: self.view.frame.width),
+            tempView.heightAnchor.constraint(equalToConstant: self.view.frame.height - 600),
+            tempView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            
+            datePicker.centerXAnchor.constraint(equalTo: self.tempView.centerXAnchor),
+            datePicker.centerYAnchor.constraint(equalTo: self.tempView.centerYAnchor)
+        ])
+    }
+    
+    func setReactive() {
+        // MARK: - Date를 설정할 때마다 Date를 추적하는 스트림
+        datePicker.rx.date
+            .subscribe { date in
+                print(date.element)
+            }
+    }
+}
+
 class CreateViewController: UIViewController {
     
     let disposeBag : DisposeBag = DisposeBag()
@@ -33,7 +100,15 @@ class CreateViewController: UIViewController {
         return button
     }()
     
+    lazy var saveButton : UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
+        button.setTitle("저장", for: .normal)
+        button.setTitleColor(.mainColor, for: .normal)
+        return button
+    }()
+    
     lazy var dismissButtonItem = UIBarButtonItem(customView: dismissButton)
+    lazy var saveButtonItem = UIBarButtonItem(customView: saveButton)
     
     let expendButton : UIButton = {
         let button = UIButton()
@@ -59,12 +134,13 @@ class CreateViewController: UIViewController {
         return button
     }()
     
-    let dateButton : UIButton = {
+    lazy var dateButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("2024.12.04. 월요일", for: .normal)
         button.setBackgroundColor(UIColor(hexCode: ColorConst.mainColorString, alpha: 0.20), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        button.addTarget(self, action: #selector(buttontapped), for: .touchUpInside)
         button.setTitleColor(.blackColor, for: .normal)
         button.clipsToBounds = true
         return button
@@ -115,7 +191,7 @@ class CreateViewController: UIViewController {
         //let tempWidth = (UIScreen.main.bounds.width - 15 * 3) / 4
         
         flowLayout.scrollDirection = .vertical
-        flowLayout.itemSize = CGSize(width: 71, height: 71)
+        flowLayout.itemSize = CGSize(width: 70, height: 70)
         flowLayout.minimumInteritemSpacing = 23 // 아이템 사이 간격
         flowLayout.minimumLineSpacing = 20 // 줄 간격
         
@@ -150,10 +226,18 @@ class CreateViewController: UIViewController {
     }
     
     func setCollectionView() {
-        iconCollectionView.dataSource = self
-        iconCollectionView.delegate = self
+        iconCollectionView.dataSource = nil
         
         iconCollectionView.register(CreateCollectionViewCell.self, forCellWithReuseIdentifier: CreateCollectionViewCell.identifier)
+    }
+    
+    @objc func buttontapped() {
+        let dateVC = ToastView(viewModel: viewModel)
+        addChild(dateVC)
+        view.addSubview(dateVC.view)
+        dateVC.didMove(toParent: self)
+        
+        dateVC.view.frame = view.bounds
     }
 
     func setLayout() {
@@ -219,22 +303,26 @@ class CreateViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.dismissButtonObserver)
             .disposed(by: disposeBag)
-    }
-}
-
-extension CreateViewController : UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 12
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = iconCollectionView.dequeueReusableCell(withReuseIdentifier: CreateCollectionViewCell.identifier, for: indexPath) as! CreateCollectionViewCell
+        expendButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { .expend }
+            .bind(to: viewModel.createTypeObserver)
+            .disposed(by: disposeBag)
         
-        cell.contentView.clipsToBounds = true
-        cell.contentView.layer.cornerRadius = 10
-        cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.grayColorString, alpha: 0.20)
+        incomeButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { .income }
+            .bind(to: viewModel.createTypeObserver)
+            .disposed(by: disposeBag)
         
-        return cell
+        viewModel.dataObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: iconCollectionView.rx.items(cellIdentifier: CreateCollectionViewCell.identifier, cellType: CreateCollectionViewCell.self)) { (index, item, cell) in
+                cell.configure(item : item)
+            }.disposed(by: disposeBag)
+        
+        // TODO: - DateButton 눌렀을 때 날짜 설정할 수 있도록.
+        // TODO: - ToolBar를 사용하여 날짜를 조절할 수 있도록.
     }
 }

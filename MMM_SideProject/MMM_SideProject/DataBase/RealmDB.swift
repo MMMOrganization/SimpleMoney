@@ -15,6 +15,8 @@ class UserDB : Object {
     @Persisted var type : CreateType
     @Persisted var amount : Int
     @Persisted var iconImageURL : String?
+    
+    @Persisted var expendType : ExpendType?
 
     convenience init(type : CreateType, amount : Int) {
         self.init()

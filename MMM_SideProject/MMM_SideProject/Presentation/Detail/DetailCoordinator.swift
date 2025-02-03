@@ -36,7 +36,7 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
     }
     
     func pushGraphVC(graphType: GraphType) {
-        let graphCoordinator = GraphCoordinator(navigationController: navigationController, graphStyle: graphType)
+        let graphCoordinator = GraphCoordinator(navigationController: navigationController)
         graphCoordinator.parentCoordinator = self
         addChild(graphCoordinator)
         

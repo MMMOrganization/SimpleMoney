@@ -12,20 +12,19 @@ class GraphCoordinator : Coordinator, GraphViewModelDelegate {
     weak var parentCoordinator : Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController : UINavigationController
-    var graphStyle : GraphType
     
-    init(navigationController : UINavigationController, graphStyle : GraphType) {
+    init(navigationController : UINavigationController) {
         self.navigationController = navigationController
-        self.graphStyle = graphStyle
     }
     
     func start() {
         // TODO: - graphStyle 에 따라서 표현하는 View가 달라짐.
-        let graphRepository = MockGraphRepository()
-        let graphViewModel = GraphViewModel(repository: graphRepository, graphStyle: graphStyle)
-        graphViewModel.delegate = self
+        let dataRepository = MockDataRepository()
+        let viewModel = GraphViewModel(repository: dataRepository)
+        let graphViewModel = GraphViewModelForSwiftUI(repository: dataRepository)
+        viewModel.delegate = self
         
-        let graphViewController = GraphViewController(viewModel: graphViewModel)
+        let graphViewController = GraphViewController(viewModel: viewModel, graphViewModel: graphViewModel)
         self.navigationController.pushViewController(graphViewController, animated: true)
     }
     

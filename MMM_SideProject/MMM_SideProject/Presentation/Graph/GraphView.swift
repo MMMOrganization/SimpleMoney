@@ -9,6 +9,34 @@ import SwiftUI
 import Charts
 import Combine
 
+final class GraphView : UIView {
+    private let hostingController : UIHostingController<CircleGraphView>
+    
+    init(frame : CGRect, viewModel : GraphViewModelForSwiftUI) {
+        let circleGraphView = CircleGraphView(viewModel: viewModel)
+        
+        self.hostingController = UIHostingController(rootView: circleGraphView)
+        super.init(frame: frame)
+        setUpHostingController()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setUpHostingController() {
+        self.addSubview(hostingController.view)
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            hostingController.view.topAnchor.constraint(equalTo: topAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: bottomAnchor),
+            hostingController.view.leadingAnchor.constraint(equalTo: leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
+    }
+}
+
 struct CircleGraphView: View {
     @StateObject private var viewModel: GraphViewModelForSwiftUI
     
@@ -16,11 +44,6 @@ struct CircleGraphView: View {
     
     init(viewModel: GraphViewModelForSwiftUI) {
         _viewModel = StateObject(wrappedValue: viewModel)
-        
-        viewModel.$selectedStyle
-            .sink { expendCount in
-                print(expendCount)
-            }.store(in: &cancellables)
     }
     
     var body: some View {

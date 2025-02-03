@@ -12,16 +12,6 @@ import RxSwift
 import RxCocoa
 
 // Dummy 객체 (테스트용)
-enum ExpendType : String {
-    case date1 = "date1"
-    case date2 = "date2"
-    case date3 = "date3"
-}
-
-struct ExpendCount {
-    let expendType : ExpendType
-    let count : Int
-}
 
 class GraphViewModelForSwiftUI: ObservableObject {
     @Published var selectedData: Double?
