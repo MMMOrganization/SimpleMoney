@@ -226,8 +226,14 @@ final class DetailViewController: UIViewController {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.scrollEdgeAppearance = 
         navigationController?.navigationBar.standardAppearance
+        navigationController?.isToolbarHidden = false
         navigationItem.rightBarButtonItem = calendarBarButtonItem
         navigationItem.leftBarButtonItems = [circleGraphBarButtonItem, barGraphBarButtonItem]
+        
+        let appearance = UIToolbarAppearance()
+        appearance.backgroundColor = .orange
+        navigationController?.toolbar.scrollEdgeAppearance = appearance
+        
         view.backgroundColor = .white
         
         view.addSubview(topView)
