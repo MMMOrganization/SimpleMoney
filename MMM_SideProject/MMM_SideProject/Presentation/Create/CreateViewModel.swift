@@ -12,6 +12,7 @@ import RxCocoa
 protocol CreateViewModelInterface {
     var dismissButtonObserver : AnyObserver<Void> { get }
     var createTypeObserver : AnyObserver<CreateType> { get }
+    var stringDateObserver : AnyObserver<String> { get }
     
     var dataObservable : Observable<[CreateCellIcon]> { get }
 }
@@ -26,11 +27,13 @@ class CreateViewModel : CreateViewModelInterface {
     
     var dismissButtonSubject: PublishSubject<Void>
     var createTypeSubject : BehaviorSubject<CreateType>
+    var stringDateSubject : PublishSubject<String>
     
     var dataSubject : BehaviorSubject<[CreateCellIcon]>
     
     var dismissButtonObserver: AnyObserver<Void>
     var createTypeObserver: AnyObserver<CreateType>
+    var stringDateObserver: AnyObserver<String>
     
     var dataObservable: Observable<[CreateCellIcon]>
     
@@ -45,11 +48,13 @@ class CreateViewModel : CreateViewModelInterface {
         
         dismissButtonSubject = PublishSubject<Void>()
         createTypeSubject = BehaviorSubject<CreateType>(value: .expend)
+        stringDateSubject = PublishSubject<String>()
         
         dataSubject = BehaviorSubject<[CreateCellIcon]>(value: repository.readDataForCreateCell(of: createType))
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
         createTypeObserver = createTypeSubject.asObserver()
+        stringDateObserver = stringDateSubject.asObserver()
         
         dataObservable = dataSubject
         
