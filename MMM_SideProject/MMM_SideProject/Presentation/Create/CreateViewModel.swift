@@ -13,8 +13,11 @@ protocol CreateViewModelInterface {
     var dismissButtonObserver : AnyObserver<Void> { get }
     var createTypeObserver : AnyObserver<CreateType> { get }
     var stringDateObserver : AnyObserver<String> { get }
+    var stringTypeObserver : AnyObserver<String> { get }
     
     var dataObservable : Observable<[CreateCellIcon]> { get }
+    var stringDateObservable : Observable<String> { get }
+    var stringTypeObservable : Observable<String> { get }
 }
 
 protocol CreateViewModelDelegate : AnyObject {
@@ -23,19 +26,26 @@ protocol CreateViewModelDelegate : AnyObject {
 
 class CreateViewModel : CreateViewModelInterface {
     
+    // TODO: - ViewModel에서 Create로 만들어진 구조체가 있어야 함.
+    // TODO: - 구조체를 통해서 Realm 에 Create를 진행해야 함.
+    
     var disposeBag : DisposeBag = DisposeBag()
     
     var dismissButtonSubject: PublishSubject<Void>
     var createTypeSubject : BehaviorSubject<CreateType>
     var stringDateSubject : PublishSubject<String>
+    var stringTypeSubject : PublishSubject<String>
     
     var dataSubject : BehaviorSubject<[CreateCellIcon]>
     
     var dismissButtonObserver: AnyObserver<Void>
     var createTypeObserver: AnyObserver<CreateType>
     var stringDateObserver: AnyObserver<String>
+    var stringTypeObserver: AnyObserver<String>
     
     var dataObservable: Observable<[CreateCellIcon]>
+    var stringDateObservable: Observable<String>
+    var stringTypeObservable: Observable<String>
     
     weak var delegate : CreateViewModelDelegate?
     
@@ -49,14 +59,18 @@ class CreateViewModel : CreateViewModelInterface {
         dismissButtonSubject = PublishSubject<Void>()
         createTypeSubject = BehaviorSubject<CreateType>(value: .expend)
         stringDateSubject = PublishSubject<String>()
+        stringTypeSubject = PublishSubject<String>()
         
         dataSubject = BehaviorSubject<[CreateCellIcon]>(value: repository.readDataForCreateCell(of: createType))
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
         createTypeObserver = createTypeSubject.asObserver()
         stringDateObserver = stringDateSubject.asObserver()
+        stringTypeObserver = stringTypeSubject.asObserver()
         
         dataObservable = dataSubject
+        stringDateObservable = stringDateSubject
+        stringTypeObservable = stringTypeSubject
         
         setReactive()
     }
