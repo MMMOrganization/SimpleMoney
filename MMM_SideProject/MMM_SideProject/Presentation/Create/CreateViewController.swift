@@ -11,7 +11,7 @@ import RxCocoa
 
 // AnyObject 를 사용하여 Class만을 강제해서, weak의 사용이 가능해짐.
 
-class ToastView : UIViewController {
+class DateToastView : UIViewController {
     
     // TODO: - ViewModel을 받아서 DatePicker가 변경될 때마다 Date를 전달할 수 있도록 하자.
     var viewModel : CreateViewModelInterface!
@@ -24,7 +24,7 @@ class ToastView : UIViewController {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        print("CreateViewController ToastView - Initializer 에러")
+        print("CreateViewController DataToastView - Initializer 에러")
     }
     
     lazy var tempView : UIView = {
@@ -143,7 +143,7 @@ class CreateViewController: UIViewController {
     lazy var dateButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("2024.12.04. 월요일", for: .normal)
+        button.setTitle("2024.12.04", for: .normal)
         button.setBackgroundColor(UIColor(hexCode: ColorConst.mainColorString, alpha: 0.20), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .medium)
         button.addTarget(self, action: #selector(buttontapped), for: .touchUpInside)
@@ -152,7 +152,7 @@ class CreateViewController: UIViewController {
         return button
     }()
     
-    let expendTypeLabel : UILabel = {
+    let typeLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "기타"
@@ -221,6 +221,7 @@ class CreateViewController: UIViewController {
         super.viewDidLoad()
         setLayout()
         setCollectionView()
+        setGesture()
         setReactive()
         // Do any additional setup after loading the view.
     }
@@ -237,13 +238,46 @@ class CreateViewController: UIViewController {
         iconCollectionView.register(CreateCollectionViewCell.self, forCellWithReuseIdentifier: CreateCollectionViewCell.identifier)
     }
     
+    func setGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(labelClicked))
+        typeLabel.addGestureRecognizer(tapGesture)
+        typeLabel.isUserInteractionEnabled = true
+    }
+    
     @objc func buttontapped() {
-        let dateVC = ToastView(viewModel: viewModel)
+        let dateVC = DateToastView(viewModel: viewModel)
         addChild(dateVC)
         view.addSubview(dateVC.view)
         dateVC.didMove(toParent: self)
         
         dateVC.view.frame = view.bounds
+    }
+    
+    @objc func labelClicked() {
+        let textAlertController = UIAlertController(title: "", message: "지출 타입을 입력하세요.", preferredStyle: .alert)
+        
+        let cancelAlert = UIAlertAction(title: "취소", style: .cancel) { action in
+            print(action)
+        }
+        
+        let permittedAlert = UIAlertAction(title: "확인", style: .default) { [weak self] action in
+            guard let typeText = textAlertController.textFields?.first?.text, let self = self else {
+                return
+            }
+            
+            self.viewModel.stringTypeObserver.onNext(typeText)
+        }
+        
+        textAlertController.addTextField { textField in
+            textField.clipsToBounds = true
+            textField.layer.cornerRadius = 10
+            textField.keyboardType = .default
+        }
+        
+        textAlertController.addAction(cancelAlert)
+        textAlertController.addAction(permittedAlert)
+        
+        self.present(textAlertController, animated: true)
     }
 
     func setLayout() {
@@ -255,7 +289,7 @@ class CreateViewController: UIViewController {
         
         view.addSubview(topStackView)
         view.addSubview(dateButton)
-        view.addSubview(expendTypeLabel)
+        view.addSubview(typeLabel)
         view.addSubview(inputMoneyTextField)
         view.addSubview(separatorLine)
         view.addSubview(iconConstLabel)
@@ -278,12 +312,12 @@ class CreateViewController: UIViewController {
             dateButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             
             // MARK: - expendTypeLabel Layout
-            expendTypeLabel.topAnchor.constraint(equalTo: self.dateButton.bottomAnchor, constant: 15),
-            expendTypeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            typeLabel.topAnchor.constraint(equalTo: self.dateButton.bottomAnchor, constant: 15),
+            typeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             
             // MARK: - inputMoneyTextField Layout
             inputMoneyTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            inputMoneyTextField.topAnchor.constraint(equalTo: self.expendTypeLabel.bottomAnchor, constant: 15),
+            inputMoneyTextField.topAnchor.constraint(equalTo: self.typeLabel.bottomAnchor, constant: 15),
             
             // MARK: - separatorLine Layout
             separatorLine.heightAnchor.constraint(equalToConstant: 1),
@@ -329,6 +363,14 @@ class CreateViewController: UIViewController {
             }.disposed(by: disposeBag)
         
         // TODO: - DateButton 눌렀을 때 날짜 설정할 수 있도록.
-        // TODO: - ToolBar를 사용하여 날짜를 조절할 수 있도록.
+        viewModel.stringDateObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: dateButton.rx.title(for: .normal))
+            .disposed(by: disposeBag)
+        
+        viewModel.stringTypeObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: typeLabel.rx.text)
+            .disposed(by: disposeBag)
     }
 }
