@@ -161,6 +161,14 @@ class CreateViewController: UIViewController {
         return label
     }()
     
+    let typeHiddenTextField : UITextField = {
+        let tf = UITextField()
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.isHidden = true
+        tf.keyboardType = .default
+        return tf
+    }()
+    
     let inputMoneyLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -170,15 +178,11 @@ class CreateViewController: UIViewController {
         return label
     }()
     
-    lazy var inputMoneyHiddenTextField : UITextField = {
+    let inputMoneyHiddenTextField : UITextField = {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.font = UIFont(name: FontConst.mainFont, size: 35)
         tf.isHidden = true
         tf.keyboardType = .numberPad
-        // 키보드 올라오게 해야 함.
-        // 커서 땠을 때 원 표시되어야 함.
-        // , 적용되어야 함.
         return tf
     }()
     
@@ -245,17 +249,13 @@ class CreateViewController: UIViewController {
     }
     
     func setGesture() {
-        let typeTapGesture = UITapGestureRecognizer(target: self, action: #selector(labelClicked))
+        let typeTapGesture = UITapGestureRecognizer(target: self, action: #selector(typeLabelClicked))
         typeLabel.addGestureRecognizer(typeTapGesture)
         typeLabel.isUserInteractionEnabled = true
         
         let inputMoneyTapGesture = UITapGestureRecognizer(target: self, action: #selector(inputMoneyClicked))
         inputMoneyLabel.addGestureRecognizer(inputMoneyTapGesture)
         inputMoneyLabel.isUserInteractionEnabled = true
-    }
-    
-    @objc func textFieldDidChange() {
-        inputMoneyLabel.text = inputMoneyHiddenTextField.text
     }
     
     @objc func buttontapped() {
@@ -267,36 +267,14 @@ class CreateViewController: UIViewController {
         dateVC.view.frame = view.bounds
     }
     
-    @objc func labelClicked() {
-        let textAlertController = UIAlertController(title: "", message: "지출 타입을 입력하세요.", preferredStyle: .alert)
-        
-        let cancelAlert = UIAlertAction(title: "취소", style: .cancel) { action in
-            print(action)
-        }
-        
-        let permittedAlert = UIAlertAction(title: "확인", style: .default) { [weak self] action in
-            guard let typeText = textAlertController.textFields?.first?.text, let self = self else {
-                return
-            }
-            
-            self.viewModel.stringTypeObserver.onNext(typeText)
-        }
-        
-        textAlertController.addTextField { textField in
-            textField.clipsToBounds = true
-            textField.layer.cornerRadius = 10
-            textField.keyboardType = .default
-        }
-        
-        textAlertController.addAction(cancelAlert)
-        textAlertController.addAction(permittedAlert)
-        
-        self.present(textAlertController, animated: true)
-    }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         self.inputMoneyHiddenTextField.resignFirstResponder()
+        self.typeHiddenTextField.resignFirstResponder()
+    }
+    
+    @objc func typeLabelClicked() {
+        typeHiddenTextField.becomeFirstResponder()
     }
     
     @objc func inputMoneyClicked() {
@@ -313,6 +291,7 @@ class CreateViewController: UIViewController {
         view.addSubview(topStackView)
         view.addSubview(dateButton)
         view.addSubview(typeLabel)
+        view.addSubview(typeHiddenTextField)
         view.addSubview(inputMoneyLabel)
         view.addSubview(inputMoneyHiddenTextField)
         view.addSubview(separatorLine)
@@ -335,19 +314,22 @@ class CreateViewController: UIViewController {
             dateButton.heightAnchor.constraint(equalToConstant: 30),
             dateButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             
-            // MARK: - expendTypeLabel Layout
+            // MARK: - typeLabel Layout
             typeLabel.topAnchor.constraint(equalTo: self.dateButton.bottomAnchor, constant: 15),
             typeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            
+            // MARK: - typeHiddenTextField Layout
+            typeHiddenTextField.centerXAnchor.constraint(equalTo: self.typeLabel.centerXAnchor),
+            typeHiddenTextField.topAnchor.constraint(equalTo: self.typeLabel.topAnchor),
             
             // MARK: - inputMoneyLabel Layout
             inputMoneyLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             inputMoneyLabel.topAnchor.constraint(equalTo: self.typeLabel.bottomAnchor, constant: 15),
             
             // MARK: - inputMoneyHiddenTextField Layout
-            inputMoneyHiddenTextField.centerXAnchor.constraint(equalTo: inputMoneyLabel.centerXAnchor),
-            inputMoneyHiddenTextField.topAnchor.constraint(equalTo: inputMoneyLabel.topAnchor),
+            inputMoneyHiddenTextField.centerXAnchor.constraint(equalTo: self.inputMoneyLabel.centerXAnchor),
+            inputMoneyHiddenTextField.topAnchor.constraint(equalTo: self.inputMoneyLabel.topAnchor),
 
-            
             // MARK: - separatorLine Layout
             separatorLine.heightAnchor.constraint(equalToConstant: 1),
             separatorLine.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
@@ -368,11 +350,13 @@ class CreateViewController: UIViewController {
     }
     
     func setReactive() {
+        // MARK: - Coordinator 패턴
         dismissButton.rx.tap
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.dismissButtonObserver)
             .disposed(by: disposeBag)
         
+        // MARK: - 지출, 수입 버튼 바인딩
         expendButton.rx.tap
             .observe(on: MainScheduler.instance)
             .map { .expend }
@@ -385,15 +369,24 @@ class CreateViewController: UIViewController {
             .bind(to: viewModel.createTypeObserver)
             .disposed(by: disposeBag)
         
+        // MARK: - CollectionView 데이터 바인딩
         viewModel.dataObservable
             .observe(on: MainScheduler.instance)
             .bind(to: iconCollectionView.rx.items(cellIdentifier: CreateCollectionViewCell.identifier, cellType: CreateCollectionViewCell.self)) { (index, item, cell) in
                 cell.configure(item : item)
             }.disposed(by: disposeBag)
         
+        // MARK: - Date 날짜 바인딩
         viewModel.stringDateObservable
             .observe(on: MainScheduler.instance)
             .bind(to: dateButton.rx.title(for: .normal))
+            .disposed(by: disposeBag)
+        
+        // MARK: - 지출, 수입 타입 바인딩
+        typeHiddenTextField.rx.text
+            .observe(on: MainScheduler.instance)
+            .map { $0 ?? "" }
+            .bind(to: viewModel.stringTypeObserver)
             .disposed(by: disposeBag)
         
         viewModel.stringTypeObservable
@@ -401,6 +394,7 @@ class CreateViewController: UIViewController {
             .bind(to: typeLabel.rx.text)
             .disposed(by: disposeBag)
         
+        // MARK: - inputMoney 바인딩
         inputMoneyHiddenTextField.rx.text
             .observe(on: MainScheduler.instance)
             .map { $0 ?? "" }
