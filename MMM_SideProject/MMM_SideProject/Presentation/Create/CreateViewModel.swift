@@ -37,7 +37,7 @@ class CreateViewModel : CreateViewModelInterface {
     var dismissButtonSubject: PublishSubject<Void>
     var createTypeSubject : BehaviorSubject<CreateType>
     var stringDateSubject : PublishSubject<String>
-    var stringTypeSubject : PublishSubject<String>
+    var stringTypeSubject : BehaviorSubject<String>
     var inputMoneySubject : BehaviorSubject<String>
     
     var dataSubject : BehaviorSubject<[CreateCellIcon]>
@@ -50,14 +50,20 @@ class CreateViewModel : CreateViewModelInterface {
     
     var dataObservable: Observable<[CreateCellIcon]>
     var stringDateObservable: Observable<String>
-    var stringTypeObservable: Observable<String>
-    
+    //var stringTypeObservable: Observable<String>
+
     // MARK: - Lazy Observable (다른 Observable에 스트림이 이어진 관계)
     lazy var inputMoneyObservable : Observable<String> = inputMoneySubject
         .map {
             if $0 == "" { return "0원" }
             guard let intValue = Int($0) else { return "" }
             return intValue.toCurrency
+        }
+    
+    lazy var stringTypeObservable : Observable<String> = stringTypeSubject
+        .map {
+            if $0 == "" { return "기타" }
+            return $0
         }
     
     weak var delegate : CreateViewModelDelegate?
@@ -72,7 +78,7 @@ class CreateViewModel : CreateViewModelInterface {
         dismissButtonSubject = PublishSubject<Void>()
         createTypeSubject = BehaviorSubject<CreateType>(value: .expend)
         stringDateSubject = PublishSubject<String>()
-        stringTypeSubject = PublishSubject<String>()
+        stringTypeSubject = BehaviorSubject<String>(value: "기타")
         inputMoneySubject = BehaviorSubject<String>(value: "")
         
         dataSubject = BehaviorSubject<[CreateCellIcon]>(value: repository.readDataForCreateCell(of: createType))
@@ -85,7 +91,6 @@ class CreateViewModel : CreateViewModelInterface {
         
         dataObservable = dataSubject
         stringDateObservable = stringDateSubject
-        stringTypeObservable = stringTypeSubject
         
         setReactive()
     }
