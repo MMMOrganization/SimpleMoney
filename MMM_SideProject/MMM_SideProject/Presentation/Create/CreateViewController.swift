@@ -161,15 +161,21 @@ class CreateViewController: UIViewController {
         return label
     }()
     
-    let inputMoneyTextField : UITextField = {
+    let inputMoneyLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont(name: FontConst.mainFont, size: 35)
+        label.text = "0원"
+        label.textAlignment = .center
+        return label
+    }()
+    
+    lazy var inputMoneyHiddenTextField : UITextField = {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "120,000원"
+        tf.font = UIFont(name: FontConst.mainFont, size: 35)
+        tf.isHidden = true
         tf.keyboardType = .numberPad
-        tf.textAlignment = .center
-        tf.font = UIFont(size: 35)
-        tf.textColor = .blackColor
-        tf.tintColor = .clear
         // 키보드 올라오게 해야 함.
         // 커서 땠을 때 원 표시되어야 함.
         // , 적용되어야 함.
@@ -239,9 +245,17 @@ class CreateViewController: UIViewController {
     }
     
     func setGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(labelClicked))
-        typeLabel.addGestureRecognizer(tapGesture)
+        let typeTapGesture = UITapGestureRecognizer(target: self, action: #selector(labelClicked))
+        typeLabel.addGestureRecognizer(typeTapGesture)
         typeLabel.isUserInteractionEnabled = true
+        
+        let inputMoneyTapGesture = UITapGestureRecognizer(target: self, action: #selector(inputMoneyClicked))
+        inputMoneyLabel.addGestureRecognizer(inputMoneyTapGesture)
+        inputMoneyLabel.isUserInteractionEnabled = true
+    }
+    
+    @objc func textFieldDidChange() {
+        inputMoneyLabel.text = inputMoneyHiddenTextField.text
     }
     
     @objc func buttontapped() {
@@ -279,6 +293,15 @@ class CreateViewController: UIViewController {
         
         self.present(textAlertController, animated: true)
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        self.inputMoneyHiddenTextField.resignFirstResponder()
+    }
+    
+    @objc func inputMoneyClicked() {
+        inputMoneyHiddenTextField.becomeFirstResponder()
+    }
 
     func setLayout() {
         navigationController?.navigationBar.backgroundColor = .white
@@ -290,7 +313,8 @@ class CreateViewController: UIViewController {
         view.addSubview(topStackView)
         view.addSubview(dateButton)
         view.addSubview(typeLabel)
-        view.addSubview(inputMoneyTextField)
+        view.addSubview(inputMoneyLabel)
+        view.addSubview(inputMoneyHiddenTextField)
         view.addSubview(separatorLine)
         view.addSubview(iconConstLabel)
         view.addSubview(iconCollectionView)
@@ -315,15 +339,20 @@ class CreateViewController: UIViewController {
             typeLabel.topAnchor.constraint(equalTo: self.dateButton.bottomAnchor, constant: 15),
             typeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             
-            // MARK: - inputMoneyTextField Layout
-            inputMoneyTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            inputMoneyTextField.topAnchor.constraint(equalTo: self.typeLabel.bottomAnchor, constant: 15),
+            // MARK: - inputMoneyLabel Layout
+            inputMoneyLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            inputMoneyLabel.topAnchor.constraint(equalTo: self.typeLabel.bottomAnchor, constant: 15),
+            
+            // MARK: - inputMoneyHiddenTextField Layout
+            inputMoneyHiddenTextField.centerXAnchor.constraint(equalTo: inputMoneyLabel.centerXAnchor),
+            inputMoneyHiddenTextField.topAnchor.constraint(equalTo: inputMoneyLabel.topAnchor),
+
             
             // MARK: - separatorLine Layout
             separatorLine.heightAnchor.constraint(equalToConstant: 1),
             separatorLine.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             separatorLine.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            separatorLine.topAnchor.constraint(equalTo: self.inputMoneyTextField.bottomAnchor, constant: 25),
+            separatorLine.topAnchor.constraint(equalTo: self.inputMoneyLabel.bottomAnchor, constant: 25),
             
             // MARK: - iconConstLabel Layout
             iconConstLabel.topAnchor.constraint(equalTo: self.separatorLine.bottomAnchor, constant: 10),
@@ -362,7 +391,6 @@ class CreateViewController: UIViewController {
                 cell.configure(item : item)
             }.disposed(by: disposeBag)
         
-        // TODO: - DateButton 눌렀을 때 날짜 설정할 수 있도록.
         viewModel.stringDateObservable
             .observe(on: MainScheduler.instance)
             .bind(to: dateButton.rx.title(for: .normal))
@@ -371,6 +399,17 @@ class CreateViewController: UIViewController {
         viewModel.stringTypeObservable
             .observe(on: MainScheduler.instance)
             .bind(to: typeLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        inputMoneyHiddenTextField.rx.text
+            .observe(on: MainScheduler.instance)
+            .map { $0 ?? "" }
+            .bind(to: viewModel.inputMoneyObserver)
+            .disposed(by: disposeBag)
+        
+        viewModel.inputMoneyObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: inputMoneyLabel.rx.text)
             .disposed(by: disposeBag)
     }
 }

@@ -20,8 +20,9 @@ extension Int {
     
     var toCurrency : String {
         let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
+        formatter.numberStyle = .decimal
         formatter.locale = Locale(identifier: "ko_KR")
-        return formatter.string(from: NSNumber(value: self)) ?? ""
+        let stringValue = formatter.string(from: NSNumber(value: self)) ?? ""
+        return stringValue + "원"
     }
 }
