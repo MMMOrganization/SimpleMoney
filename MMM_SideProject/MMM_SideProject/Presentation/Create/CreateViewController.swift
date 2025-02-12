@@ -108,8 +108,7 @@ class CreateViewController: UIViewController {
     
     lazy var saveButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setTitle("저장", for: .normal)
-        button.setTitleColor(.mainColor, for: .normal)
+        button.setImage(UIImage(named: "checkImage"), for: .normal)
         return button
     }()
     
@@ -287,8 +286,9 @@ class CreateViewController: UIViewController {
         navigationController?.navigationBar.scrollEdgeAppearance =
         navigationController?.navigationBar.standardAppearance
         navigationItem.leftBarButtonItem = dismissButtonItem
-        view.backgroundColor = .white
+        navigationItem.rightBarButtonItem = saveButtonItem
         
+        view.backgroundColor = .white
         view.addSubview(topStackView)
         view.addSubview(dateButton)
         view.addSubview(typeLabel)

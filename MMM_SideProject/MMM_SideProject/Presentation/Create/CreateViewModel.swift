@@ -114,6 +114,7 @@ class CreateViewModel : CreateViewModelInterface {
             dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: 0))
         }.disposed(by: disposeBag)
         
+        // MARK: - CreateCell Click 바인딩
         selectedCellIndexSubject.subscribe { [weak self] indexPath in
             guard let self = self, let index = indexPath.element else { return }
             dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: index))
