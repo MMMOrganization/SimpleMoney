@@ -63,12 +63,12 @@ class MockDataRepository : DataRepositoryInterface {
         ]
     }
     
-    func readDataForCreateCell(of type : CreateType) -> [CreateCellIcon] {
+    func readDataForCreateCell(of type : CreateType, selectedIndex : Int) -> [CreateCellIcon] {
         switch type {
         case .expend:
-            return CreateCellIcon.readExpendData()
+            return CreateCellIcon.readExpendData(at : selectedIndex)
         case .income:
-            return CreateCellIcon.readIncomeData()
+            return CreateCellIcon.readIncomeData(at : selectedIndex)
         default:
             return []
         }

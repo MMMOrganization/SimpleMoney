@@ -15,6 +15,7 @@ protocol CreateViewModelInterface {
     var stringDateObserver : AnyObserver<String> { get }
     var stringTypeObserver : AnyObserver<String> { get }
     var inputMoneyObserver : AnyObserver<String> { get }
+    var selectedCellIndexObserver : AnyObserver<Int> { get }
     
     var dataObservable : Observable<[CreateCellIcon]> { get }
     var stringDateObservable : Observable<String> { get }
@@ -39,6 +40,7 @@ class CreateViewModel : CreateViewModelInterface {
     var stringDateSubject : PublishSubject<String>
     var stringTypeSubject : BehaviorSubject<String>
     var inputMoneySubject : BehaviorSubject<String>
+    var selectedCellIndexSubject : BehaviorSubject<Int>
     
     var dataSubject : BehaviorSubject<[CreateCellIcon]>
     
@@ -47,6 +49,7 @@ class CreateViewModel : CreateViewModelInterface {
     var stringDateObserver: AnyObserver<String>
     var stringTypeObserver: AnyObserver<String>
     var inputMoneyObserver: AnyObserver<String>
+    var selectedCellIndexObserver: AnyObserver<Int>
     
     var dataObservable: Observable<[CreateCellIcon]>
     var stringDateObservable: Observable<String>
@@ -80,17 +83,20 @@ class CreateViewModel : CreateViewModelInterface {
         stringDateSubject = PublishSubject<String>()
         stringTypeSubject = BehaviorSubject<String>(value: "기타")
         inputMoneySubject = BehaviorSubject<String>(value: "")
+        selectedCellIndexSubject = BehaviorSubject<Int>(value: 0)
         
-        dataSubject = BehaviorSubject<[CreateCellIcon]>(value: repository.readDataForCreateCell(of: createType))
+        dataSubject = BehaviorSubject<[CreateCellIcon]>(value: repository.readDataForCreateCell(of: createType, selectedIndex: 0))
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
         createTypeObserver = createTypeSubject.asObserver()
         stringDateObserver = stringDateSubject.asObserver()
         stringTypeObserver = stringTypeSubject.asObserver()
         inputMoneyObserver = inputMoneySubject.asObserver()
+        selectedCellIndexObserver = selectedCellIndexSubject.asObserver()
         
         dataObservable = dataSubject
         stringDateObservable = stringDateSubject
+        
         
         setReactive()
     }
@@ -105,7 +111,12 @@ class CreateViewModel : CreateViewModelInterface {
             guard let self = self, let createType = createType.element else { return }
             self.createType = createType
             // TODO: - CollectionView의 데이터가 변경되어야 함.
-            dataSubject.onNext(repository.readDataForCreateCell(of: createType))
+            dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: 0))
+        }.disposed(by: disposeBag)
+        
+        selectedCellIndexSubject.subscribe { [weak self] indexPath in
+            guard let self = self, let index = indexPath.element else { return }
+            dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: index))
         }.disposed(by: disposeBag)
     }
 }
