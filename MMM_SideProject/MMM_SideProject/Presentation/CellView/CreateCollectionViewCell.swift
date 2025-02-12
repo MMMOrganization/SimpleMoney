@@ -39,7 +39,10 @@ class CreateCollectionViewCell: UICollectionViewCell {
         self.contentView.clipsToBounds = true
         self.contentView.layer.cornerRadius = 10
         self.contentView.backgroundColor = UIColor(hexCode: ColorConst.grayColorString, alpha: 0.05)
-                                                   
+        self.contentView.layer.borderWidth = 1
+        
+        self.contentView.layer.borderColor = item.isSelected ? UIColor.mainColor.cgColor : UIColor.clear.cgColor
+        
         self.iconImageView.image = item.iconImage
     }
     

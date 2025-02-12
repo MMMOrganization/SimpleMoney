@@ -155,7 +155,6 @@ class CreateViewController: UIViewController {
     let typeLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "기타"
         label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         label.textColor = .grayColor
         return label
@@ -173,7 +172,6 @@ class CreateViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: FontConst.mainFont, size: 35)
-        label.text = "0원"
         label.textAlignment = .center
         return label
     }()
@@ -258,6 +256,7 @@ class CreateViewController: UIViewController {
         inputMoneyLabel.isUserInteractionEnabled = true
     }
     
+    // TODO: - Lagacy (바인딩으로 변경 필요)
     @objc func buttontapped() {
         let dateVC = DateToastView(viewModel: viewModel)
         addChild(dateVC)
@@ -267,12 +266,14 @@ class CreateViewController: UIViewController {
         dateVC.view.frame = view.bounds
     }
     
+    // MARK: - KeyBoard 비활성화
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         self.inputMoneyHiddenTextField.resignFirstResponder()
         self.typeHiddenTextField.resignFirstResponder()
     }
     
+    // MARK: - KeyBoard 활성화
     @objc func typeLabelClicked() {
         typeHiddenTextField.becomeFirstResponder()
     }
@@ -404,6 +405,11 @@ class CreateViewController: UIViewController {
         viewModel.inputMoneyObservable
             .observe(on: MainScheduler.instance)
             .bind(to: inputMoneyLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        iconCollectionView.rx.itemSelected
+            .map { $0.row }
+            .bind(to: viewModel.selectedCellIndexObserver)
             .disposed(by: disposeBag)
     }
 }

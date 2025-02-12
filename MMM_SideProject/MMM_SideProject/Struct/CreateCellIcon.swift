@@ -10,25 +10,49 @@ import UIKit
 struct CreateCellIcon {
     let iconImage : UIImage
     let createType : CreateType
+    var isSelected : Bool
     
-    static func readExpendData() -> [CreateCellIcon] {
-        return [CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend)]
+    init(iconImage: UIImage, createType: CreateType, isSelected : Bool = false) {
+        self.iconImage = iconImage
+        self.createType = createType
+        self.isSelected = isSelected
     }
     
-    static func readIncomeData() -> [CreateCellIcon] {
-        return [CreateCellIcon(iconImage: UIImage(named: "circleGraph") ?? UIImage(), createType: .income),
-                CreateCellIcon(iconImage: UIImage(named: "circleGraph") ?? UIImage(), createType: .income),
-                CreateCellIcon(iconImage: UIImage(named: "circleGraph") ?? UIImage(), createType: .income),
-                CreateCellIcon(iconImage: UIImage(named: "circleGraph") ?? UIImage(), createType: .income),
-                CreateCellIcon(iconImage: UIImage(named: "circleGraph") ?? UIImage(), createType: .income)]
+    static func readExpendData(at index : Int) -> [CreateCellIcon] {
+        var dummyDataList = [
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType:.expend)
+                            ]
+        
+        dummyDataList[index] =
+        CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend, isSelected: true)
+        
+        return dummyDataList
+    }
+    
+    static func readIncomeData(at index : Int) -> [CreateCellIcon] {
+        var dummyDataList = [
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income)
+                            ]
+        
+        dummyDataList[index] =
+        CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend, isSelected: true)
+        
+        return dummyDataList
     }
 }
