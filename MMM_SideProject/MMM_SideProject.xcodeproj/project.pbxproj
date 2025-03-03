@@ -62,6 +62,8 @@
 		267DDB492D48AEE600F66CB8 /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB482D48AEE600F66CB8 /* GraphView.swift */; };
 		267DDB4C2D48D8A300F66CB8 /* GraphViewModel+SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB4B2D48D8A300F66CB8 /* GraphViewModel+SwiftUI.swift */; };
 		267DDB4E2D4E78E500F66CB8 /* CreateCellIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB4D2D4E78E500F66CB8 /* CreateCellIcon.swift */; };
+		267DDB712D7595AE00F66CB8 /* CreateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB702D7595AE00F66CB8 /* CreateError.swift */; };
+		267DDB742D75ABBD00F66CB8 /* ToastMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB732D75ABBD00F66CB8 /* ToastMessage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -114,6 +116,8 @@
 		267DDB482D48AEE600F66CB8 /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		267DDB4B2D48D8A300F66CB8 /* GraphViewModel+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphViewModel+SwiftUI.swift"; sourceTree = "<group>"; };
 		267DDB4D2D4E78E500F66CB8 /* CreateCellIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCellIcon.swift; sourceTree = "<group>"; };
+		267DDB702D7595AE00F66CB8 /* CreateError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateError.swift; sourceTree = "<group>"; };
+		267DDB732D75ABBD00F66CB8 /* ToastMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastMessage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +208,8 @@
 				267DDAC92D33C94700F66CB8 /* Domain */,
 				267DD9B92D211AF800F66CB8 /* Constants */,
 				267DDB1A2D3BC38D00F66CB8 /* Struct */,
+				267DDB722D75ABA700F66CB8 /* SingleTon */,
+				267DDB6F2D75959400F66CB8 /* Error */,
 				267DD9BC2D211AF800F66CB8 /* Font */,
 				267DDAC22D33C8CF00F66CB8 /* Assets */,
 				267DD9C42D211AF800F66CB8 /* Info.plist */,
@@ -326,6 +332,22 @@
 			path = Graph;
 			sourceTree = "<group>";
 		};
+		267DDB6F2D75959400F66CB8 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				267DDB702D7595AE00F66CB8 /* CreateError.swift */,
+			);
+			path = Error;
+			sourceTree = "<group>";
+		};
+		267DDB722D75ABA700F66CB8 /* SingleTon */ = {
+			isa = PBXGroup;
+			children = (
+				267DDB732D75ABBD00F66CB8 /* ToastMessage.swift */,
+			);
+			path = SingleTon;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -440,11 +462,13 @@
 				267DD9CE2D211AF800F66CB8 /* UIView+Extension.swift in Sources */,
 				267DDB4E2D4E78E500F66CB8 /* CreateCellIcon.swift in Sources */,
 				267DDB492D48AEE600F66CB8 /* GraphView.swift in Sources */,
+				267DDB742D75ABBD00F66CB8 /* ToastMessage.swift in Sources */,
 				267DDAB42D32798600F66CB8 /* DetailCoordinator.swift in Sources */,
 				267DDB2A2D3FC59700F66CB8 /* Reactive+Extension.swift in Sources */,
 				267DDB122D3B694A00F66CB8 /* Date+Extension.swift in Sources */,
 				267DD9CC2D211AF800F66CB8 /* UIButton+Extension.swift in Sources */,
 				267DDB392D44F3F800F66CB8 /* GraphViewModel.swift in Sources */,
+				267DDB712D7595AE00F66CB8 /* CreateError.swift in Sources */,
 				267DDAFB2D37EE8200F66CB8 /* DataRepository.swift in Sources */,
 				267DDAB22D32797B00F66CB8 /* MainCoordinator.swift in Sources */,
 				267DD9D32D211AF800F66CB8 /* DetailViewController.swift in Sources */,

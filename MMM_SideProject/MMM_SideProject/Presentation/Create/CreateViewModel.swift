@@ -22,6 +22,7 @@ protocol CreateViewModelInterface {
     var stringDateObservable : Observable<String> { get }
     var stringTypeObservable : Observable<String> { get }
     var inputMoneyObservable : Observable<String> { get }
+    var errorObservable : Observable<CreateError> { get }
 }
 
 protocol CreateViewModelDelegate : AnyObject {
@@ -50,6 +51,7 @@ class CreateViewModel : CreateViewModelInterface {
     var completeButtonSubject : PublishSubject<Void>
     
     var dataSubject : BehaviorSubject<[CreateCellIcon]>
+    var errorSubject : PublishSubject<CreateError>
     
     var dismissButtonObserver: AnyObserver<Void>
     var createTypeObserver: AnyObserver<CreateType>
@@ -61,6 +63,7 @@ class CreateViewModel : CreateViewModelInterface {
     
     var dataObservable: Observable<[CreateCellIcon]>
     var stringDateObservable: Observable<String>
+    var errorObservable: Observable<CreateError>
 
     // MARK: - Lazy Observable (다른 Observable에 스트림이 이어진 관계)
     lazy var inputMoneyObservable : Observable<String> = inputMoneySubject
@@ -90,8 +93,10 @@ class CreateViewModel : CreateViewModelInterface {
         inputMoneySubject = BehaviorSubject<String>(value: "")
         selectedCellIndexSubject = BehaviorSubject<Int>(value: 0)
         completeButtonSubject = PublishSubject<Void>()
+        errorSubject = PublishSubject<CreateError>()
         
         dataSubject = BehaviorSubject<[CreateCellIcon]>(value: repository.readDataForCreateCell(of: createType, selectedIndex: 0))
+        
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
         createTypeObserver = createTypeSubject.asObserver()
@@ -103,7 +108,7 @@ class CreateViewModel : CreateViewModelInterface {
         
         dataObservable = dataSubject
         stringDateObservable = stringDateSubject
-        
+        errorObservable = errorSubject
         
         setReactive()
     }
@@ -114,9 +119,22 @@ class CreateViewModel : CreateViewModelInterface {
         }.disposed(by: disposeBag)
         
         completeButtonSubject.subscribe { [weak self] _ in
-            // TODO: - Save 될 모델을 통해서 조건이 부합하다면 DB에 저장하고, 안된다면 예외를 반환하고 ToastView 뿌리기.
-            print(self?.dateString, self?.typeString, self?.inputMoney, self?.iconImage, self?.createType)
-            self?.delegate?.popCreateVC()
+            guard let self = self else { return }
+            
+            guard let dateString = dateString, let inputMoney = inputMoney else { return }
+            
+            print(self.dateString, self.typeString, self.inputMoney, self.iconImage, self.createType)
+            
+            if dateString.split(separator: "년").count > 1 {
+                errorSubject.onNext(.noneSetDate)
+            }
+            else if inputMoney == "0원" {
+                errorSubject.onNext(.zeroInputMoney)
+            }
+            else {
+                // TODO: - Realm 디비 저장
+                self.delegate?.popCreateVC()
+            }
         }.disposed(by: disposeBag)
         
         // MARK: - CreateCell Icon 과 지출, 수입 버튼의 바인딩
@@ -125,7 +143,7 @@ class CreateViewModel : CreateViewModelInterface {
             self.createType = createType
             // 화면 기본값으로 초기화
             inputMoneySubject.onNext("")
-            stringTypeSubject.onNext("")
+            stringTypeSubject.onNext("기타")
             stringDateSubject.onNext(repository.readDate())
             dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: 0))
         }.disposed(by: disposeBag)
@@ -148,6 +166,7 @@ class CreateViewModel : CreateViewModelInterface {
         // MARK: - 타입 클릭시에 ViewModel이 가지는 typeLabel과의 바인딩
         stringTypeSubject.subscribe { [weak self] stringType in
             guard let self = self, let stringType = stringType.element else { return }
+            print(stringType)
             self.typeString = stringType
         }.disposed(by: disposeBag)
         

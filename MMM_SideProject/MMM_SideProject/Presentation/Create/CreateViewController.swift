@@ -434,6 +434,7 @@ class CreateViewController: UIViewController {
             .bind(to: viewModel.createTypeObserver)
             .disposed(by: disposeBag)
         
+        // MARK: - 지출 버튼 클릭했을 때의 애니메이션 작동
         expendButton.rx.tap
             .subscribe { [weak self] _ in
                 guard let self = self else { return }
@@ -447,6 +448,7 @@ class CreateViewController: UIViewController {
                 }
             }.disposed(by: disposeBag)
         
+        // MARK: - 수입 버튼 클릭했을 때의 애니메이션 작동
         incomeButton.rx.tap
             .subscribe { [weak self] _ in
                 guard let self = self else { return }
@@ -492,14 +494,24 @@ class CreateViewController: UIViewController {
             .bind(to: viewModel.inputMoneyObserver)
             .disposed(by: disposeBag)
         
+        // MARK: - inputMoney View 바인딩
         viewModel.inputMoneyObservable
             .observe(on: MainScheduler.instance)
             .bind(to: inputMoneyLabel.rx.text)
             .disposed(by: disposeBag)
         
+        // MARK: - CreateCell iconImage 클릭 시에 인덱스 바인딩
         iconCollectionView.rx.itemSelected
             .map { $0.row }
             .bind(to: viewModel.selectedCellIndexObserver)
             .disposed(by: disposeBag)
+        
+        // MARK: - Create 과정에서 발생하는 에러 종류 바인딩
+        viewModel.errorObservable
+            .subscribe { errorType in
+                guard let errorMessage = errorType.element?.description else { return }
+                
+                ToastManager.shared.showToast(message: errorMessage)
+            }.disposed(by: disposeBag)
     }
 }
