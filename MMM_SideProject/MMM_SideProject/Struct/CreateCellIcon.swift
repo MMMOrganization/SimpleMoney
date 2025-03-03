@@ -55,4 +55,8 @@ struct CreateCellIcon {
         
         return dummyDataList
     }
+    
+    static func readIconImage(at index : Int) -> UIImage {
+        return UIImage(named : "DateImage2") ?? UIImage()
+    }
 }

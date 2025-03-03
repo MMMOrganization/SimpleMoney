@@ -47,6 +47,39 @@ class DateToastView : UIViewController {
         return picker
     }()
     
+    lazy var buttonStackView : UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [agreeButton, cancelButton])
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.axis = .horizontal
+        sv.alignment = .center
+        sv.distribution = .fillEqually
+        return sv
+    }()
+    
+    lazy var agreeButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("확인", for: .normal)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.setTitleColor(.blackColor, for: .normal)
+        return button
+    }()
+    
+    lazy var cancelButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("취소", for: .normal)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.setTitleColor(.blackColor, for: .normal)
+        return button
+    }()
+    
+    @objc func buttonTapped() {
+        self.willMove(toParent: nil)
+        self.view.removeFromSuperview()
+        self.removeFromParent()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .clear
@@ -58,14 +91,21 @@ class DateToastView : UIViewController {
     func setLayout() {
         view.addSubview(tempView)
         tempView.addSubview(datePicker)
+        tempView.addSubview(buttonStackView)
         
         NSLayoutConstraint.activate([
-            tempView.widthAnchor.constraint(equalToConstant: self.view.frame.width),
-            tempView.heightAnchor.constraint(equalToConstant: self.view.frame.height - 600),
-            tempView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            tempView.widthAnchor.constraint(equalToConstant: 350),
+            tempView.heightAnchor.constraint(equalToConstant: 300),
+            tempView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            tempView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
             
             datePicker.centerXAnchor.constraint(equalTo: self.tempView.centerXAnchor),
-            datePicker.centerYAnchor.constraint(equalTo: self.tempView.centerYAnchor)
+            datePicker.topAnchor.constraint(equalTo: self.tempView.topAnchor, constant: 20),
+            
+            buttonStackView.heightAnchor.constraint(equalToConstant: 35),
+            buttonStackView.leadingAnchor.constraint(equalTo: self.tempView.leadingAnchor),
+            buttonStackView.trailingAnchor.constraint(equalTo: self.tempView.trailingAnchor),
+            buttonStackView.topAnchor.constraint(equalTo: self.datePicker.bottomAnchor, constant: 15)
         ])
     }
     
@@ -139,10 +179,17 @@ class CreateViewController: UIViewController {
         return button
     }()
     
+    let outLineView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.mainColor
+        return view
+    }()
+    
     lazy var dateButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("2024.12.04", for: .normal)
+        button.setTitle(YearMonthDay().toStringYearMonthDay(), for: .normal)
         button.setBackgroundColor(UIColor(hexCode: ColorConst.mainColorString, alpha: 0.20), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .medium)
         button.addTarget(self, action: #selector(buttontapped), for: .touchUpInside)
@@ -162,6 +209,7 @@ class CreateViewController: UIViewController {
     let typeHiddenTextField : UITextField = {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.text = "기타"
         tf.isHidden = true
         tf.keyboardType = .default
         return tf
@@ -236,7 +284,6 @@ class CreateViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         dateButton.layer.cornerRadius = dateButton.frame.height / 2
-        expendButton.layer.addBorder([.bottom])
     }
     
     func setCollectionView() {
@@ -280,6 +327,10 @@ class CreateViewController: UIViewController {
     @objc func inputMoneyClicked() {
         inputMoneyHiddenTextField.becomeFirstResponder()
     }
+    
+    lazy var outLineViewLeadingAnchor = outLineView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
+    
+    lazy var outLineViewTrailingAnchor = outLineView.trailingAnchor.constraint(equalTo: self.expendButton.trailingAnchor)
 
     func setLayout() {
         navigationController?.navigationBar.backgroundColor = .white
@@ -290,6 +341,7 @@ class CreateViewController: UIViewController {
         
         view.backgroundColor = .white
         view.addSubview(topStackView)
+        view.addSubview(outLineView)
         view.addSubview(dateButton)
         view.addSubview(typeLabel)
         view.addSubview(typeHiddenTextField)
@@ -308,6 +360,12 @@ class CreateViewController: UIViewController {
             topStackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             topStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             topStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            
+            // MARK: - outLineView Layout (Animate)
+            outLineViewLeadingAnchor,
+            outLineViewTrailingAnchor,
+            outLineView.heightAnchor.constraint(equalToConstant: 1),
+            outLineView.topAnchor.constraint(equalTo: self.topStackView.bottomAnchor),
             
             // MARK: - dateButton Layout
             dateButton.topAnchor.constraint(equalTo: self.topStackView.bottomAnchor, constant: 15),
@@ -357,6 +415,12 @@ class CreateViewController: UIViewController {
             .bind(to: viewModel.dismissButtonObserver)
             .disposed(by: disposeBag)
         
+        // TODO: - Save 되면서 데이터가 저장되고, 만약 조건이 부족하다면 조건을 알려주는 역할을 ViewModel에서 필요함.
+        saveButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .bind(to: viewModel.completeButtonObserver)
+            .disposed(by: disposeBag)
+        
         // MARK: - 지출, 수입 버튼 바인딩
         expendButton.rx.tap
             .observe(on: MainScheduler.instance)
@@ -369,6 +433,32 @@ class CreateViewController: UIViewController {
             .map { .income }
             .bind(to: viewModel.createTypeObserver)
             .disposed(by: disposeBag)
+        
+        expendButton.rx.tap
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                if outLineViewLeadingAnchor.constant > 0 {
+                    outLineViewLeadingAnchor.constant -= topStackView.frame.width / 2
+                    outLineViewTrailingAnchor.constant -= topStackView.frame.width / 2
+                }
+                
+                UIView.animate(withDuration: 0.3) {
+                    self.view.layoutIfNeeded()
+                }
+            }.disposed(by: disposeBag)
+        
+        incomeButton.rx.tap
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                if outLineViewLeadingAnchor.constant <= 0 {
+                    outLineViewLeadingAnchor.constant += topStackView.frame.width / 2
+                    outLineViewTrailingAnchor.constant += topStackView.frame.width / 2
+                }
+                
+                UIView.animate(withDuration: 0.3) {
+                    self.view.layoutIfNeeded()
+                }
+            }.disposed(by: disposeBag)
         
         // MARK: - CollectionView 데이터 바인딩
         viewModel.dataObservable
@@ -386,7 +476,7 @@ class CreateViewController: UIViewController {
         // MARK: - 지출, 수입 타입 바인딩
         typeHiddenTextField.rx.text
             .observe(on: MainScheduler.instance)
-            .map { $0 ?? "" }
+            .map { $0 ?? "기타" }
             .bind(to: viewModel.stringTypeObserver)
             .disposed(by: disposeBag)
         

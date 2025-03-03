@@ -18,7 +18,11 @@ struct YearMonthDay {
 }
 
 extension YearMonthDay {
-    func toString() -> String {
+    func toStringYearMonthDay() -> String {
+        return "\(self.year).\(self.month).\(self.day)"
+    }
+    
+    func toStringYearMonth() -> String {
         return "\(self.year)년 \(self.month)월"
     }
     
