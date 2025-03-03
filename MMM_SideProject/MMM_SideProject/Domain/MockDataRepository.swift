@@ -30,14 +30,14 @@ class MockDataRepository : DataRepositoryInterface {
     /// 하루치에 해당하는 데이터를 가져와야 함.
     func readDataOfDay() -> [Entity] {
         return [
-            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named:      "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named:      "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
         ]
     }
     
     func readDate() -> String {
-        return dateType.toString()
+        return dateType.toStringYearMonth()
     }
     
     func readAmountsDict() -> [String : Int] {
@@ -57,9 +57,9 @@ class MockDataRepository : DataRepositoryInterface {
     /// ExpendType 에 따른 데이터를 가져와야 함.
     func readDataForExpendType(of type : ExpendType) -> [Entity] {
         return [
-            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toString(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
         ]
     }
     

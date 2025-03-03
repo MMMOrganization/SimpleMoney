@@ -95,7 +95,7 @@ final class DetailViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
-        label.text = YearMonthDay().toString()
+        label.text = YearMonthDay().toStringYearMonth()
         label.font = UIFont(name: FontConst.mainFont, size: 15)
         label.textColor = UIColor(hexCode: ColorConst.blackColorString, alpha: 1.00)
         return label
