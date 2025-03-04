@@ -63,6 +63,7 @@
 		267DDB742D75ABBD00F66CB8 /* ToastMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB732D75ABBD00F66CB8 /* ToastMessage.swift */; };
 		267DDB762D75CBE500F66CB8 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB752D75CBE500F66CB8 /* String+Extension.swift */; };
 		267DDB792D76854F00F66CB8 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDB782D76854F00F66CB8 /* DGCharts */; };
+		267DDBAD2D76FE0B00F66CB8 /* TypeButtonCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDBAC2D76FE0B00F66CB8 /* TypeButtonCVCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -115,6 +116,7 @@
 		267DDB702D7595AE00F66CB8 /* CreateError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateError.swift; sourceTree = "<group>"; };
 		267DDB732D75ABBD00F66CB8 /* ToastMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastMessage.swift; sourceTree = "<group>"; };
 		267DDB752D75CBE500F66CB8 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		267DDBAC2D76FE0B00F66CB8 /* TypeButtonCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeButtonCVCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -228,6 +230,7 @@
 				267DD9BE2D211AF800F66CB8 /* DetailTableViewCell.swift */,
 				267DD9F42D29108C00F66CB8 /* CalendarTableViewCell.swift */,
 				267DDA292D2FCEC000F66CB8 /* CreateCollectionViewCell.swift */,
+				267DDBAC2D76FE0B00F66CB8 /* TypeButtonCVCell.swift */,
 			);
 			path = CellView;
 			sourceTree = "<group>";
@@ -443,6 +446,7 @@
 				267DD9D12D211AF800F66CB8 /* CreateViewController.swift in Sources */,
 				267DDA2A2D2FCEC000F66CB8 /* CreateCollectionViewCell.swift in Sources */,
 				267DDB102D3A927600F66CB8 /* MockDataRepository.swift in Sources */,
+				267DDBAD2D76FE0B00F66CB8 /* TypeButtonCVCell.swift in Sources */,
 				267DDAB62D327A9D00F66CB8 /* AppCoordinator.swift in Sources */,
 				267DDB3F2D44FFE100F66CB8 /* GraphCoordinator.swift in Sources */,
 				267DD9CD2D211AF800F66CB8 /* UIColor+Extension.swift in Sources */,

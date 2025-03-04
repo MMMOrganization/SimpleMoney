@@ -30,7 +30,7 @@ class MockDataRepository : DataRepositoryInterface {
     /// 하루치에 해당하는 데이터를 가져와야 함.
     func readDataOfDay() -> [Entity] {
         return [
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named:      "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
             Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
             Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
         ]

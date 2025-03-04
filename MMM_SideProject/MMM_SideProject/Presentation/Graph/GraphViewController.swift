@@ -37,12 +37,19 @@ class GraphViewController: UIViewController {
     let buttonCollectionView : UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
-        flowLayout.itemSize = CGSize(width: 35, height: 50)
-        flowLayout.minimumInteritemSpacing = 15
+        flowLayout.itemSize = CGSize(width: 60, height: 40)
+        flowLayout.minimumInteritemSpacing = 10
+        flowLayout.minimumLineSpacing = 10
         let c = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         c.translatesAutoresizingMaskIntoConstraints = false
+        c.layer.shouldRasterize = false
         return c
     }()
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        buttonCollectionView.layer.addBorder([.bottom])
+    }
     
     init(viewModel : GraphViewModelInterface) {
         self.viewModel = viewModel
@@ -65,6 +72,8 @@ class GraphViewController: UIViewController {
         pieChartView.delegate = self
         buttonCollectionView.delegate = self
         buttonCollectionView.dataSource = self
+        
+        buttonCollectionView.register(TypeButtonCVCell.self, forCellWithReuseIdentifier: TypeButtonCVCell.identifier)
     }
     
     func setLayout() {
@@ -74,12 +83,20 @@ class GraphViewController: UIViewController {
 //        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 400))
         
         self.view.addSubview(pieChartView)
+        self.view.addSubview(buttonCollectionView)
+        
+        
         
         NSLayoutConstraint.activate([
             pieChartView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 40),
             pieChartView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -40),
             pieChartView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 15),
             pieChartView.heightAnchor.constraint(equalToConstant: 300),
+            
+            buttonCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 15),
+            buttonCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -15),
+            buttonCollectionView.topAnchor.constraint(equalTo: self.pieChartView.bottomAnchor),
+            buttonCollectionView.heightAnchor.constraint(equalToConstant: 70),
         ])
     }
     
@@ -113,11 +130,15 @@ class GraphViewController: UIViewController {
 // TODO: - 후에 RxSwift 로 바꿀 것.
 extension GraphViewController : UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        5
+        return 10
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        <#code#>
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TypeButtonCVCell.identifier, for: indexPath) as? TypeButtonCVCell else {
+            return UICollectionViewCell()
+        }
+        
+        return cell
     }
 }
 
