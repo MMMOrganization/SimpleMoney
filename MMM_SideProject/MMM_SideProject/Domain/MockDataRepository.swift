@@ -40,6 +40,19 @@ class MockDataRepository : DataRepositoryInterface {
         return dateType.toStringYearMonth()
     }
     
+    func readAmountsDict() -> [String : Int] {
+        var amountsDict : [String : Int] = .init()
+        
+        amountsDict["2025-01-01"] = Int.random(in: -10000...10000)
+        amountsDict["2025-01-05"] = Int.random(in: -10000...10000)
+        amountsDict["2025-01-08"] = Int.random(in: -10000...10000)
+        amountsDict["2025-01-14"] = Int.random(in: -10000...10000)
+        amountsDict["2025-01-18"] = Int.random(in: -10000...10000)
+        amountsDict["2025-01-22"] = Int.random(in: -10000...10000)
+        
+        return amountsDict
+    }
+    
     func readGraphData(date: String) -> [String : Double] {
         // TODO: - date를 받아서 해당 date에 맞는 데이터를 디비에서 가져옴
         // 디비에서 받아온 데이터를 타입마다 분류하여 전달함.

@@ -34,6 +34,16 @@ class GraphViewController: UIViewController {
         return p
     }()
     
+    let buttonCollectionView : UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.scrollDirection = .horizontal
+        flowLayout.itemSize = CGSize(width: 35, height: 50)
+        flowLayout.minimumInteritemSpacing = 15
+        let c = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        c.translatesAutoresizingMaskIntoConstraints = false
+        return c
+    }()
+    
     init(viewModel : GraphViewModelInterface) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -46,15 +56,22 @@ class GraphViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        pieChartView.delegate = self
+        setDelegate()
         setLayout()
         setReactive()
-        // Do any additional setup after loading the view.
+    }
+    
+    func setDelegate() {
+        pieChartView.delegate = self
+        buttonCollectionView.delegate = self
+        buttonCollectionView.dataSource = self
     }
     
     func setLayout() {
         self.view.backgroundColor = .white
         self.navigationItem.leftBarButtonItem = dismissButtonItem
+        
+//        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 400))
         
         self.view.addSubview(pieChartView)
         
@@ -93,17 +110,30 @@ class GraphViewController: UIViewController {
     }
 }
 
+// TODO: - 후에 RxSwift 로 바꿀 것.
+extension GraphViewController : UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        5
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        <#code#>
+    }
+}
+
+// MARK: - ChartViewDelegate
 extension GraphViewController : ChartViewDelegate {
     func setPieChart(entriesDict : [String : Double]) {
-        
-        
         // TODO: - ViewModel에서 각 지출 타입마다의 개수를 딕셔너리 형태로 보내줘야 함.
+        // -> 일단 Mock 으로 클리어
         // TODO: - 받고 그래프를 그린다.
+        // -> Mock 으로 클리어
         // TODO: - 지출 타입의 개수를 확인하고 매핑하여 CollectionView를 가진다.
         // TODO: - TableView 와 CollectionView를 매핑한다.
         
         var entryList : [PieChartDataEntry] = []
         
+        // 받아온 딕셔너리를 entryList로 변환하는 과정
         entriesDict.forEach {
             entryList.append(PieChartDataEntry(value: $0.value, label: $0.key))
         }
@@ -111,6 +141,7 @@ extension GraphViewController : ChartViewDelegate {
         let dataSet = PieChartDataSet(entries: entryList, label: "")
         
         // 🎨 각 조각별 색상
+        // TODO: - 개수에 맞춰서 어떻게 색상을 조절할 지 고민해봐야 함.
         dataSet.colors = [
             UIColor.red.withAlphaComponent(0.20),
             UIColor.orange.withAlphaComponent(0.25),
@@ -125,22 +156,17 @@ extension GraphViewController : ChartViewDelegate {
         pieChartView.holeRadiusPercent = 0.25  // 중앙 구멍 크기
         pieChartView.transparentCircleRadiusPercent = 0.65  // 반투명한 원 크기
         
-        
-    
-        // 중앙 텍스트 설정
-        pieChartView.centerText = "지출\n그래프"
-        pieChartView.centerTextRadiusPercent = 1.0
-        
         // 구멍 근처에 있는 흰색 없애기
         pieChartView.transparentCircleColor = .clear
     
         // 🏷️ 라벨 위치 설정 (도넛 차트에 적합하게)
         dataSet.xValuePosition = .insideSlice  // 라벨을 내부에 표시
         dataSet.yValuePosition = .insideSlice  // 값도 내부에 표시
-    
+        
+        // 클릭시에 효과 제거
         dataSet.selectionShift = 0
         
-        // 📌 라벨 스타일
+        // 라벨 스타일
         let data = PieChartData(dataSet: dataSet)
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
@@ -148,8 +174,9 @@ extension GraphViewController : ChartViewDelegate {
         formatter.multiplier = 1
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
         
-        data.setValueTextColor(.white)  // 라벨 색상
-        data.setValueFont(.systemFont(ofSize: 16, weight: .bold)) // 라벨 폰트
+        // 라벨 색상
+        data.setValueTextColor(.blackColor.withAlphaComponent(0.7))
+        data.setValueFont(UIFont(size: 16.0)) // 라벨 폰트
         
         pieChartView.data = data
         
