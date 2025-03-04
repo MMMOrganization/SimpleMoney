@@ -30,7 +30,7 @@ class MockDataRepository : DataRepositoryInterface {
     /// 하루치에 해당하는 데이터를 가져와야 함.
     func readDataOfDay() -> [Entity] {
         return [
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named:      "DateImage")!),
+            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
             Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
             Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
         ]
@@ -53,14 +53,15 @@ class MockDataRepository : DataRepositoryInterface {
         return amountsDict
     }
     
-    // MARK: - GraphViewModel에서 사용하는 함수
-    /// ExpendType 에 따른 데이터를 가져와야 함.
-    func readDataForExpendType(of type : ExpendType) -> [Entity] {
-        return [
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-        ]
+    func readGraphData(date: String) -> [String : Double] {
+        // TODO: - date를 받아서 해당 date에 맞는 데이터를 디비에서 가져옴
+        // 디비에서 받아온 데이터를 타입마다 분류하여 전달함.
+        
+        return ["기타" : 12.0,
+                "용돈" : 1.0,
+                "음주" : 5.0,
+                "음식" : 7.0,
+                "커피" : 10.0]
     }
     
     func readDataForCreateCell(of type : CreateType, selectedIndex : Int) -> [CreateCellIcon] {

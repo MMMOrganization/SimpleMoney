@@ -12,8 +12,8 @@ protocol DataRepositoryInterface {
     func readData() -> [Entity]
     func readDate() -> String
     func readDataOfDay() -> [Entity]
+    func readGraphData(date : String) -> [String : Double]
     func readAmountsDict() -> [String : Int]
-    func readDataForExpendType(of type : ExpendType) -> [Entity]
     func readDataForCreateCell(of type : CreateType, selectedIndex : Int) -> [CreateCellIcon]
     
     func setDate(type : DateButtonType)

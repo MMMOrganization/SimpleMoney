@@ -31,7 +31,6 @@
 		267DDA702D315C5700F66CB8 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA6F2D315C5700F66CB8 /* RxCocoa */; };
 		267DDA722D315C5700F66CB8 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA712D315C5700F66CB8 /* RxRelay */; };
 		267DDA742D315C5700F66CB8 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDA732D315C5700F66CB8 /* RxSwift */; };
-		267DDA802D315DF900F66CB8 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDA7F2D315DF900F66CB8 /* UIViewController+Extension.swift */; };
 		267DDA832D31757100F66CB8 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDA822D31757100F66CB8 /* Coordinator.swift */; };
 		267DDAB22D32797B00F66CB8 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAB12D32797B00F66CB8 /* MainCoordinator.swift */; };
 		267DDAB42D32798600F66CB8 /* DetailCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDAB32D32798600F66CB8 /* DetailCoordinator.swift */; };
@@ -59,11 +58,12 @@
 		267DDB3F2D44FFE100F66CB8 /* GraphCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB3E2D44FFE100F66CB8 /* GraphCoordinator.swift */; };
 		267DDB452D48AA7A00F66CB8 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDB442D48AA7A00F66CB8 /* Realm */; };
 		267DDB472D48AA7A00F66CB8 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDB462D48AA7A00F66CB8 /* RealmSwift */; };
-		267DDB492D48AEE600F66CB8 /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB482D48AEE600F66CB8 /* GraphView.swift */; };
-		267DDB4C2D48D8A300F66CB8 /* GraphViewModel+SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB4B2D48D8A300F66CB8 /* GraphViewModel+SwiftUI.swift */; };
 		267DDB4E2D4E78E500F66CB8 /* CreateCellIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB4D2D4E78E500F66CB8 /* CreateCellIcon.swift */; };
 		267DDB712D7595AE00F66CB8 /* CreateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB702D7595AE00F66CB8 /* CreateError.swift */; };
 		267DDB742D75ABBD00F66CB8 /* ToastMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB732D75ABBD00F66CB8 /* ToastMessage.swift */; };
+		267DDB762D75CBE500F66CB8 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB752D75CBE500F66CB8 /* String+Extension.swift */; };
+		267DDB792D76854F00F66CB8 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDB782D76854F00F66CB8 /* DGCharts */; };
+		267DDBAD2D76FE0B00F66CB8 /* TypeButtonCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDBAC2D76FE0B00F66CB8 /* TypeButtonCVCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,7 +90,6 @@
 		267DDA252D2ADA1000F66CB8 /* UIFont+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extension.swift"; sourceTree = "<group>"; };
 		267DDA292D2FCEC000F66CB8 /* CreateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCollectionViewCell.swift; sourceTree = "<group>"; };
 		267DDA312D300F9E00F66CB8 /* RealmDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmDB.swift; sourceTree = "<group>"; };
-		267DDA7F2D315DF900F66CB8 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		267DDA822D31757100F66CB8 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		267DDAB12D32797B00F66CB8 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		267DDAB32D32798600F66CB8 /* DetailCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCoordinator.swift; sourceTree = "<group>"; };
@@ -113,11 +112,11 @@
 		267DDB382D44F3F800F66CB8 /* GraphViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphViewModel.swift; sourceTree = "<group>"; };
 		267DDB3C2D44FFB400F66CB8 /* GraphViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphViewController.swift; sourceTree = "<group>"; };
 		267DDB3E2D44FFE100F66CB8 /* GraphCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphCoordinator.swift; sourceTree = "<group>"; };
-		267DDB482D48AEE600F66CB8 /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
-		267DDB4B2D48D8A300F66CB8 /* GraphViewModel+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphViewModel+SwiftUI.swift"; sourceTree = "<group>"; };
 		267DDB4D2D4E78E500F66CB8 /* CreateCellIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCellIcon.swift; sourceTree = "<group>"; };
 		267DDB702D7595AE00F66CB8 /* CreateError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateError.swift; sourceTree = "<group>"; };
 		267DDB732D75ABBD00F66CB8 /* ToastMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastMessage.swift; sourceTree = "<group>"; };
+		267DDB752D75CBE500F66CB8 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		267DDBAC2D76FE0B00F66CB8 /* TypeButtonCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeButtonCVCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +131,7 @@
 				267DDB192D3BC0B600F66CB8 /* Differentiator in Frameworks */,
 				267DDB282D3FBB6900F66CB8 /* FSCalendar in Frameworks */,
 				267DDB172D3BC09C00F66CB8 /* RxDataSources in Frameworks */,
+				267DDB792D76854F00F66CB8 /* DGCharts in Frameworks */,
 				267DDA702D315C5700F66CB8 /* RxCocoa in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -165,10 +165,10 @@
 				267DD9B82D211AF800F66CB8 /* UIView+Extension.swift */,
 				267DDA232D2AD23D00F66CB8 /* CALayer+Extension.swift */,
 				267DDA252D2ADA1000F66CB8 /* UIFont+Extension.swift */,
-				267DDA7F2D315DF900F66CB8 /* UIViewController+Extension.swift */,
 				267DDB112D3B694A00F66CB8 /* Date+Extension.swift */,
 				267DDB132D3B751100F66CB8 /* Int+Extension.swift */,
 				267DDB292D3FC59700F66CB8 /* Reactive+Extension.swift */,
+				267DDB752D75CBE500F66CB8 /* String+Extension.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -230,6 +230,7 @@
 				267DD9BE2D211AF800F66CB8 /* DetailTableViewCell.swift */,
 				267DD9F42D29108C00F66CB8 /* CalendarTableViewCell.swift */,
 				267DDA292D2FCEC000F66CB8 /* CreateCollectionViewCell.swift */,
+				267DDBAC2D76FE0B00F66CB8 /* TypeButtonCVCell.swift */,
 			);
 			path = CellView;
 			sourceTree = "<group>";
@@ -326,8 +327,6 @@
 				267DDB3C2D44FFB400F66CB8 /* GraphViewController.swift */,
 				267DDB382D44F3F800F66CB8 /* GraphViewModel.swift */,
 				267DDB3E2D44FFE100F66CB8 /* GraphCoordinator.swift */,
-				267DDB482D48AEE600F66CB8 /* GraphView.swift */,
-				267DDB4B2D48D8A300F66CB8 /* GraphViewModel+SwiftUI.swift */,
 			);
 			path = Graph;
 			sourceTree = "<group>";
@@ -373,6 +372,7 @@
 				267DDB272D3FBB6900F66CB8 /* FSCalendar */,
 				267DDB442D48AA7A00F66CB8 /* Realm */,
 				267DDB462D48AA7A00F66CB8 /* RealmSwift */,
+				267DDB782D76854F00F66CB8 /* DGCharts */,
 			);
 			productName = MMM_SideProject;
 			productReference = 262F9AA12D09B75500AA7EA2 /* MMM_SideProject.app */;
@@ -407,6 +407,7 @@
 				267DDA7A2D315C6B00F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				267DDB152D3BC09C00F66CB8 /* XCRemoteSwiftPackageReference "RxDataSources" */,
 				267DDB242D3FBB5B00F66CB8 /* XCRemoteSwiftPackageReference "FSCalendar" */,
+				267DDB772D76854F00F66CB8 /* XCRemoteSwiftPackageReference "Charts" */,
 			);
 			productRefGroup = 262F9AA22D09B75500AA7EA2 /* Products */;
 			projectDirPath = "";
@@ -443,14 +444,14 @@
 				267DD9D22D211AF800F66CB8 /* DetailTableViewCell.swift in Sources */,
 				267DDAC62D33C93200F66CB8 /* CreateViewModel.swift in Sources */,
 				267DD9D12D211AF800F66CB8 /* CreateViewController.swift in Sources */,
-				267DDA802D315DF900F66CB8 /* UIViewController+Extension.swift in Sources */,
 				267DDA2A2D2FCEC000F66CB8 /* CreateCollectionViewCell.swift in Sources */,
 				267DDB102D3A927600F66CB8 /* MockDataRepository.swift in Sources */,
+				267DDBAD2D76FE0B00F66CB8 /* TypeButtonCVCell.swift in Sources */,
 				267DDAB62D327A9D00F66CB8 /* AppCoordinator.swift in Sources */,
 				267DDB3F2D44FFE100F66CB8 /* GraphCoordinator.swift in Sources */,
 				267DD9CD2D211AF800F66CB8 /* UIColor+Extension.swift in Sources */,
 				267DD9D52D211AF800F66CB8 /* AppDelegate.swift in Sources */,
-				267DDB4C2D48D8A300F66CB8 /* GraphViewModel+SwiftUI.swift in Sources */,
+				267DDB762D75CBE500F66CB8 /* String+Extension.swift in Sources */,
 				267DDA832D31757100F66CB8 /* Coordinator.swift in Sources */,
 				267DD9F52D29108C00F66CB8 /* CalendarTableViewCell.swift in Sources */,
 				267DD9CB2D211AF800F66CB8 /* Constants.swift in Sources */,
@@ -461,7 +462,6 @@
 				267DDB1C2D3BC3AD00F66CB8 /* YearMonthDay.swift in Sources */,
 				267DD9CE2D211AF800F66CB8 /* UIView+Extension.swift in Sources */,
 				267DDB4E2D4E78E500F66CB8 /* CreateCellIcon.swift in Sources */,
-				267DDB492D48AEE600F66CB8 /* GraphView.swift in Sources */,
 				267DDB742D75ABBD00F66CB8 /* ToastMessage.swift in Sources */,
 				267DDAB42D32798600F66CB8 /* DetailCoordinator.swift in Sources */,
 				267DDB2A2D3FC59700F66CB8 /* Reactive+Extension.swift in Sources */,
@@ -745,6 +745,14 @@
 				minimumVersion = 2.8.4;
 			};
 		};
+		267DDB772D76854F00F66CB8 /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ChartsOrg/Charts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -787,6 +795,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 267DDA7A2D315C6B00F66CB8 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
+		};
+		267DDB782D76854F00F66CB8 /* DGCharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 267DDB772D76854F00F66CB8 /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = DGCharts;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -11,16 +11,18 @@ import RealmSwift
 
 class UserDB : Object {
     @Persisted(primaryKey: true) var id : ObjectId
-    @Persisted var date : Date
-    @Persisted var type : CreateType
-    @Persisted var amount : Int
-    @Persisted var iconImageURL : String?
-    
-    @Persisted var expendType : ExpendType?
+    @Persisted var createType : CreateType
+    @Persisted var moneyAmount : Int
+    @Persisted var iconImageType : IconImageType
+    @Persisted var typeString : String
+    @Persisted var dateString : String
 
-    convenience init(type : CreateType, amount : Int) {
+    convenience init(createType: CreateType, moneyAmount: Int, iconImageType: IconImageType, typeString: String, dateString: String) {
         self.init()
-        self.type = type
-        self.amount = amount
+        self.createType = createType
+        self.moneyAmount = moneyAmount
+        self.iconImageType = iconImageType
+        self.typeString = typeString
+        self.dateString = dateString
     }
 }
