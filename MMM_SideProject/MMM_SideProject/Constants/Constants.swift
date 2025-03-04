@@ -58,3 +58,6 @@ struct ExpendCount {
     let count : Int
 }
 
+public enum IconImageType : String, PersistableEnum {
+    case date
+}

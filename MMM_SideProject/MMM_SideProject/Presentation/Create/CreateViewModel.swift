@@ -8,6 +8,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import RealmSwift
 
 protocol CreateViewModelInterface {
     var dismissButtonObserver : AnyObserver<Void> { get }
@@ -123,8 +124,6 @@ class CreateViewModel : CreateViewModelInterface {
             
             guard let dateString = dateString, let inputMoney = inputMoney else { return }
             
-            print(self.dateString, self.typeString, self.inputMoney, self.iconImage, self.createType)
-            
             if dateString.split(separator: "년").count > 1 {
                 errorSubject.onNext(.noneSetDate)
             }
@@ -132,7 +131,20 @@ class CreateViewModel : CreateViewModelInterface {
                 errorSubject.onNext(.zeroInputMoney)
             }
             else {
-                // TODO: - Realm 디비 저장
+                // MARK: - Realm 디비 저장
+                guard let typeString = typeString else { return }
+                guard let realm = try? Realm() else {
+                    return
+                }
+                
+                let userDB = UserDB(createType: createType, moneyAmount: inputMoney.toAmount, iconImageType: .date, typeString: typeString, dateString: dateString)
+                
+                try! realm.write {
+                    realm.add(userDB)
+                }
+                
+                //print(Realm.Configuration.defaultConfiguration.fileURL)
+                
                 self.delegate?.popCreateVC()
             }
         }.disposed(by: disposeBag)
