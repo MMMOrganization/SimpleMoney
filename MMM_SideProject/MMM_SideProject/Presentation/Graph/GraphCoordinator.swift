@@ -21,10 +21,9 @@ class GraphCoordinator : Coordinator, GraphViewModelDelegate {
         // TODO: - graphStyle 에 따라서 표현하는 View가 달라짐.
         let dataRepository = MockDataRepository()
         let viewModel = GraphViewModel(repository: dataRepository)
-        let graphViewModel = GraphViewModelForSwiftUI(repository: dataRepository)
         viewModel.delegate = self
         
-        let graphViewController = GraphViewController(viewModel: viewModel, graphViewModel: graphViewModel)
+        let graphViewController = GraphViewController(viewModel: viewModel)
         self.navigationController.pushViewController(graphViewController, animated: true)
     }
     

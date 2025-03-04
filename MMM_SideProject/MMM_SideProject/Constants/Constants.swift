@@ -46,18 +46,6 @@ public enum DetailCellStyle {
     case spacious // 간격 O
 }
 
-// MARK: - 현재 Dummy 객체 (테스트용)
-public enum ExpendType : String, PersistableEnum {
-    case date1 = "date1"
-    case date2 = "date2"
-    case date3 = "date3"
-}
-
-struct ExpendCount {
-    let expendType : ExpendType
-    let count : Int
-}
-
 public enum IconImageType : String, PersistableEnum {
     case date
 }

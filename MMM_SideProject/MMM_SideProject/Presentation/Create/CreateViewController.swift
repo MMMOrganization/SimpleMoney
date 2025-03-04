@@ -255,7 +255,7 @@ class CreateViewController: UIViewController {
         flowLayout.itemSize = CGSize(width: 70, height: 70)
         flowLayout.minimumInteritemSpacing = 23 // 아이템 사이 간격
         flowLayout.minimumLineSpacing = 20 // 줄 간격
-        
+    
         let cv = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         cv.translatesAutoresizingMaskIntoConstraints = false
         return cv

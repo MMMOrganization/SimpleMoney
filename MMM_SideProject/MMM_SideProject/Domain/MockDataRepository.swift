@@ -40,27 +40,15 @@ class MockDataRepository : DataRepositoryInterface {
         return dateType.toStringYearMonth()
     }
     
-    func readAmountsDict() -> [String : Int] {
-        var amountsDict : [String : Int] = .init()
+    func readGraphData(date: String) -> [String : Double] {
+        // TODO: - date를 받아서 해당 date에 맞는 데이터를 디비에서 가져옴
+        // 디비에서 받아온 데이터를 타입마다 분류하여 전달함.
         
-        amountsDict["2025-01-01"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-05"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-08"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-14"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-18"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-22"] = Int.random(in: -10000...10000)
-        
-        return amountsDict
-    }
-    
-    // MARK: - GraphViewModel에서 사용하는 함수
-    /// ExpendType 에 따른 데이터를 가져와야 함.
-    func readDataForExpendType(of type : ExpendType) -> [Entity] {
-        return [
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-        ]
+        return ["기타" : 12.0,
+                "용돈" : 1.0,
+                "음주" : 5.0,
+                "음식" : 7.0,
+                "커피" : 10.0]
     }
     
     func readDataForCreateCell(of type : CreateType, selectedIndex : Int) -> [CreateCellIcon] {

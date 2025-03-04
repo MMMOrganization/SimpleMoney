@@ -11,9 +11,8 @@ import RxCocoa
 
 protocol GraphViewModelInterface {
     var dismissButtonObserver : AnyObserver<Void> { get }
-    var expendTypeObserver : AnyObserver<ExpendType> { get }
     
-    var dataObservable : Observable<[Entity]> { get }
+    var graphDataObservable : Observable<[String : Double]> { get }
 }
 
 protocol GraphViewModelDelegate : AnyObject {
@@ -23,14 +22,12 @@ protocol GraphViewModelDelegate : AnyObject {
 class GraphViewModel : GraphViewModelInterface {
     
     var dismissButtonSubject: PublishSubject<Void>
-    var expendTypeSubject: PublishSubject<ExpendType>
     
-    var dataSubject : BehaviorSubject<[Entity]>
+    var graphDataSubject: BehaviorSubject<[String : Double]>
     
     var dismissButtonObserver: AnyObserver<Void>
-    var expendTypeObserver: AnyObserver<ExpendType>
     
-    var dataObservable: Observable<[Entity]>
+    var graphDataObservable: Observable<[String : Double]>
     
     weak var delegate : GraphViewModelDelegate?
     
@@ -41,15 +38,18 @@ class GraphViewModel : GraphViewModelInterface {
     init(repository : DataRepositoryInterface) {
         self.repository = repository
         
-        dismissButtonSubject = PublishSubject<Void>()
-        expendTypeSubject = PublishSubject<ExpendType>()
+        // TODO: - 지출타입의 데이터베이스를 다 긁어온다.
+        // TODO: - 딕셔너리로 값을 받는다.
+        // TODO: - 정리해서 그래프로 넘긴다.
         
-        dataSubject = BehaviorSubject<[Entity]>(value: repository.readData())
+        dismissButtonSubject = PublishSubject<Void>()
+        
+        // Date 포멧을 어떻게 할지 고민해봐야함.
+        graphDataSubject = BehaviorSubject<[String : Double]>(value: repository.readGraphData(date: "2025년03월"))
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
-        expendTypeObserver = expendTypeSubject.asObserver()
         
-        dataObservable = dataSubject
+        graphDataObservable = graphDataSubject
         
         setCoordinator()
         setReactive()
@@ -62,11 +62,6 @@ class GraphViewModel : GraphViewModelInterface {
     }
     
     func setReactive() {
-        // MARK: - expendTypeObserver 가 받으면 어떤 Cell을 반환해야 할지 생각하고 Cell을 전달해야 함.
-        expendTypeSubject.subscribe { [weak self] expendType in
-            guard let self = self, let expendType = expendType.element else { return }
-            // MARK: - ExpendType 만 가져오는 Entity 를 DataRepository에서 만들어야 함.
-            dataSubject.onNext(self.repository.readDataForExpendType(of: expendType))
-        }.disposed(by: disposeBag)
+        // TODO: - 날짜의 변경을 감지하고 graphDataSubject에 스트림을 보내야 함.
     }
 }
