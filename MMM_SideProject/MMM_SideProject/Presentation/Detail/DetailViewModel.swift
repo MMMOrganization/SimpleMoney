@@ -31,7 +31,7 @@ protocol DetailViewModelInterface {
 protocol DetailViewModelDelegate : AnyObject {
     func pushCalendarVC()
     func pushCreateVC()
-    func pushGraphVC(graphType : GraphType)
+    func pushGraphVC()
 }
 
 class DetailViewModel : DetailViewModelInterface {
@@ -146,8 +146,9 @@ class DetailViewModel : DetailViewModelInterface {
         
         [circleGraphButtonSubject, barGraphButtonSubject].forEach {
             $0.subscribe { graphType in
+                // TODO: - GraphType 뱉지 않도록.
                 guard let graphType = graphType.element else { return }
-                self.delegate?.pushGraphVC(graphType: graphType)
+                self.delegate?.pushGraphVC()
             }.disposed(by: disposeBag)
         }
     }

@@ -46,6 +46,16 @@ class GraphViewController: UIViewController {
         return c
     }()
     
+    lazy var headerView : UIView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 300))
+    
+    let tableView : UITableView = {
+        let tv = UITableView()
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        //tv.layer.borderWidth = 1
+        //tv.layer.borderColor = UIColor.mainColor.cgColor
+        return tv
+    }()
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         buttonCollectionView.layer.addBorder([.bottom])
@@ -66,12 +76,15 @@ class GraphViewController: UIViewController {
         setDelegate()
         setLayout()
         setReactive()
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
     }
     
     func setDelegate() {
         pieChartView.delegate = self
-        buttonCollectionView.delegate = self
-        buttonCollectionView.dataSource = self
+        buttonCollectionView.dataSource = nil
         
         buttonCollectionView.register(TypeButtonCVCell.self, forCellWithReuseIdentifier: TypeButtonCVCell.identifier)
     }
@@ -80,25 +93,31 @@ class GraphViewController: UIViewController {
         self.view.backgroundColor = .white
         self.navigationItem.leftBarButtonItem = dismissButtonItem
         
-//        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 400))
+        headerView.addSubview(pieChartView)
         
-        self.view.addSubview(pieChartView)
         self.view.addSubview(buttonCollectionView)
-        
-        
+        self.view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            pieChartView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 40),
-            pieChartView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -40),
-            pieChartView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            buttonCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
+            buttonCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
+            buttonCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            buttonCollectionView.heightAnchor.constraint(equalToConstant: 70),
+            
+            pieChartView.leadingAnchor.constraint(equalTo: self.headerView.leadingAnchor),
+            pieChartView.trailingAnchor.constraint(equalTo: self.headerView.trailingAnchor),
+            pieChartView.topAnchor.constraint(equalTo: self.headerView.topAnchor),
             pieChartView.heightAnchor.constraint(equalToConstant: 300),
             
-            buttonCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 15),
-            buttonCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -15),
-            buttonCollectionView.topAnchor.constraint(equalTo: self.pieChartView.bottomAnchor),
-            buttonCollectionView.heightAnchor.constraint(equalToConstant: 70),
+            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: self.buttonCollectionView.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
         ])
+        
+        tableView.tableHeaderView = headerView
     }
+    
     
     func setReactive() {
         //MARK: - Coordinator 화면 전환 바인딩
@@ -106,6 +125,17 @@ class GraphViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.dismissButtonObserver)
             .disposed(by: disposeBag)
+        
+        viewModel.typeButtonDataObservable
+            .map {
+                var tempList : [(String, UIColor)] = .init()
+                $0.forEach {
+                    tempList.append(($0.key, $0.value))
+                }
+                return tempList
+            }.bind(to: buttonCollectionView.rx.items(cellIdentifier: TypeButtonCVCell.identifier, cellType: TypeButtonCVCell.self)) { (index, item, cell) in
+                    cell.configure(item: item)
+        }.disposed(by: disposeBag)
         
         viewModel.graphDataObservable
             .subscribe { [weak self] eventDict in
@@ -124,21 +154,13 @@ class GraphViewController: UIViewController {
                 
                 setPieChart(entriesDict: entriesDict)
             }.disposed(by: disposeBag)
-    }
-}
 
-// TODO: - 후에 RxSwift 로 바꿀 것.
-extension GraphViewController : UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TypeButtonCVCell.identifier, for: indexPath) as? TypeButtonCVCell else {
-            return UICollectionViewCell()
-        }
         
-        return cell
+        
+//        viewModel.typeButtonDataObservable
+//            .bind(to: buttonCollectionView.rx.items(cellIdentifier: TypeButtonCVCell.identifier, cellType: TypeButtonCVCell.self)) { (index, item, cell) in
+//                cell.configure(item: item)
+//            }.disposed(by: disposeBag)
     }
 }
 
@@ -150,7 +172,11 @@ extension GraphViewController : ChartViewDelegate {
         // TODO: - 받고 그래프를 그린다.
         // -> Mock 으로 클리어
         // TODO: - 지출 타입의 개수를 확인하고 매핑하여 CollectionView를 가진다.
+        // -> Clear
+        // TODO: - Graph의 타입 색과 버튼 색을 매핑한다.
+        
         // TODO: - TableView 와 CollectionView를 매핑한다.
+        
         
         var entryList : [PieChartDataEntry] = []
         
@@ -159,19 +185,25 @@ extension GraphViewController : ChartViewDelegate {
             entryList.append(PieChartDataEntry(value: $0.value, label: $0.key))
         }
         
+        
         let dataSet = PieChartDataSet(entries: entryList, label: "")
         
         // 🎨 각 조각별 색상
         // TODO: - 개수에 맞춰서 어떻게 색상을 조절할 지 고민해봐야 함.
-        dataSet.colors = [
-            UIColor.red.withAlphaComponent(0.20),
-            UIColor.orange.withAlphaComponent(0.25),
-            UIColor.yellow.withAlphaComponent(0.30),
-            UIColor.green.withAlphaComponent(0.35),
-            UIColor.blue.withAlphaComponent(0.40),
-        ]
         
+        
+        dataSet.colors = ChartColorTemplates.joyful()
+        dataSet.colors = dataSet.colors.map { $0.withAlphaComponent(0.4) }
         dataSet.sliceSpace = 5
+        
+        var tempDict = [String:UIColor]()
+        
+        // MARK: - typeButtonData 스트림을 던져줌.
+        for i in 0..<dataSet.colors.count {
+            tempDict[entryList[i].label!] = dataSet.colors[i]
+        }
+        
+        viewModel.typeButtonDataObserver.onNext(tempDict)
         
         // 🥯 도넛 형태 만들기 (원형 비율 조정)
         pieChartView.holeRadiusPercent = 0.25  // 중앙 구멍 크기
@@ -179,7 +211,7 @@ extension GraphViewController : ChartViewDelegate {
         
         // 구멍 근처에 있는 흰색 없애기
         pieChartView.transparentCircleColor = .clear
-    
+        
         // 🏷️ 라벨 위치 설정 (도넛 차트에 적합하게)
         dataSet.xValuePosition = .insideSlice  // 라벨을 내부에 표시
         dataSet.yValuePosition = .insideSlice  // 값도 내부에 표시
@@ -205,4 +237,17 @@ extension GraphViewController : ChartViewDelegate {
         pieChartView.legend.enabled = false  // 범례 숨기기
         pieChartView.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)  // 애니메이션 효과
     }
+}
+
+extension GraphViewController : UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 15
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        return UITableViewCell()
+    }
+    
+    
 }

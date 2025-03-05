@@ -226,13 +226,9 @@ final class DetailViewController: UIViewController {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.scrollEdgeAppearance = 
         navigationController?.navigationBar.standardAppearance
-        navigationController?.isToolbarHidden = false
+        navigationController?.isToolbarHidden = true
         navigationItem.rightBarButtonItem = calendarBarButtonItem
         navigationItem.leftBarButtonItems = [circleGraphBarButtonItem, barGraphBarButtonItem]
-        
-        let appearance = UIToolbarAppearance()
-        appearance.backgroundColor = .orange
-        navigationController?.toolbar.scrollEdgeAppearance = appearance
         
         view.backgroundColor = .white
         
@@ -315,7 +311,7 @@ final class DetailViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             
             contentAddButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
-            contentAddButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -10),
+            contentAddButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30),
             contentAddButton.widthAnchor.constraint(equalToConstant: 60),
             contentAddButton.heightAnchor.constraint(equalToConstant: 60)
         ])
