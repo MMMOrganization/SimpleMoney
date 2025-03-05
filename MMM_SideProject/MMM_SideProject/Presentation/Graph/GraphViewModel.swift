@@ -5,7 +5,7 @@
 //  Created by 강대훈 on 1/25/25.
 //
 
-import UIKit
+import Foundation
 import RxSwift
 import RxCocoa
 
@@ -13,6 +13,7 @@ protocol GraphViewModelInterface {
     var dismissButtonObserver : AnyObserver<Void> { get }
     
     var graphDataObservable : Observable<[String : Double]> { get }
+    var typeButtonDataObservable : Observable<[String]> { get }
 }
 
 protocol GraphViewModelDelegate : AnyObject {
@@ -28,6 +29,14 @@ class GraphViewModel : GraphViewModelInterface {
     var dismissButtonObserver: AnyObserver<Void>
     
     var graphDataObservable: Observable<[String : Double]>
+    
+    lazy var typeButtonDataObservable: Observable<[String]> = graphDataObservable.map {
+        var tempList = [String]()
+        for key in $0.keys {
+            tempList.append(key)
+        }
+        return tempList
+    }
     
     weak var delegate : GraphViewModelDelegate?
     

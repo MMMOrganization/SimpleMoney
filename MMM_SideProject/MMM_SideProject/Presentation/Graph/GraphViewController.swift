@@ -70,8 +70,7 @@ class GraphViewController: UIViewController {
     
     func setDelegate() {
         pieChartView.delegate = self
-        buttonCollectionView.delegate = self
-        buttonCollectionView.dataSource = self
+        buttonCollectionView.dataSource = nil
         
         buttonCollectionView.register(TypeButtonCVCell.self, forCellWithReuseIdentifier: TypeButtonCVCell.identifier)
     }
@@ -124,21 +123,11 @@ class GraphViewController: UIViewController {
                 
                 setPieChart(entriesDict: entriesDict)
             }.disposed(by: disposeBag)
-    }
-}
-
-// TODO: - 후에 RxSwift 로 바꿀 것.
-extension GraphViewController : UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TypeButtonCVCell.identifier, for: indexPath) as? TypeButtonCVCell else {
-            return UICollectionViewCell()
-        }
         
-        return cell
+        viewModel.typeButtonDataObservable
+            .bind(to: buttonCollectionView.rx.items(cellIdentifier: TypeButtonCVCell.identifier, cellType: TypeButtonCVCell.self)) { (index, item, cell) in
+                cell.configure(item: item)
+            }.disposed(by: disposeBag)
     }
 }
 
@@ -150,7 +139,11 @@ extension GraphViewController : ChartViewDelegate {
         // TODO: - 받고 그래프를 그린다.
         // -> Mock 으로 클리어
         // TODO: - 지출 타입의 개수를 확인하고 매핑하여 CollectionView를 가진다.
+        // -> Clear
+        // TODO: - Graph의 타입 색과 버튼 색을 매핑한다.
+        
         // TODO: - TableView 와 CollectionView를 매핑한다.
+        
         
         var entryList : [PieChartDataEntry] = []
         

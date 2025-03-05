@@ -25,6 +25,10 @@ class TypeButtonCVCell: UICollectionViewCell {
         return b
     }()
     
+    func configure(item: String) {
+        typeButton.setTitle(item, for: .normal)
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setLayout()

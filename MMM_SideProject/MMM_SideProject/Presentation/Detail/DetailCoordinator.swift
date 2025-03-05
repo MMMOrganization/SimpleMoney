@@ -13,11 +13,19 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
     var childCoordinators : [Coordinator] = []
     var navigationController : UINavigationController
     
-    init() {
-        self.navigationController = .init()
+    init(navigationController : UINavigationController) {
+        self.navigationController = navigationController
     }
     
-    func start() {}
+    func start() {
+        let repository = MockDataRepository()
+        let detailViewModel = DetailViewModel(repository: repository)
+        detailViewModel.delegate = self
+        
+        let detailViewController = DetailViewController(viewModel : detailViewModel)
+        
+        self.navigationController.pushViewController(detailViewController, animated: true)
+    }
     
     func pushCalendarVC() {
         let calendarCoordinator = CalendarCoordinator(navigationController : navigationController)
@@ -41,19 +49,6 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
         addChild(graphCoordinator)
         
         graphCoordinator.start()
-    }
-    
-    // MainVC 객체를 생성하여 반환함.
-    func startPush() -> UINavigationController {
-        let repository = MockDataRepository()
-        let detailViewModel = DetailViewModel(repository: repository)
-        detailViewModel.delegate = self
-        
-        let detailViewController = DetailViewController(viewModel : detailViewModel)
-        detailViewController.view.backgroundColor = .white
-        navigationController.setViewControllers([detailViewController], animated: true)
-        
-        return navigationController
     }
     
     deinit {
