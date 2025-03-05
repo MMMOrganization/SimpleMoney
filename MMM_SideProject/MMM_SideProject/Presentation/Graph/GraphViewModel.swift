@@ -5,15 +5,16 @@
 //  Created by 강대훈 on 1/25/25.
 //
 
-import Foundation
+import UIKit
 import RxSwift
 import RxCocoa
 
 protocol GraphViewModelInterface {
     var dismissButtonObserver : AnyObserver<Void> { get }
+    var typeButtonDataObserver : AnyObserver<[String: UIColor]> { get }
     
-    var graphDataObservable : Observable<[String : Double]> { get }
-    var typeButtonDataObservable : Observable<[String]> { get }
+    var graphDataObservable : Observable<[String: Double]> { get }
+    var typeButtonDataObservable : Observable<[String: UIColor]> { get }
 }
 
 protocol GraphViewModelDelegate : AnyObject {
@@ -22,21 +23,20 @@ protocol GraphViewModelDelegate : AnyObject {
 
 class GraphViewModel : GraphViewModelInterface {
     
+    // MARK: - Subject (Observer)
     var dismissButtonSubject: PublishSubject<Void>
+    var typeButtonDataSubject: PublishSubject<[String: UIColor]>
     
+    // MARK: - Subject (Observable)
     var graphDataSubject: BehaviorSubject<[String : Double]>
     
+    // MARK: - Observer
     var dismissButtonObserver: AnyObserver<Void>
+    var typeButtonDataObserver: AnyObserver<[String : UIColor]>
     
+    // MARK: - Observable
     var graphDataObservable: Observable<[String : Double]>
-    
-    lazy var typeButtonDataObservable: Observable<[String]> = graphDataObservable.map {
-        var tempList = [String]()
-        for key in $0.keys {
-            tempList.append(key)
-        }
-        return tempList
-    }
+    var typeButtonDataObservable : Observable<[String : UIColor]>
     
     weak var delegate : GraphViewModelDelegate?
     
@@ -52,13 +52,16 @@ class GraphViewModel : GraphViewModelInterface {
         // TODO: - 정리해서 그래프로 넘긴다.
         
         dismissButtonSubject = PublishSubject<Void>()
+        typeButtonDataSubject = PublishSubject<[String: UIColor]>()
         
         // Date 포멧을 어떻게 할지 고민해봐야함.
         graphDataSubject = BehaviorSubject<[String : Double]>(value: repository.readGraphData(date: "2025년03월"))
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
+        typeButtonDataObserver = typeButtonDataSubject.asObserver()
         
         graphDataObservable = graphDataSubject
+        typeButtonDataObservable = typeButtonDataSubject
         
         setCoordinator()
         setReactive()

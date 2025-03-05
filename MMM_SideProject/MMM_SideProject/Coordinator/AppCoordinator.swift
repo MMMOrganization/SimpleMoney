@@ -9,11 +9,9 @@ import UIKit
 
 class AppCoordinator : Coordinator {
     var childCoordinators: [Coordinator] = []
-    let window : UIWindow?
     var navigationController : UINavigationController
     
-    init(_ window : UIWindow?, _ navigationController : UINavigationController) {
-        self.window = window
+    init(navigationController : UINavigationController) {
         self.navigationController = navigationController
     }
     
@@ -27,8 +25,6 @@ class AppCoordinator : Coordinator {
     
     func start() {
         pushDetailVC()
-        self.window?.rootViewController = navigationController
-        self.window?.makeKeyAndVisible()
     }
     
     deinit {

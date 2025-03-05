@@ -7,6 +7,7 @@
 
 import UIKit
 
+// Flow가 이어지게끔 보이기 위해서 Graph, Calendar 의 화면 전환 로직을 담음.
 class DetailCoordinator : Coordinator, DetailViewModelDelegate {
     
     weak var parentCoordinator : Coordinator?
@@ -43,7 +44,7 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
         createCoordinator.start()
     }
     
-    func pushGraphVC(graphType: GraphType) {
+    func pushGraphVC() {
         let graphCoordinator = GraphCoordinator(navigationController: navigationController)
         graphCoordinator.parentCoordinator = self
         addChild(graphCoordinator)
