@@ -11,10 +11,12 @@ import RxCocoa
 
 protocol GraphViewModelInterface {
     var dismissButtonObserver : AnyObserver<Void> { get }
-    var typeButtonDataObserver : AnyObserver<[String: UIColor]> { get }
+    var typeButtonDataObserver : AnyObserver<[(String, UIColor)]> { get }
+    var typeButtonTapObserver : AnyObserver<(String, UIColor)> { get }
     
-    var graphDataObservable : Observable<[String: Double]> { get }
-    var typeButtonDataObservable : Observable<[String: UIColor]> { get }
+    var graphDataObservable : Observable<[(String, Double)]> { get }
+    var typeButtonDataObservable : Observable<[(String, UIColor)]> { get }
+    var entityDataObservable : Observable<[Entity]> { get }
 }
 
 protocol GraphViewModelDelegate : AnyObject {
@@ -25,18 +27,22 @@ class GraphViewModel : GraphViewModelInterface {
     
     // MARK: - Subject (Observer)
     var dismissButtonSubject: PublishSubject<Void>
-    var typeButtonDataSubject: PublishSubject<[String: UIColor]>
+    var typeButtonDataSubject: PublishSubject<[(String, UIColor)]>
+    var typeButtonTapSubject : BehaviorSubject<(String, UIColor)>
     
     // MARK: - Subject (Observable)
-    var graphDataSubject: BehaviorSubject<[String : Double]>
+    var graphDataSubject: BehaviorSubject<[(String, Double)]>
+    var entityDataSubject: PublishSubject<[Entity]>
     
     // MARK: - Observer
     var dismissButtonObserver: AnyObserver<Void>
-    var typeButtonDataObserver: AnyObserver<[String : UIColor]>
+    var typeButtonDataObserver: AnyObserver<[(String, UIColor)]>
+    var typeButtonTapObserver: AnyObserver<(String, UIColor)>
     
     // MARK: - Observable
-    var graphDataObservable: Observable<[String : Double]>
-    var typeButtonDataObservable : Observable<[String : UIColor]>
+    var graphDataObservable: Observable<[(String, Double)]>
+    var typeButtonDataObservable : Observable<[(String, UIColor)]>
+    var entityDataObservable: Observable<[Entity]>
     
     weak var delegate : GraphViewModelDelegate?
     
@@ -52,16 +58,20 @@ class GraphViewModel : GraphViewModelInterface {
         // TODO: - 정리해서 그래프로 넘긴다.
         
         dismissButtonSubject = PublishSubject<Void>()
-        typeButtonDataSubject = PublishSubject<[String: UIColor]>()
+        typeButtonDataSubject = PublishSubject<[(String, UIColor)]>()
+        typeButtonTapSubject = BehaviorSubject<(String, UIColor)>(value: ("", .mainColor))
         
         // Date 포멧을 어떻게 할지 고민해봐야함.
-        graphDataSubject = BehaviorSubject<[String : Double]>(value: repository.readGraphData(date: "2025년03월"))
+        graphDataSubject = BehaviorSubject<[(String, Double)]>(value: repository.readGraphData())
+        entityDataSubject = PublishSubject<[Entity]>()
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
         typeButtonDataObserver = typeButtonDataSubject.asObserver()
+        typeButtonTapObserver = typeButtonTapSubject.asObserver()
         
         graphDataObservable = graphDataSubject
         typeButtonDataObservable = typeButtonDataSubject
+        entityDataObservable = entityDataSubject
         
         setCoordinator()
         setReactive()
@@ -75,5 +85,13 @@ class GraphViewModel : GraphViewModelInterface {
     
     func setReactive() {
         // TODO: - 날짜의 변경을 감지하고 graphDataSubject에 스트림을 보내야 함.
+        typeButtonTapSubject
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] typeItem in
+                guard let self = self, let typeItem = typeItem.element else {
+                    return
+                }
+                entityDataSubject.onNext(repository.readData(typeName: typeItem.0, color: typeItem.1))
+            }.disposed(by: disposeBag)
     }
 }

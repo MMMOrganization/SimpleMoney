@@ -15,7 +15,6 @@ import DGCharts
 class GraphViewController: UIViewController {
     
     var disposeBag : DisposeBag = DisposeBag()
-    var cancellables = Set<AnyCancellable>()
     
     var viewModel : GraphViewModelInterface!
     
@@ -42,7 +41,7 @@ class GraphViewController: UIViewController {
         flowLayout.minimumLineSpacing = 10
         let c = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         c.translatesAutoresizingMaskIntoConstraints = false
-        c.layer.shouldRasterize = false
+        c.showsHorizontalScrollIndicator = false
         return c
     }()
     
@@ -51,15 +50,8 @@ class GraphViewController: UIViewController {
     let tableView : UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
-        //tv.layer.borderWidth = 1
-        //tv.layer.borderColor = UIColor.mainColor.cgColor
         return tv
     }()
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        buttonCollectionView.layer.addBorder([.bottom])
-    }
     
     init(viewModel : GraphViewModelInterface) {
         self.viewModel = viewModel
@@ -76,17 +68,19 @@ class GraphViewController: UIViewController {
         setDelegate()
         setLayout()
         setReactive()
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
     }
     
     func setDelegate() {
         pieChartView.delegate = self
+        
         buttonCollectionView.dataSource = nil
         
+        tableView.delegate = self
+        tableView.dataSource = self
+        
         buttonCollectionView.register(TypeButtonCVCell.self, forCellWithReuseIdentifier: TypeButtonCVCell.identifier)
+        
+        tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
     }
     
     func setLayout() {
@@ -102,7 +96,7 @@ class GraphViewController: UIViewController {
             buttonCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
             buttonCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
             buttonCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-            buttonCollectionView.heightAnchor.constraint(equalToConstant: 70),
+            buttonCollectionView.heightAnchor.constraint(equalToConstant: 60),
             
             pieChartView.leadingAnchor.constraint(equalTo: self.headerView.leadingAnchor),
             pieChartView.trailingAnchor.constraint(equalTo: self.headerView.trailingAnchor),
@@ -127,83 +121,62 @@ class GraphViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.typeButtonDataObservable
-            .map {
-                var tempList : [(String, UIColor)] = .init()
-                $0.forEach {
-                    tempList.append(($0.key, $0.value))
-                }
-                return tempList
-            }.bind(to: buttonCollectionView.rx.items(cellIdentifier: TypeButtonCVCell.identifier, cellType: TypeButtonCVCell.self)) { (index, item, cell) in
-                    cell.configure(item: item)
+            .observe(on: MainScheduler.instance)
+            .bind(to: buttonCollectionView.rx.items(cellIdentifier: TypeButtonCVCell.identifier, cellType: TypeButtonCVCell.self)) { [weak self] (index, item, cell) in
+                guard let self = self else { return }
+                cell.configure(item: item, viewModel : viewModel)
+                // TODO: - button Click 스트림 걸어줘야 함.
         }.disposed(by: disposeBag)
         
         viewModel.graphDataObservable
-            .subscribe { [weak self] eventDict in
-                guard let eventDict = eventDict.element else { return }
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] eventList in
+                guard let eventList = eventList.element else { return }
                 guard let self = self else { return }
                 
-                let sortedEventDict = eventDict.sorted {
-                    $0.value > $1.value
-                }
-                
-                var entriesDict = [String : Double]()
-                
-                sortedEventDict.forEach {
-                    entriesDict[$0.key] = $0.value
-                }
-                
-                setPieChart(entriesDict: entriesDict)
+                setPieChart(eventList: eventList)
             }.disposed(by: disposeBag)
-
         
-        
-//        viewModel.typeButtonDataObservable
-//            .bind(to: buttonCollectionView.rx.items(cellIdentifier: TypeButtonCVCell.identifier, cellType: TypeButtonCVCell.self)) { (index, item, cell) in
-//                cell.configure(item: item)
-//            }.disposed(by: disposeBag)
+        // TODO: - Entity TableView 바인딩
+        viewModel.entityDataObservable
+            .subscribe { entity in
+                print(entity.element)
+            }
     }
 }
 
 // MARK: - ChartViewDelegate
 extension GraphViewController : ChartViewDelegate {
-    func setPieChart(entriesDict : [String : Double]) {
-        // TODO: - ViewModel에서 각 지출 타입마다의 개수를 딕셔너리 형태로 보내줘야 함.
-        // -> 일단 Mock 으로 클리어
-        // TODO: - 받고 그래프를 그린다.
-        // -> Mock 으로 클리어
-        // TODO: - 지출 타입의 개수를 확인하고 매핑하여 CollectionView를 가진다.
-        // -> Clear
-        // TODO: - Graph의 타입 색과 버튼 색을 매핑한다.
-        
-        // TODO: - TableView 와 CollectionView를 매핑한다.
-        
+    func setPieChart(eventList : [(String, Double)]) {
+        // TODO: - CollectionView Element 클릭 요소에 매핑해야 함.
+        /// Example.
+        // TODO: - COllectionView 음주 클릭.
+        // TODO: - 음주라는 Category 를 ViewModel에서 받음
+        // TODO: - ViewModel에서 옵저버를 통해서 TableView 스트림에 날림.
         
         var entryList : [PieChartDataEntry] = []
         
         // 받아온 딕셔너리를 entryList로 변환하는 과정
-        entriesDict.forEach {
-            entryList.append(PieChartDataEntry(value: $0.value, label: $0.key))
+        eventList.forEach {
+            entryList.append(PieChartDataEntry(value: $0.1, label: $0.0))
         }
-        
         
         let dataSet = PieChartDataSet(entries: entryList, label: "")
         
         // 🎨 각 조각별 색상
-        // TODO: - 개수에 맞춰서 어떻게 색상을 조절할 지 고민해봐야 함.
-        
-        
-        dataSet.colors = ChartColorTemplates.joyful()
+        dataSet.colors = ChartColorTemplates.vordiplom()
         dataSet.colors = dataSet.colors.map { $0.withAlphaComponent(0.4) }
         dataSet.sliceSpace = 5
         
-        var tempDict = [String:UIColor]()
+        var buttonDataList = [(String, UIColor)]()
         
         // MARK: - typeButtonData 스트림을 던져줌.
-        for i in 0..<dataSet.colors.count {
-            tempDict[entryList[i].label!] = dataSet.colors[i]
+        // TODO: - 색 로직 변경해야 함.
+        for i in 0..<eventList.count {
+            buttonDataList.append((eventList[i].0, dataSet.colors.randomElement() ?? .mainColor))
         }
         
-        viewModel.typeButtonDataObserver.onNext(tempDict)
+        viewModel.typeButtonDataObserver.onNext(buttonDataList)
         
         // 🥯 도넛 형태 만들기 (원형 비율 조정)
         pieChartView.holeRadiusPercent = 0.25  // 중앙 구멍 크기
@@ -239,6 +212,8 @@ extension GraphViewController : ChartViewDelegate {
     }
 }
 
+
+// TODO: - 후에 TableView Rx로 리팩토링 예정.
 extension GraphViewController : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 15
@@ -248,6 +223,4 @@ extension GraphViewController : UITableViewDelegate, UITableViewDataSource {
         
         return UITableViewCell()
     }
-    
-    
 }
