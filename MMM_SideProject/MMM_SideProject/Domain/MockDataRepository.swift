@@ -36,6 +36,15 @@ class MockDataRepository : DataRepositoryInterface {
         ]
     }
     
+    func readData(typeName : String, color : UIColor = .clear) -> [Entity] {
+        // TODO: - Date 기준으로 typeName 을 가져와서 데이터를 뽑아줘야 함.
+        return [Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName:            "heart")!, color: color),
+                Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),
+            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),
+            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),
+            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),]
+    }
+    
     func readDate() -> String {
         return dateType.toStringYearMonth()
     }
@@ -53,15 +62,16 @@ class MockDataRepository : DataRepositoryInterface {
         return amountsDict
     }
     
-    func readGraphData(date: String) -> [String : Double] {
+    func readGraphData() -> [(String, Double)] {
         // TODO: - date를 받아서 해당 date에 맞는 데이터를 디비에서 가져옴
         // 디비에서 받아온 데이터를 타입마다 분류하여 전달함.
         
-        return ["기타" : 12.0,
-                "용돈" : 1.0,
-                "음주" : 5.0,
-                "음식" : 7.0,
-                "커피" : 10.0]
+        return [("기타",12.0),
+                ("용돈",1.0),
+                ("음주",5.0),
+                ("음식",7.0),
+                ("커피",10.0),
+                ("하이",7.0)]
     }
     
     func readDataForCreateCell(of type : CreateType, selectedIndex : Int) -> [CreateCellIcon] {
@@ -133,3 +143,5 @@ private extension MockDataRepository {
         ]
     }
 }
+
+// TODO: -

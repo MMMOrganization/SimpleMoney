@@ -16,14 +16,15 @@ struct Entity {
     let amount : Int
     let iconImage : UIImage
     
-    // MARK: - 지출 항목에 해당했을 때만 존재함.
+    var color : UIColor = .clear
     
-    init(id: UUID, dateStr: String, createType: CreateType, amount: Int, iconImage: UIImage) {
+    init(id: UUID, dateStr: String, createType: CreateType, amount: Int, iconImage: UIImage, color: UIColor = .clear) {
         self.id = id
         self.dateStr = dateStr
         self.createType = createType
         self.amount = amount
         self.iconImage = iconImage
+        self.color = color
     }
 }
 
