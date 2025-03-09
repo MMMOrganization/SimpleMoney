@@ -59,7 +59,6 @@ class MockDataRepository : DataRepositoryInterface {
         // TODO: - RealmDB에 저장되어 있는 모든 날짜를 Set하게 가져와서 배열에 담음.
         // TODO: - 하나의 배열 요소당 Realm 데이터를 뽑아서 가격을 계산함.
         // TODO: - amountsDict를 반환함.
-        
         guard let realm = try? Realm() else {
             print("MockData - Realm Error readAmountsDict")
             return [:]
@@ -74,9 +73,7 @@ class MockDataRepository : DataRepositoryInterface {
             }
             
             // MARK: - 해당 Date의 모든 요소 값 계산 후 반환
-            let tempAmount = tempDate.reduce(0) { partialResult, userDB in
-                return userDB.createType == .expend ? userDB.moneyAmount - partialResult : userDB.moneyAmount + partialResult
-            }
+            let tempAmount = tempDate.reduce(0) { $0 + $1.moneyAmount }
             
             amountsDict[dateString] = tempAmount
         }

@@ -137,8 +137,6 @@ class CreateViewModel : CreateViewModelInterface {
                     return
                 }
                 
-                print(inputMoney.toAmount(with: createType))
-                
                 let userDB = UserDB(createType: createType, moneyAmount: inputMoney.toAmount(with: createType), iconImageType: .date, typeString: typeString, dateString: dateString)
                 
                 try! realm.write {
