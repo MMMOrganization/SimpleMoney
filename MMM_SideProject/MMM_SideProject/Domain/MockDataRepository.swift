@@ -38,11 +38,12 @@ class MockDataRepository : DataRepositoryInterface {
     
     func readData(typeName : String, color : UIColor = .clear) -> [Entity] {
         // TODO: - Date 기준으로 typeName 을 가져와서 데이터를 뽑아줘야 함.
-        return [Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName:            "heart")!, color: color),
-                Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),
-            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),
-            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),
-            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),]
+        
+        return [Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),
+                Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),
+            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),
+            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),
+            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),]
     }
     
     func readDate() -> String {

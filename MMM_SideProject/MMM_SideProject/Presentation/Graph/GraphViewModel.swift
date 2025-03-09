@@ -91,6 +91,7 @@ class GraphViewModel : GraphViewModelInterface {
                 guard let self = self, let typeItem = typeItem.element else {
                     return
                 }
+                
                 entityDataSubject.onNext(repository.readData(typeName: typeItem.0, color: typeItem.1))
             }.disposed(by: disposeBag)
     }

@@ -108,6 +108,7 @@ class DetailTableViewCell: UITableViewCell {
         //self.mainLabel.text = "정기 결제"
         self.dateLabel.text = item.dateStr
         self.moneyLabel.text = item.amount.toCurrency
+        self.contentView.layer.cornerRadius = 15
         setNeedsLayout()
     }
     

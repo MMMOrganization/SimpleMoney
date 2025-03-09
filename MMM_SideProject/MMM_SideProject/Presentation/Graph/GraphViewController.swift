@@ -74,12 +74,12 @@ class GraphViewController: UIViewController {
         pieChartView.delegate = self
         
         buttonCollectionView.dataSource = nil
+        tableView.dataSource = nil
         
-        tableView.delegate = self
-        tableView.dataSource = self
+        tableView.rowHeight = 65
+        tableView.separatorStyle = .none
         
         buttonCollectionView.register(TypeButtonCVCell.self, forCellWithReuseIdentifier: TypeButtonCVCell.identifier)
-        
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
     }
     
@@ -103,9 +103,9 @@ class GraphViewController: UIViewController {
             pieChartView.topAnchor.constraint(equalTo: self.headerView.topAnchor),
             pieChartView.heightAnchor.constraint(equalToConstant: 300),
             
-            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            tableView.topAnchor.constraint(equalTo: self.buttonCollectionView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
+            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
+            tableView.topAnchor.constraint(equalTo: self.buttonCollectionView.bottomAnchor, constant: 15),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
         ])
         
@@ -114,12 +114,21 @@ class GraphViewController: UIViewController {
     
     
     func setReactive() {
-        //MARK: - Coordinator 화면 전환 바인딩
+        // MARK: - Coordinator 화면 전환 바인딩
         dismissButton.rx.tap
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.dismissButtonObserver)
             .disposed(by: disposeBag)
         
+        // MARK: - Entity TableView 바인딩
+        viewModel.entityDataObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
+                cell.configure(item: item)
+                cell.contentView.backgroundColor = .mainColor.withAlphaComponent(0.05)
+            }.disposed(by: disposeBag)
+        
+        // MARK: - Button 타입 라벨 바인딩
         viewModel.typeButtonDataObservable
             .observe(on: MainScheduler.instance)
             .bind(to: buttonCollectionView.rx.items(cellIdentifier: TypeButtonCVCell.identifier, cellType: TypeButtonCVCell.self)) { [weak self] (index, item, cell) in
@@ -128,6 +137,7 @@ class GraphViewController: UIViewController {
                 // TODO: - button Click 스트림 걸어줘야 함.
         }.disposed(by: disposeBag)
         
+        // MARK: - graphData 바인딩
         viewModel.graphDataObservable
             .observe(on: MainScheduler.instance)
             .subscribe { [weak self] eventList in
@@ -136,12 +146,6 @@ class GraphViewController: UIViewController {
                 
                 setPieChart(eventList: eventList)
             }.disposed(by: disposeBag)
-        
-        // TODO: - Entity TableView 바인딩
-        viewModel.entityDataObservable
-            .subscribe { entity in
-                print(entity.element)
-            }
     }
 }
 
@@ -209,18 +213,5 @@ extension GraphViewController : ChartViewDelegate {
         // 기타 설정
         pieChartView.legend.enabled = false  // 범례 숨기기
         pieChartView.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)  // 애니메이션 효과
-    }
-}
-
-
-// TODO: - 후에 TableView Rx로 리팩토링 예정.
-extension GraphViewController : UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 15
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        return UITableViewCell()
     }
 }
