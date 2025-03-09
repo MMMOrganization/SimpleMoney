@@ -31,17 +31,19 @@ class MockDataRepository : DataRepositoryInterface {
     /// For Calendar Function
     /// 하루치에 해당하는 데이터를 가져와야 함.
     func readDataOfDay() -> [Entity] {
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readDataOfDay")
+            return []
+        }
         
-        return [
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-        ]
+        let realmData = realm.objects(UserDB.self)
+        
+        return realmData.where { $0.dateString == dateType.toStringYearMonthDay() }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
     func readData(typeName : String, color : UIColor = .clear) -> [Entity] {
         // TODO: - Date 기준으로 typeName 을 가져와서 데이터를 뽑아줘야 함.
-        
         return [Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),
                 Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),
             Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),
@@ -55,10 +57,7 @@ class MockDataRepository : DataRepositoryInterface {
     
     func readAmountsDict() -> [String : Int] {
         var amountsDict : [String : Int] = .init()
-        
-        // TODO: - RealmDB에 저장되어 있는 모든 날짜를 Set하게 가져와서 배열에 담음.
-        // TODO: - 하나의 배열 요소당 Realm 데이터를 뽑아서 가격을 계산함.
-        // TODO: - amountsDict를 반환함.
+
         guard let realm = try? Realm() else {
             print("MockData - Realm Error readAmountsDict")
             return [:]

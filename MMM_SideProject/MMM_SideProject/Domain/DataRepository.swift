@@ -9,66 +9,99 @@ import UIKit
 import RealmSwift
 import Realm
 
-class DataRepository {
+class DataRepository : DataRepositoryInterface {
     
     private var stateType : ButtonType = .total
-    
-    // 현재 날짜를 "YYYY년 MM월로 가져오는 로직 필요
     private var dateType : YearMonthDay = .init()
     
-    /// total Read
-    /// -> Entity 객체로 이번 달의 전체 엔티티를 리스트로 전달해야 함.
-    func readTotalData() -> [Entity] {
-        guard let realm = try? Realm() else {
-            // 에러 처리 필요 (에러 핸들링은 어떻게 해야할까?)
-            return []
-        }
-        // 지금이 몇 월인지 확인하는 함수를 호출해야 함.
-        // 2. Realm 객체의 데이터를 읽어와야 함.
-        
-        let domainDataResults = realm.objects(UserDB.self)
-        
-        domainDataResults.map { print($0) }
-        
-        return []
-    }
-    
     func readData() -> [Entity] {
+        switch stateType {
+        case .total:
+            return readTotalData()
+        case .income:
+            return readIncomeData()
+        case .expend:
+            return readExpendData()
+        }
+    }
+    
+    func readData(typeName: String, color: UIColor) -> [Entity] {
         return []
-    }
-    
-    func setState(type: ButtonType) {
-        
-    }
-    
-    /// income Read
-    /// -> Entity 객체로 이번 달의 수입 엔티티를 리스트로 전달해야 함.
-    func readIncomeData() -> [Entity] {
-        return []
-    }
-    
-    /// expend Read
-    /// -> Entity 객체로 이번 달의 지출 엔티티를 리스트로 전달해야 함.
-    func readExpendData() -> [Entity] {
-        return []
-    }
-    
-    /// 현재 어떤 버튼이 눌려있는지 상태를 보관해야 함. (Interface 에서는 제공하지 않음.)
-    /// -> 현재 상태에 따라서 호출되는 함수는 다름
-    func setStateType(_ stateType : ButtonType) {
-        // Button 을 누름으로 stateType의 변경.
-        self.stateType = stateType
     }
     
     func readDate() -> String {
         return ""
     }
     
+    func readDataOfDay() -> [Entity] {
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readDataOfDay")
+            return []
+        }
+        
+        let realmData = realm.objects(UserDB.self)
+        
+        return realmData.where { $0.dateString == dateType.toStringYearMonthDay() }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
+    }
+    
+    func readGraphData() -> [(String, Double)] {
+        return []
+    }
+    
+    func readAmountsDict() -> [String : Int] {
+        var amountsDict : [String : Int] = .init()
+        
+        // TODO: - Concurrency 적용 필요
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readAmountsDict")
+            return [:]
+        }
+        
+        let realmData = realm.objects(UserDB.self)
+        let uniqueDate = Set(realmData.map { $0.dateString })
+        
+        for dateString in uniqueDate {
+            let tempDate = realmData.where {
+                $0.dateString == dateString
+            }
+            
+            // MARK: - 해당 Date의 모든 요소 값 계산 후 반환
+            let tempAmount = tempDate.reduce(0) { $0 + $1.moneyAmount }
+            
+            amountsDict[dateString] = tempAmount
+        }
+        
+        return amountsDict
+    }
+    
+    func readDataForCreateCell(of type: CreateType, selectedIndex: Int) -> [CreateCellIcon] {
+        return []
+    }
+    
     func setDate(type: DateButtonType) {
+        
+    }
+    
+    func setState(type: ButtonType) {
         
     }
     
     func setDay(of day: Int) {
         
+    }
+}
+
+private extension DataRepository {
+    private func readTotalData() -> [Entity] {
+        return []
+    }
+    
+    private func readIncomeData() -> [Entity] {
+        return []
+    }
+    
+    private func readExpendData() -> [Entity] {
+        return []
     }
 }
