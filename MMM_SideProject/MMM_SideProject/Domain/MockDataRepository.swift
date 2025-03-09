@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RealmSwift
+import Realm
 
 class MockDataRepository : DataRepositoryInterface {
     
@@ -29,20 +31,24 @@ class MockDataRepository : DataRepositoryInterface {
     /// For Calendar Function
     /// 하루치에 해당하는 데이터를 가져와야 함.
     func readDataOfDay() -> [Entity] {
-        return [
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-            Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
-        ]
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readDataOfDay")
+            return []
+        }
+        
+        let realmData = realm.objects(UserDB.self)
+        
+        return realmData.where { $0.dateString == dateType.toStringYearMonthDay() }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
     func readData(typeName : String, color : UIColor = .clear) -> [Entity] {
         // TODO: - Date 기준으로 typeName 을 가져와서 데이터를 뽑아줘야 함.
-        return [Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName:            "heart")!, color: color),
-                Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),
-            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),
-            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),
-            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(systemName: "heart")!, color: color),]
+        return [Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),
+                Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),
+            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),
+            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),
+            Entity(id: UUID(), dateStr: "2025-03-12", createType: .expend, amount: 12000, iconImage: UIImage(named: "DateImage")!, color: color),]
     }
     
     func readDate() -> String {
@@ -51,13 +57,25 @@ class MockDataRepository : DataRepositoryInterface {
     
     func readAmountsDict() -> [String : Int] {
         var amountsDict : [String : Int] = .init()
+
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readAmountsDict")
+            return [:]
+        }
         
-        amountsDict["2025-01-01"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-05"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-08"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-14"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-18"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-22"] = Int.random(in: -10000...10000)
+        let realmData = realm.objects(UserDB.self)
+        let uniqueDate = Set(realmData.map { $0.dateString })
+        
+        for dateString in uniqueDate {
+            let tempDate = realmData.where {
+                $0.dateString == dateString
+            }
+            
+            // MARK: - 해당 Date의 모든 요소 값 계산 후 반환
+            let tempAmount = tempDate.reduce(0) { $0 + $1.moneyAmount }
+            
+            amountsDict[dateString] = tempAmount
+        }
         
         return amountsDict
     }

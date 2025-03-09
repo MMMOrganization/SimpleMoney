@@ -19,7 +19,7 @@ struct YearMonthDay {
 
 extension YearMonthDay {
     func toStringYearMonthDay() -> String {
-        return "\(self.year).\(self.month).\(self.day)"
+        return "\(self.year)-\(self.month < 10 ? "0" + String(self.month) : String(self.month))-\(self.day < 10 ? "0" + String(self.day) : String(self.day))"
     }
     
     func toStringYearMonth() -> String {

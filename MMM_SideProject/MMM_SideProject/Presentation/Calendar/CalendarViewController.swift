@@ -233,7 +233,6 @@ class CalendarViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
                 cell.configure(item: item)
-                cell.contentView.layer.cornerRadius = 15
                 cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.05)
                 //cell.contentView.layer.shadowColor = UIColor.mainColor.cgColor
                 //cell.layer.shadowOpacity = 0.20

@@ -9,13 +9,18 @@ import Foundation
 
 extension String {
     // MARK: - String 중에서 숫자만 남기는 함수
-    var toAmount : Int {
+    func toAmount(with createType : CreateType) -> Int {
         var tempString : String = ""
         for alpha in self {
             guard Int(String(alpha)) != nil else { continue }
             tempString += String(alpha)
         }
         
-        return Int(tempString) ?? 0
+        guard let tempValue = Int(tempString) else {
+            print("String Extension - toAmount Error")
+            return 0
+        }
+        
+        return createType == .expend ? -tempValue : tempValue
     }
 }
