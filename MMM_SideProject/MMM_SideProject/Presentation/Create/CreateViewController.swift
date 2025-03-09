@@ -117,7 +117,7 @@ class DateToastView : UIViewController {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd"
                 let formattedDate = dateFormatter.string(from: $0)
-                return formattedDate.replacingOccurrences(of: "-", with: ".")
+                return formattedDate
             }
             .bind(to: viewModel.stringDateObserver)
             .disposed(by: disposeBag)

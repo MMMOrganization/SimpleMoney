@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RealmSwift
+import Realm
 
 class MockDataRepository : DataRepositoryInterface {
     
@@ -29,6 +31,7 @@ class MockDataRepository : DataRepositoryInterface {
     /// For Calendar Function
     /// 하루치에 해당하는 데이터를 가져와야 함.
     func readDataOfDay() -> [Entity] {
+        
         return [
             Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
             Entity(id: UUID(), dateStr: dateType.toStringYearMonth(), createType: .total, amount: 12000, iconImage: UIImage(named: "DateImage")!),
@@ -53,12 +56,30 @@ class MockDataRepository : DataRepositoryInterface {
     func readAmountsDict() -> [String : Int] {
         var amountsDict : [String : Int] = .init()
         
-        amountsDict["2025-01-01"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-05"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-08"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-14"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-18"] = Int.random(in: -10000...10000)
-        amountsDict["2025-01-22"] = Int.random(in: -10000...10000)
+        // TODO: - RealmDB에 저장되어 있는 모든 날짜를 Set하게 가져와서 배열에 담음.
+        // TODO: - 하나의 배열 요소당 Realm 데이터를 뽑아서 가격을 계산함.
+        // TODO: - amountsDict를 반환함.
+        
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readAmountsDict")
+            return [:]
+        }
+        
+        let realmData = realm.objects(UserDB.self)
+        let uniqueDate = Set(realmData.map { $0.dateString })
+        
+        for dateString in uniqueDate {
+            let tempDate = realmData.where {
+                $0.dateString == dateString
+            }
+            
+            // MARK: - 해당 Date의 모든 요소 값 계산 후 반환
+            let tempAmount = tempDate.reduce(0) { partialResult, userDB in
+                return userDB.createType == .expend ? userDB.moneyAmount - partialResult : userDB.moneyAmount + partialResult
+            }
+            
+            amountsDict[dateString] = tempAmount
+        }
         
         return amountsDict
     }

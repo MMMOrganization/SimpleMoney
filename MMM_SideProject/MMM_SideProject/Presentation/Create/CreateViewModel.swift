@@ -137,13 +137,13 @@ class CreateViewModel : CreateViewModelInterface {
                     return
                 }
                 
-                let userDB = UserDB(createType: createType, moneyAmount: inputMoney.toAmount, iconImageType: .date, typeString: typeString, dateString: dateString)
+                print(inputMoney.toAmount(with: createType))
+                
+                let userDB = UserDB(createType: createType, moneyAmount: inputMoney.toAmount(with: createType), iconImageType: .date, typeString: typeString, dateString: dateString)
                 
                 try! realm.write {
                     realm.add(userDB)
                 }
-                
-                //print(Realm.Configuration.defaultConfiguration.fileURL)
                 
                 self.delegate?.popCreateVC()
             }
@@ -172,13 +172,13 @@ class CreateViewModel : CreateViewModelInterface {
         // MARK: - Date 클릭시에 ViewModel이 가지는 dateString과의 바인딩
         stringDateSubject.subscribe { [weak self] stringDate in
             guard let self = self, let stringDate = stringDate.element else { return }
+            print(stringDate)
             self.dateString = stringDate
         }.disposed(by: disposeBag)
         
         // MARK: - 타입 클릭시에 ViewModel이 가지는 typeLabel과의 바인딩
         stringTypeSubject.subscribe { [weak self] stringType in
             guard let self = self, let stringType = stringType.element else { return }
-            print(stringType)
             self.typeString = stringType
         }.disposed(by: disposeBag)
         
