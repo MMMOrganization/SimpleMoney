@@ -20,7 +20,7 @@ protocol DetailViewModelInterface {
     var expendDataObserver : AnyObserver<ButtonType> { get }
     var dateIncreaseButtonObserver : AnyObserver<DateButtonType> { get }
     var dateDecreaseButtonObserver : AnyObserver<DateButtonType> { get }
-    var deleteDataObserver : AnyObserver<IndexPath> { get }
+    var deleteDataObserver : AnyObserver<Entity> { get }
     
     var sectionModelObservable : Observable<[SectionModel]> { get }
     var selectedButtonIndexObservable : Observable<Int> { get }
@@ -50,7 +50,7 @@ class DetailViewModel : DetailViewModelInterface {
     var expendDataSubject : PublishSubject<ButtonType>
     var dateIncreaseButtonSubject : PublishSubject<DateButtonType>
     var dateDecreaseButtonSubject : PublishSubject<DateButtonType>
-    var deleteDataSubject : PublishSubject<IndexPath>
+    var deleteDataSubject : PublishSubject<Entity>
     
     
     // MARK: - Observable (Subject)
@@ -69,7 +69,7 @@ class DetailViewModel : DetailViewModelInterface {
     var expendDataObserver: AnyObserver<ButtonType>
     var dateIncreaseButtonObserver: AnyObserver<DateButtonType>
     var dateDecreaseButtonObserver: AnyObserver<DateButtonType>
-    var deleteDataObserver: AnyObserver<IndexPath>
+    var deleteDataObserver: AnyObserver<Entity>
     
     
     // MARK: - Observable
@@ -115,7 +115,7 @@ class DetailViewModel : DetailViewModelInterface {
         expendDataSubject = PublishSubject<ButtonType>()
         dateDecreaseButtonSubject = PublishSubject<DateButtonType>()
         dateIncreaseButtonSubject = PublishSubject<DateButtonType>()
-        deleteDataSubject = PublishSubject<IndexPath>()
+        deleteDataSubject = PublishSubject<Entity>()
         
         // MARK: - Observable (Subject)
         selectedButtonIndexSubject = PublishSubject<Int>()
@@ -194,9 +194,13 @@ class DetailViewModel : DetailViewModelInterface {
         }.disposed(by: disposeBag) }
         
         // MARK: - Toast Delete 버튼 Click 바인딩
-        deleteDataSubject.subscribe { [weak self] indexPath in
-            guard let self = self, let indexPath = indexPath.element else { return }
-            print(indexPath.row, indexPath.section)
+        deleteDataSubject.subscribe { [weak self] entityData in
+            guard let self = self, let entity = entityData.element else { return
+            }
+            
+            // TODO: - Entity UUID를 보내서 삭제.
+            self.repository.deleteData(id: entity.id)
+            self.entitySubject.onNext(self.repository.readData())
         }.disposed(by: disposeBag)
     }
 }

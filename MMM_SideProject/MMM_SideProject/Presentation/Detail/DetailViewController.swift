@@ -338,8 +338,16 @@ final class DetailViewController: UIViewController {
                     return
                 }
                 
+                guard let cell = tableView.cellForRow(at: indexPath) as? DetailTableViewCell else {
+                    return
+                }
+                
+                guard let entityData = cell.entityData else { return }
+                
+                print(entityData)
+                
                 // TODO: - Legacy Code -> Coordinator로 바인딩
-                let deleteVC = DeleteToastView(viewModel: viewModel, indexPath: indexPath)
+                let deleteVC = DeleteToastView(viewModel: viewModel, entityData : entityData)
                 addChild(deleteVC)
                 view.addSubview(deleteVC.view)
                 deleteVC.didMove(toParent: self)

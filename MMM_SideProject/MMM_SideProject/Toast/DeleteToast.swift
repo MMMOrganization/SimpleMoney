@@ -12,12 +12,11 @@ import RxSwift
 class DeleteToastView : UIViewController {
     var viewModel : DetailViewModelInterface!
     var disposeBag : DisposeBag = .init()
+    var entityData : Entity
     
-    var indexPath : IndexPath
-    
-    init(viewModel : DetailViewModelInterface, indexPath : IndexPath) {
+    init(viewModel : DetailViewModelInterface, entityData : Entity) {
         self.viewModel = viewModel
-        self.indexPath = indexPath
+        self.entityData = entityData
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -111,8 +110,10 @@ class DeleteToastView : UIViewController {
         deleteButton.rx.tap
             .observe(on: MainScheduler.instance)
             .map { [weak self] in
-                guard let self = self else { return IndexPath() }
-                return indexPath
+                guard let self = self else
+                { return Entity(id: UUID(), dateStr: "", typeStr: "", createType: .total, amount: 0, iconImage: UIImage()) }
+                
+                return entityData
             }
             .bind(to: viewModel.deleteDataObserver)
             .disposed(by: disposeBag)

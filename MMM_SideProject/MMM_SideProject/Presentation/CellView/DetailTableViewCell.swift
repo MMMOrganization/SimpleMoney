@@ -16,6 +16,8 @@ class DetailTableViewCell: UITableViewCell {
     
     static let identifier = "DetailCell"
     
+    var entityData : Entity?
+    
     let imageBorderView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -100,6 +102,7 @@ class DetailTableViewCell: UITableViewCell {
         
         self.selectionStyle = .none
         self.cellStyle = style
+        self.entityData = item
         
         self.mainImageView.image = item.iconImage
         self.mainLabel.text = item.typeStr
