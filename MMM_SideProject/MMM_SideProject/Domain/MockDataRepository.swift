@@ -39,7 +39,7 @@ class MockDataRepository : DataRepositoryInterface {
         let realmData = realm.objects(UserDB.self)
         
         return realmData.where { $0.dateString == dateType.toStringYearMonthDay() }
-            .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
     func readData(typeName : String, color : UIColor = .clear) -> [Entity] {
@@ -135,7 +135,7 @@ private extension MockDataRepository {
         let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
         
         return realmData.sorted { $0.dateString > $1.dateString }
-            .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage)}
+            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage)}
     }
     
     private func readIncomeData() -> [Entity] {
@@ -148,7 +148,7 @@ private extension MockDataRepository {
             .where { $0.createType == .income }
         
         return realmData.sorted { $0.dateString > $1.dateString }
-            .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr : $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
     private func readExpendData() -> [Entity] {
@@ -161,6 +161,6 @@ private extension MockDataRepository {
             .where { $0.createType == .expend }
         
         return realmData.sorted { $0.dateString > $1.dateString }
-            .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr: $0.typeString , createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
 }

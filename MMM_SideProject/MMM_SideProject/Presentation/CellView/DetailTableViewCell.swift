@@ -104,7 +104,7 @@ class DetailTableViewCell: UITableViewCell {
         self.cellStyle = style
         
         self.mainImageView.image = item.iconImage
-        self.mainLabel.text = item.
+        self.mainLabel.text = item.typeStr
         self.dateLabel.text = item.dateStr
         self.moneyLabel.text = item.amount.toCurrency
         self.contentView.layer.cornerRadius = 15
@@ -112,7 +112,6 @@ class DetailTableViewCell: UITableViewCell {
     }
     
     func setLayout() {
-        
         contentView.addSubview(imageBorderView)
         contentView.addSubview(mainLabel)
         contentView.addSubview(dateLabel)
