@@ -20,6 +20,7 @@ protocol DetailViewModelInterface {
     var expendDataObserver : AnyObserver<ButtonType> { get }
     var dateIncreaseButtonObserver : AnyObserver<DateButtonType> { get }
     var dateDecreaseButtonObserver : AnyObserver<DateButtonType> { get }
+    var deleteDataObserver : AnyObserver<IndexPath> { get }
     
     var sectionModelObservable : Observable<[SectionModel]> { get }
     var selectedButtonIndexObservable : Observable<Int> { get }
@@ -49,6 +50,7 @@ class DetailViewModel : DetailViewModelInterface {
     var expendDataSubject : PublishSubject<ButtonType>
     var dateIncreaseButtonSubject : PublishSubject<DateButtonType>
     var dateDecreaseButtonSubject : PublishSubject<DateButtonType>
+    var deleteDataSubject : PublishSubject<IndexPath>
     
     
     // MARK: - Observable (Subject)
@@ -67,6 +69,7 @@ class DetailViewModel : DetailViewModelInterface {
     var expendDataObserver: AnyObserver<ButtonType>
     var dateIncreaseButtonObserver: AnyObserver<DateButtonType>
     var dateDecreaseButtonObserver: AnyObserver<DateButtonType>
+    var deleteDataObserver: AnyObserver<IndexPath>
     
     
     // MARK: - Observable
@@ -112,6 +115,7 @@ class DetailViewModel : DetailViewModelInterface {
         expendDataSubject = PublishSubject<ButtonType>()
         dateDecreaseButtonSubject = PublishSubject<DateButtonType>()
         dateIncreaseButtonSubject = PublishSubject<DateButtonType>()
+        deleteDataSubject = PublishSubject<IndexPath>()
         
         // MARK: - Observable (Subject)
         selectedButtonIndexSubject = PublishSubject<Int>()
@@ -127,6 +131,7 @@ class DetailViewModel : DetailViewModelInterface {
         expendDataObserver = expendDataSubject.asObserver()
         dateDecreaseButtonObserver = dateDecreaseButtonSubject.asObserver()
         dateIncreaseButtonObserver = dateIncreaseButtonSubject.asObserver()
+        deleteDataObserver = deleteDataSubject.asObserver()
         
         // MARK: - Observable
         selectedButtonIndexObservable = selectedButtonIndexSubject
@@ -187,5 +192,11 @@ class DetailViewModel : DetailViewModelInterface {
             dateSubject.onNext(date)
             entitySubject.onNext(data)
         }.disposed(by: disposeBag) }
+        
+        // MARK: - Toast Delete 버튼 Click 바인딩
+        deleteDataSubject.subscribe { [weak self] indexPath in
+            guard let self = self, let indexPath = indexPath.element else { return }
+            print(indexPath.row, indexPath.section)
+        }.disposed(by: disposeBag)
     }
 }

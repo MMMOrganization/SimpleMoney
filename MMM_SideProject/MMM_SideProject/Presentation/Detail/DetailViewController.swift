@@ -339,7 +339,7 @@ final class DetailViewController: UIViewController {
                 }
                 
                 // TODO: - Legacy Code -> Coordinator로 바인딩
-                let deleteVC = DeleteToastView(viewModel: viewModel)
+                let deleteVC = DeleteToastView(viewModel: viewModel, indexPath: indexPath)
                 addChild(deleteVC)
                 view.addSubview(deleteVC.view)
                 deleteVC.didMove(toParent: self)

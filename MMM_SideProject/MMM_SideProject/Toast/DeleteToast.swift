@@ -13,13 +13,11 @@ class DeleteToastView : UIViewController {
     var viewModel : DetailViewModelInterface!
     var disposeBag : DisposeBag = .init()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setLayout()
-    }
+    var indexPath : IndexPath
     
-    init(viewModel : DetailViewModelInterface) {
+    init(viewModel : DetailViewModelInterface, indexPath : IndexPath) {
         self.viewModel = viewModel
+        self.indexPath = indexPath
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -72,6 +70,12 @@ class DeleteToastView : UIViewController {
         return button
     }()
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setLayout()
+        setReactive()
+    }
+    
     func setLayout() {
         self.view.addSubview(tempView)
         
@@ -92,5 +96,25 @@ class DeleteToastView : UIViewController {
             buttonStackView.trailingAnchor.constraint(equalTo: self.tempView.trailingAnchor),
             buttonStackView.bottomAnchor.constraint(equalTo: self.tempView.bottomAnchor),
         ])
+    }
+    
+    func setReactive() {
+        cancelButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                self.willMove(toParent: nil)
+                self.view.removeFromSuperview()
+                self.removeFromParent()
+            }.disposed(by: disposeBag)
+        
+        deleteButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { [weak self] in
+                guard let self = self else { return IndexPath() }
+                return indexPath
+            }
+            .bind(to: viewModel.deleteDataObserver)
+            .disposed(by: disposeBag)
     }
 }
