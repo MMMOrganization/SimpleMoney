@@ -234,12 +234,6 @@ class CalendarViewController: UIViewController {
             .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
                 cell.configure(item: item)
                 cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.05)
-                //cell.contentView.layer.shadowColor = UIColor.mainColor.cgColor
-                //cell.layer.shadowOpacity = 0.20
-                //cell.layer.shadowRadius = 5
-                //cell.layer.shadowOffset = CGSize(width: -2, height: 2)
-                //cell.layer.masksToBounds = false
-                //cell.clipsToBounds = true
         }.disposed(by: disposeBag)
         
         // MARK: - Calendar DayOfMonth Amount 바인딩

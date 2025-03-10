@@ -13,15 +13,18 @@ import RxDataSources
 struct Entity {
     let id : UUID
     let dateStr : String
+    let typeStr : String
     let createType : CreateType
     let amount : Int
     let iconImage : UIImage
     
+    
     var color : UIColor = .clear
     
-    init(id: UUID, dateStr: String, createType: CreateType, amount: Int, iconImage: UIImage, color: UIColor = .clear) {
+    init(id: UUID, dateStr: String, typeStr : String, createType: CreateType, amount: Int, iconImage: UIImage, color: UIColor = .clear) {
         self.id = id
         self.dateStr = dateStr
+        self.typeStr = typeStr
         self.createType = createType
         self.amount = amount
         self.iconImage = iconImage
