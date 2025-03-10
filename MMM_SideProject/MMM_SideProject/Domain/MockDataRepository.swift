@@ -128,27 +128,39 @@ class MockDataRepository : DataRepositoryInterface {
 private extension MockDataRepository {
     private func readTotalData() -> [Entity] {
         guard let realm = try? Realm() else {
-            print("MockData - Realm Error readData")
+            print("MockData - Realm Error readTotalData")
             return []
         }
         
         let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
-        
-        
         
         return realmData.sorted { $0.dateString > $1.dateString }
             .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage)}
     }
     
     private func readIncomeData() -> [Entity] {
-        // TODO: - Realm Data 수입 데이터만 가져옴.
-        // TODO: - 수입 데이터를 가져올 때 Date, Type 필터링 해서 가져와야 함.
-        return []
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readIncomeData")
+            return []
+        }
+        
+        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+            .where { $0.createType == .income }
+        
+        return realmData.sorted { $0.dateString > $1.dateString }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
     private func readExpendData() -> [Entity] {
-        return []
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readIncomeData")
+            return []
+        }
+        
+        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+            .where { $0.createType == .expend }
+        
+        return realmData.sorted { $0.dateString > $1.dateString }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
 }
-
-// TODO: -
