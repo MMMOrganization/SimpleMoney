@@ -119,6 +119,15 @@ private extension DataRepository {
     }
     
     private func readExpendData() -> [Entity] {
-        return []
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readIncomeData")
+            return []
+        }
+        
+        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+            .where { $0.createType == .expend }
+        
+        return realmData.sorted { $0.dateString > $1.dateString }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
 }

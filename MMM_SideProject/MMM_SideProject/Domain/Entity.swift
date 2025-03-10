@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxDataSources
 
 // MARK: 뷰에 표시될 데이터 구조체의 역할
 // TODO: - Entity에 지출 타입 프로퍼티를 생성해야 함.
@@ -28,6 +29,14 @@ struct Entity {
     }
 }
 
-extension Entity {
+// MARK: - Animatable 한 TableView를 위한 필수 채택 프로토콜
+extension Entity: IdentifiableType, Equatable {
+    // MARK: - Section Identifier (고유 식별자)
+    public var identity: UUID {
+        return id
+    }
     
+    public static func == (lhs: Entity, rhs: Entity) -> Bool {
+        return lhs.id == rhs.id
+    }
 }

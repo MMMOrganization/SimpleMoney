@@ -17,7 +17,7 @@ final class DetailViewController: UIViewController {
     
     // MARK: - Section 사용을 위한 TableView DataSource
     private let dataSource =
-    RxTableViewSectionedReloadDataSource<SectionModel>(configureCell: { dataSource, tableView, indexPath, item in
+    RxTableViewSectionedAnimatedDataSource<SectionModel>(configureCell: { dataSource, tableView, indexPath, item in
         guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
             return UITableViewCell()
         }
