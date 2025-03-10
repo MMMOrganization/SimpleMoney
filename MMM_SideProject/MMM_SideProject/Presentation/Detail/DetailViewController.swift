@@ -344,8 +344,6 @@ final class DetailViewController: UIViewController {
                 
                 guard let entityData = cell.entityData else { return }
                 
-                print(entityData)
-                
                 // TODO: - Legacy Code -> Coordinator로 바인딩
                 let deleteVC = DeleteToastView(viewModel: viewModel, entityData : entityData)
                 addChild(deleteVC)

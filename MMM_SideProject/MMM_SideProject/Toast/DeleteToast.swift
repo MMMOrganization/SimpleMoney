@@ -98,6 +98,7 @@ class DeleteToastView : UIViewController {
     }
     
     func setReactive() {
+        // MARK: - cancelButton 클릭 바인딩
         cancelButton.rx.tap
             .observe(on: MainScheduler.instance)
             .subscribe { [weak self] _ in
@@ -107,12 +108,23 @@ class DeleteToastView : UIViewController {
                 self.removeFromParent()
             }.disposed(by: disposeBag)
         
+        // MARK: - deleteButton 클릭 바인딩
+        deleteButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                self.willMove(toParent: nil)
+                self.view.removeFromSuperview()
+                self.removeFromParent()
+            }.disposed(by: disposeBag)
+        
+        // MARK: - deleteButton 클릭 바인딩 (Entity 제거)
         deleteButton.rx.tap
             .observe(on: MainScheduler.instance)
             .map { [weak self] in
                 guard let self = self else
                 { return Entity(id: UUID(), dateStr: "", typeStr: "", createType: .total, amount: 0, iconImage: UIImage()) }
-                
+                ToastManager.shared.showToast(message: "삭제 완료되었습니다.")
                 return entityData
             }
             .bind(to: viewModel.deleteDataObserver)
