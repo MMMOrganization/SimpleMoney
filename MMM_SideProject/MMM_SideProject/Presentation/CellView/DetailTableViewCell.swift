@@ -8,8 +8,6 @@
 import UIKit
 import RxSwift
 
-//TODO: - Cell Remove, Change
-
 class DetailTableViewCell: UITableViewCell {
 
     var cellStyle : DetailCellStyle = .compact

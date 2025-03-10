@@ -9,6 +9,7 @@ import UIKit
 import FSCalendar
 import RxSwift
 import RxCocoa
+import RxDataSources
 
 // CalendarVC 킬 때, 선택된 달의 지출 데이터 받아오기. (없으면 "-" 라고 표시)
 // 클릭한 날짜의 전체 데이터 받아오기.
@@ -19,6 +20,16 @@ class CalendarViewController: UIViewController {
     
     var disposeBag : DisposeBag = DisposeBag()
     var viewModel : CalendarViewModelInterface!
+    
+    let dataSource = RxTableViewSectionedAnimatedDataSource<SingleSectionModel>(configureCell: { _, tableView, indexPath, item in
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        cell.configure(item: item)
+        cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.05)
+        return cell
+    })
     
     lazy var dismissButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
@@ -226,15 +237,12 @@ class CalendarViewController: UIViewController {
                 calendarView.setCurrentPage(month, animated: true)
             }.disposed(by: disposeBag)
         
-        // MARK: - Cell Data 바인딩
-        // TODO: - Cell 크기 및 레이아웃 다시 조정 필요.
-        // TODO: - cell.configure() 함수 리팩토링 필요.
         viewModel.dataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
-                cell.configure(item: item)
-                cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.05)
-        }.disposed(by: disposeBag)
+            .map { [SingleSectionModel(items: $0)] }
+            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
         
         // MARK: - Calendar DayOfMonth Amount 바인딩
         viewModel.dailyAmountsObservable

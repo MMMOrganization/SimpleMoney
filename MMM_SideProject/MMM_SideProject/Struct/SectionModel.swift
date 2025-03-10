@@ -26,3 +26,21 @@ extension SectionModel: AnimatableSectionModelType {
         self.items = items
     }
 }
+
+struct SingleSectionModel {
+    var items: [Item]
+}
+
+extension SingleSectionModel : AnimatableSectionModelType {
+    typealias Item = Entity
+    typealias Identity = String
+    
+    var identity : String {
+        return ""
+    }
+    
+    init(original: SingleSectionModel, items: [Item]) {
+        self = original
+        self.items = items
+    }
+}

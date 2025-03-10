@@ -9,14 +9,23 @@ import UIKit
 import RxSwift
 import RxCocoa
 import SwiftUI
-import Combine
+import RxDataSources
 import DGCharts
 
 class GraphViewController: UIViewController {
     
     var disposeBag : DisposeBag = DisposeBag()
-    
     var viewModel : GraphViewModelInterface!
+    
+    let dataSource = RxTableViewSectionedAnimatedDataSource<SingleSectionModel>(configureCell: { _, tableView, indexPath, item in
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        cell.configure(item: item)
+        cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.05)
+        return cell
+    })
     
     lazy var dismissButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
@@ -123,10 +132,9 @@ class GraphViewController: UIViewController {
         // MARK: - Entity TableView 바인딩
         viewModel.entityDataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: tableView.rx.items(cellIdentifier: DetailTableViewCell.identifier, cellType: DetailTableViewCell.self)) { (index, item, cell) in
-                cell.configure(item: item)
-                cell.contentView.backgroundColor = .mainColor.withAlphaComponent(0.05)
-            }.disposed(by: disposeBag)
+            .map { [SingleSectionModel(items: $0)] }
+            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
         
         // MARK: - Button 타입 라벨 바인딩
         viewModel.typeButtonDataObservable
@@ -143,7 +151,6 @@ class GraphViewController: UIViewController {
             .subscribe { [weak self] eventList in
                 guard let eventList = eventList.element else { return }
                 guard let self = self else { return }
-                
                 setPieChart(eventList: eventList)
             }.disposed(by: disposeBag)
     }
