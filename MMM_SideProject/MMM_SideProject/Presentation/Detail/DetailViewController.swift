@@ -200,6 +200,7 @@ final class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setLayout()
+        setAnimate()
         setTableView()
         setReactive()
     }
@@ -220,6 +221,14 @@ final class DetailViewController: UIViewController {
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
         tableView.dataSource = nil
         tableView.rowHeight = 50
+    }
+    
+    func setAnimate() {
+        dataSource.animationConfiguration = AnimationConfiguration(
+            insertAnimation: .fade,
+            reloadAnimation: .none,
+            deleteAnimation: .fade
+        )
     }
     
     func setLayout() {

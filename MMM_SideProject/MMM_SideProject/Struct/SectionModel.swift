@@ -11,10 +11,15 @@ import RxDataSources
 struct SectionModel {
     var header: String
     var items: [Item]
+    
+    var identity : String {
+        return header
+    }
 }
 
-extension SectionModel: SectionModelType {
+extension SectionModel: AnimatableSectionModelType {
     typealias Item = Entity // 실제 아이템 타입으로 교체
+    typealias Identity = String
     
     init(original: SectionModel, items: [Item]) {
         self = original
