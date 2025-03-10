@@ -26,6 +26,11 @@ extension YearMonthDay {
         return "\(self.year)년 \(self.month)월"
     }
     
+    /// Realm 정규화 매칭을 위해서 필요한 정보
+    func toStringYearMonthForRealmData() -> String {
+        return "\(self.year)-\(self.month < 10 ? "0" + String(self.month) : String(self.month))"
+    }
+    
     func getYear() -> Int {
         return self.year
     }

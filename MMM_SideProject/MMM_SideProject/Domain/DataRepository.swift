@@ -42,7 +42,7 @@ class DataRepository : DataRepositoryInterface {
         let realmData = realm.objects(UserDB.self)
         
         return realmData.where { $0.dateString == dateType.toStringYearMonthDay() }
-            .map { Entity(id: UUID(), dateStr: $0.dateString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
     func readGraphData() -> [(String, Double)] {
@@ -94,14 +94,40 @@ class DataRepository : DataRepositoryInterface {
 
 private extension DataRepository {
     private func readTotalData() -> [Entity] {
-        return []
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readTotalData")
+            return []
+        }
+        
+        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+        
+        return realmData.sorted { $0.dateString > $1.dateString }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
     private func readIncomeData() -> [Entity] {
-        return []
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readIncomeData")
+            return []
+        }
+        
+        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+            .where { $0.createType == .income }
+        
+        return realmData.sorted { $0.dateString > $1.dateString }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
     private func readExpendData() -> [Entity] {
-        return []
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readIncomeData")
+            return []
+        }
+        
+        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+            .where { $0.createType == .expend }
+        
+        return realmData.sorted { $0.dateString > $1.dateString }
+            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
 }

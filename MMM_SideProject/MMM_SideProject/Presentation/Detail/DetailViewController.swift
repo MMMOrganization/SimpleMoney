@@ -16,8 +16,9 @@ final class DetailViewController: UIViewController {
     private var viewModel : DetailViewModelInterface!
     
     // MARK: - Section 사용을 위한 TableView DataSource
+    // TODO: - 사용은 했지만, 제대로 뜯어보자!
     private let dataSource =
-    RxTableViewSectionedReloadDataSource<SectionModel>(configureCell: { dataSource, tableView, indexPath, item in
+    RxTableViewSectionedAnimatedDataSource<SectionModel>(configureCell: { dataSource, tableView, indexPath, item in
         guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
             return UITableViewCell()
         }
@@ -200,6 +201,7 @@ final class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setLayout()
+        setAnimate()
         setTableView()
         setReactive()
     }
@@ -220,6 +222,14 @@ final class DetailViewController: UIViewController {
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
         tableView.dataSource = nil
         tableView.rowHeight = 50
+    }
+    
+    func setAnimate() {
+        dataSource.animationConfiguration = AnimationConfiguration(
+            insertAnimation: .fade,
+            reloadAnimation: .none,
+            deleteAnimation: .fade
+        )
     }
     
     func setLayout() {

@@ -83,7 +83,8 @@ class DetailViewModel : DetailViewModelInterface {
             if (tempDictionary[entity.dateStr] == nil) { tempDictionary[entity.dateStr] = [entity] }
             else { tempDictionary[entity.dateStr]?.append(entity) }
         }
-        return tempDictionary.map {
+        
+        return tempDictionary.sorted { $0.key > $1.key }.map {
             SectionModel(header: $0.key, items: $0.value)
         }
     }

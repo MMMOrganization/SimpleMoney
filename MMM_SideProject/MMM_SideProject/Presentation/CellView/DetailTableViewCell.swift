@@ -8,8 +8,6 @@
 import UIKit
 import RxSwift
 
-//TODO: - Cell Remove, Change
-
 class DetailTableViewCell: UITableViewCell {
 
     var cellStyle : DetailCellStyle = .compact
@@ -36,7 +34,6 @@ class DetailTableViewCell: UITableViewCell {
     let mainLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "정기 결제"
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         label.textColor = UIColor(hexCode: ColorConst.blackColorString)
         return label
@@ -105,7 +102,7 @@ class DetailTableViewCell: UITableViewCell {
         self.cellStyle = style
         
         self.mainImageView.image = item.iconImage
-        //self.mainLabel.text = "정기 결제"
+        self.mainLabel.text = item.typeStr
         self.dateLabel.text = item.dateStr
         self.moneyLabel.text = item.amount.toCurrency
         self.contentView.layer.cornerRadius = 15
@@ -113,7 +110,6 @@ class DetailTableViewCell: UITableViewCell {
     }
     
     func setLayout() {
-        
         contentView.addSubview(imageBorderView)
         contentView.addSubview(mainLabel)
         contentView.addSubview(dateLabel)
