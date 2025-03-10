@@ -20,6 +20,7 @@ protocol DetailViewModelInterface {
     var expendDataObserver : AnyObserver<ButtonType> { get }
     var dateIncreaseButtonObserver : AnyObserver<DateButtonType> { get }
     var dateDecreaseButtonObserver : AnyObserver<DateButtonType> { get }
+    var deleteDataObserver : AnyObserver<Entity> { get }
     
     var sectionModelObservable : Observable<[SectionModel]> { get }
     var selectedButtonIndexObservable : Observable<Int> { get }
@@ -32,6 +33,7 @@ protocol DetailViewModelDelegate : AnyObject {
     func pushCalendarVC()
     func pushCreateVC()
     func pushGraphVC()
+    func pushDeleteToastVC()
 }
 
 class DetailViewModel : DetailViewModelInterface {
@@ -48,6 +50,7 @@ class DetailViewModel : DetailViewModelInterface {
     var expendDataSubject : PublishSubject<ButtonType>
     var dateIncreaseButtonSubject : PublishSubject<DateButtonType>
     var dateDecreaseButtonSubject : PublishSubject<DateButtonType>
+    var deleteDataSubject : PublishSubject<Entity>
     
     
     // MARK: - Observable (Subject)
@@ -66,6 +69,7 @@ class DetailViewModel : DetailViewModelInterface {
     var expendDataObserver: AnyObserver<ButtonType>
     var dateIncreaseButtonObserver: AnyObserver<DateButtonType>
     var dateDecreaseButtonObserver: AnyObserver<DateButtonType>
+    var deleteDataObserver: AnyObserver<Entity>
     
     
     // MARK: - Observable
@@ -111,6 +115,7 @@ class DetailViewModel : DetailViewModelInterface {
         expendDataSubject = PublishSubject<ButtonType>()
         dateDecreaseButtonSubject = PublishSubject<DateButtonType>()
         dateIncreaseButtonSubject = PublishSubject<DateButtonType>()
+        deleteDataSubject = PublishSubject<Entity>()
         
         // MARK: - Observable (Subject)
         selectedButtonIndexSubject = PublishSubject<Int>()
@@ -126,6 +131,7 @@ class DetailViewModel : DetailViewModelInterface {
         expendDataObserver = expendDataSubject.asObserver()
         dateDecreaseButtonObserver = dateDecreaseButtonSubject.asObserver()
         dateIncreaseButtonObserver = dateIncreaseButtonSubject.asObserver()
+        deleteDataObserver = deleteDataSubject.asObserver()
         
         // MARK: - Observable
         selectedButtonIndexObservable = selectedButtonIndexSubject
@@ -186,5 +192,15 @@ class DetailViewModel : DetailViewModelInterface {
             dateSubject.onNext(date)
             entitySubject.onNext(data)
         }.disposed(by: disposeBag) }
+        
+        // MARK: - Toast Delete 버튼 Click 바인딩
+        deleteDataSubject.subscribe { [weak self] entityData in
+            guard let self = self, let entity = entityData.element else { return
+            }
+            
+            // TODO: - Entity UUID를 보내서 삭제.
+            self.repository.deleteData(id: entity.id)
+            self.entitySubject.onNext(self.repository.readData())
+        }.disposed(by: disposeBag)
     }
 }

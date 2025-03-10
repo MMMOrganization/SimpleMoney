@@ -201,6 +201,7 @@ final class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setLayout()
+        setGestures()
         setAnimate()
         setTableView()
         setReactive()
@@ -222,14 +223,6 @@ final class DetailViewController: UIViewController {
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
         tableView.dataSource = nil
         tableView.rowHeight = 50
-    }
-    
-    func setAnimate() {
-        dataSource.animationConfiguration = AnimationConfiguration(
-            insertAnimation: .fade,
-            reloadAnimation: .none,
-            deleteAnimation: .fade
-        )
     }
     
     func setLayout() {
@@ -325,6 +318,48 @@ final class DetailViewController: UIViewController {
             contentAddButton.widthAnchor.constraint(equalToConstant: 60),
             contentAddButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+    }
+    
+    func setGestures() {
+        let gesture = UILongPressGestureRecognizer()
+        gesture.minimumPressDuration = 0.5
+        tableView.addGestureRecognizer(gesture)
+        
+        gesture.rx.event
+            .filter { $0.state == .began }
+            .subscribe { [weak self] gesture in
+                guard let self = self, let gesture = gesture.element else {
+                    print("DetailView - Gesture Subscribe Fail")
+                    return }
+                
+                let touchPoint : CGPoint = gesture.location(in: self.tableView)
+                guard let indexPath = self.tableView.indexPathForRow(at: touchPoint) else {
+                    print("DetailView - Gesture IndexPath Fail")
+                    return
+                }
+                
+                guard let cell = tableView.cellForRow(at: indexPath) as? DetailTableViewCell else {
+                    return
+                }
+                
+                guard let entityData = cell.entityData else { return }
+                
+                // TODO: - Legacy Code -> Coordinator로 바인딩
+                let deleteVC = DeleteToastView(viewModel: viewModel, entityData : entityData)
+                addChild(deleteVC)
+                view.addSubview(deleteVC.view)
+                deleteVC.didMove(toParent: self)
+                
+                deleteVC.view.frame = view.bounds
+            }.disposed(by: disposeBag)
+    }
+    
+    func setAnimate() {
+        dataSource.animationConfiguration = AnimationConfiguration(
+            insertAnimation: .fade,
+            reloadAnimation: .none,
+            deleteAnimation: .fade
+        )
     }
     
     func setReactive() {

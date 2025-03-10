@@ -42,7 +42,7 @@ class DataRepository : DataRepositoryInterface {
         let realmData = realm.objects(UserDB.self)
         
         return realmData.where { $0.dateString == dateType.toStringYearMonthDay() }
-            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
+            .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString , createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
     func readGraphData() -> [(String, Double)] {
@@ -90,6 +90,21 @@ class DataRepository : DataRepositoryInterface {
     func setDay(of day: Int) {
         
     }
+    
+    func deleteData(id: UUID) {
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error deleteData")
+            return
+        }
+        
+        try? realm.write {
+            let userDB = realm.objects(UserDB.self).where {
+                $0.id == id
+            }
+            
+            realm.delete(userDB)
+        }
+    }
 }
 
 private extension DataRepository {
@@ -102,7 +117,7 @@ private extension DataRepository {
         let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
         
         return realmData.sorted { $0.dateString > $1.dateString }
-            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
+            .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString , createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
     private func readIncomeData() -> [Entity] {
@@ -115,7 +130,7 @@ private extension DataRepository {
             .where { $0.createType == .income }
         
         return realmData.sorted { $0.dateString > $1.dateString }
-            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
+            .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString , createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
     private func readExpendData() -> [Entity] {
@@ -128,6 +143,6 @@ private extension DataRepository {
             .where { $0.createType == .expend }
         
         return realmData.sorted { $0.dateString > $1.dateString }
-            .map { Entity(id: UUID(), dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
+            .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString , createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
 }
