@@ -23,6 +23,16 @@ extension Int {
         formatter.numberStyle = .decimal
         formatter.locale = Locale(identifier: "ko_KR")
         let stringValue = formatter.string(from: NSNumber(value: self)) ?? ""
-        return stringValue + "원"
+        
+        return self > 0 ? "+\(stringValue)원" : "\(stringValue)원"
+    }
+    
+    var absToCurrency : String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.locale = Locale(identifier: "ko_KR")
+        let stringValue = formatter.string(from: NSNumber(value: self)) ?? ""
+        
+        return "\(stringValue)원"
     }
 }

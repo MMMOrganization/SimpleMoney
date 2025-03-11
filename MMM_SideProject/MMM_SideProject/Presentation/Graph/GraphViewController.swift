@@ -154,7 +154,6 @@ class GraphViewController: UIViewController {
             .bind(to: buttonCollectionView.rx.items(cellIdentifier: TypeButtonCVCell.identifier, cellType: TypeButtonCVCell.self)) { [weak self] (index, item, cell) in
                 guard let self = self else { return }
                 cell.configure(item: item, viewModel : viewModel)
-                // TODO: - button Click 스트림 걸어줘야 함.
         }.disposed(by: disposeBag)
         
         // MARK: - graphData 바인딩
@@ -186,15 +185,8 @@ class GraphViewController: UIViewController {
 // MARK: - ChartViewDelegate
 extension GraphViewController : ChartViewDelegate {
     func setPieChart(eventList : [(String, Double)]) {
-        // TODO: - CollectionView Element 클릭 요소에 매핑해야 함.
-        /// Example.
-        // TODO: - COllectionView 음주 클릭.
-        // TODO: - 음주라는 Category 를 ViewModel에서 받음
-        // TODO: - ViewModel에서 옵저버를 통해서 TableView 스트림에 날림.
-        
         var entryList : [PieChartDataEntry] = []
         
-        // 받아온 딕셔너리를 entryList로 변환하는 과정
         eventList.forEach {
             entryList.append(PieChartDataEntry(value: $0.1, label: $0.0))
         }
@@ -202,16 +194,19 @@ extension GraphViewController : ChartViewDelegate {
         let dataSet = PieChartDataSet(entries: entryList, label: "")
         
         // 🎨 각 조각별 색상
-        dataSet.colors = ChartColorTemplates.vordiplom()
-        dataSet.colors = dataSet.colors.map { $0.withAlphaComponent(0.4) }
+        
+        var dataSetColors : [UIColor] = []
+        for _ in 0..<dataSet.count {
+            dataSetColors.append(UIColor.randomColor)
+        }
+        
+        dataSet.colors = dataSetColors
         dataSet.sliceSpace = 5
         
         var buttonDataList = [(String, UIColor)]()
         
-        // MARK: - typeButtonData 스트림을 던져줌.
-        // TODO: - 색 로직 변경해야 함.
         for i in 0..<eventList.count {
-            buttonDataList.append((eventList[i].0, dataSet.colors.randomElement() ?? .mainColor))
+            buttonDataList.append((eventList[i].0, dataSetColors[i]))
         }
         
         viewModel.typeButtonDataObserver.onNext(buttonDataList)

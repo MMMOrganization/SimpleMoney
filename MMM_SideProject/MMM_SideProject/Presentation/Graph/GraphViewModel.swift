@@ -62,10 +62,6 @@ class GraphViewModel : GraphViewModelInterface {
     init(repository : DataRepositoryInterface) {
         self.repository = repository
         
-        // TODO: - 지출타입의 데이터베이스를 다 긁어온다.
-        // TODO: - 딕셔너리로 값을 받는다.
-        // TODO: - 정리해서 그래프로 넘긴다.
-        
         dismissButtonSubject = PublishSubject<Void>()
         typeButtonDataSubject = PublishSubject<[(String, UIColor)]>()
         typeButtonTapSubject = BehaviorSubject<String>(value: "")
@@ -116,7 +112,6 @@ class GraphViewModel : GraphViewModelInterface {
                 repository.setDate(dateStr: dateStr)
                 graphDataSubject.onNext(repository.readGraphData())
                 entityDataSubject.onNext(repository.readData(typeName: ""))
-                // TODO: - entityDataSubject 도 함께 호출
             }.disposed(by: disposeBag)
     }
 }

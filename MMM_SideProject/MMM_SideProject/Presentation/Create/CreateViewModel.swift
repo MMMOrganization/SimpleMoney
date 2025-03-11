@@ -71,7 +71,7 @@ class CreateViewModel : CreateViewModelInterface {
         .map {
             if $0 == "" { return "0원" }
             guard let intValue = Int($0) else { return "" }
-            return intValue.toCurrency
+            return intValue.absToCurrency
         }
     
     lazy var stringTypeObservable : Observable<String> = stringTypeSubject
@@ -152,7 +152,6 @@ class CreateViewModel : CreateViewModelInterface {
             guard let self = self, let createType = createType.element else { return }
             self.createType = createType
             // 화면 기본값으로 초기화
-            inputMoneySubject.onNext("")
             stringTypeSubject.onNext("기타")
             stringDateSubject.onNext(repository.readDate())
             dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: 0))
