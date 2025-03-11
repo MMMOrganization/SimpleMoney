@@ -62,6 +62,14 @@ class GraphViewController: UIViewController {
         return tv
     }()
     
+    let navigationTitleButton : UIButton = {
+        let b = UIButton()
+        b.translatesAutoresizingMaskIntoConstraints = false
+        b.setTitleColor(.blackColor, for: .normal)
+        b.titleLabel?.font = UIFont(size: 14.0)
+        return b
+    }()
+    
     init(viewModel : GraphViewModelInterface) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -74,9 +82,15 @@ class GraphViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setNavigationController()
         setDelegate()
         setLayout()
         setReactive()
+    }
+    
+    func setNavigationController() {
+        self.navigationItem.leftBarButtonItem = dismissButtonItem
+        self.navigationItem.titleView = navigationTitleButton
     }
     
     func setDelegate() {
@@ -94,10 +108,8 @@ class GraphViewController: UIViewController {
     
     func setLayout() {
         self.view.backgroundColor = .white
-        self.navigationItem.leftBarButtonItem = dismissButtonItem
         
         headerView.addSubview(pieChartView)
-        
         self.view.addSubview(buttonCollectionView)
         self.view.addSubview(tableView)
         
@@ -152,6 +164,21 @@ class GraphViewController: UIViewController {
                 guard let eventList = eventList.element else { return }
                 guard let self = self else { return }
                 setPieChart(eventList: eventList)
+            }.disposed(by: disposeBag)
+        
+        viewModel.dateObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: navigationTitleButton.rx.title())
+            .disposed(by: disposeBag)
+        
+        navigationTitleButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                let toastVC = graphDateToastView(viewModel: viewModel)
+                addChild(toastVC)
+                view.addSubview(toastVC.view)
+                toastVC.didMove(toParent: self)
             }.disposed(by: disposeBag)
     }
 }

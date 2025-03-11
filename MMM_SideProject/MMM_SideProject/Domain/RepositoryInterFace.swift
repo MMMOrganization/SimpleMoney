@@ -10,6 +10,7 @@ import UIKit
 
 // MARK: - 상태 관리, 데이터의 저장 조회 및 간단한 데이터의 변환 레이어
 protocol DataRepositoryInterface {
+    // MARK: - Read
     func readData() -> [Entity]
     func readData(typeName : String, color : UIColor) -> [Entity]
     func readDate() -> String
@@ -17,10 +18,14 @@ protocol DataRepositoryInterface {
     func readGraphData() -> [(String, Double)]
     func readAmountsDict() -> [String : Int]
     func readDataForCreateCell(of type : CreateType, selectedIndex : Int) -> [CreateCellIcon]
+    func readDateList() -> [String]
     
+    // MARK: - Update, Create
     func setDate(type : DateButtonType)
+    func setDate(dateStr : String)
     func setState(type : ButtonType)
     func setDay(of day : Int)
     
+    // MARK: - Delete
     func deleteData(id : UUID)
 }

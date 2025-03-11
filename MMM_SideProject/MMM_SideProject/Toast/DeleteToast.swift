@@ -10,7 +10,7 @@ import RxCocoa
 import RxSwift
 
 class DeleteToastView : UIViewController {
-    var viewModel : DetailViewModelInterface!
+    var viewModel : DetailViewModelInterface
     var disposeBag : DisposeBag = .init()
     var entityData : Entity
     
@@ -129,5 +129,7 @@ class DeleteToastView : UIViewController {
             }
             .bind(to: viewModel.deleteDataObserver)
             .disposed(by: disposeBag)
+        
+        
     }
 }

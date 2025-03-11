@@ -58,4 +58,12 @@ extension YearMonthDay {
     mutating func setDay(of day : Int) {
         self.day = day
     }
+    
+    mutating func setMonth(of month : Int) {
+        self.month = month
+    }
+    
+    mutating func setYear(of year : Int) {
+        self.year = year
+    }
 }

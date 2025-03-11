@@ -83,6 +83,10 @@ class DataRepository : DataRepositoryInterface {
         
     }
     
+    func setDate(dateStr : String) {
+        
+    }
+    
     func setState(type: ButtonType) {
         
     }
@@ -104,6 +108,10 @@ class DataRepository : DataRepositoryInterface {
             
             realm.delete(userDB)
         }
+    }
+    
+    func readDateList() -> [String] {
+        return []
     }
 }
 

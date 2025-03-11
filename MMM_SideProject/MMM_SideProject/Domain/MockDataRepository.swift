@@ -98,6 +98,10 @@ class MockDataRepository : DataRepositoryInterface {
         }
     }
     
+    func readDateList() -> [String] {
+        return ["2025년 3월", "2025년 2월", "2025년 1월", "2024년 12월", "2024년 11월", "2024년 10월", "2024년 9월", "2024년 8월", "2024년 7월"]
+    }
+    
     func setState(type : ButtonType) {
         switch type {
         case .total:
@@ -118,6 +122,19 @@ class MockDataRepository : DataRepositoryInterface {
             dateType.decrease()
             return
         }
+    }
+    
+    func setDate(dateStr : String) {
+        var tempStr = dateStr.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "월", with: "")
+            .split(separator: "년")
+        
+        guard let year = Int(tempStr[0]), let month = Int(tempStr[1]) else {
+            print("MockData - setDate year, month 변환 에러")
+            return
+        }
+        
+        dateType.setYear(of: year)
+        dateType.setMonth(of: month)
     }
     
     func setDay(of day : Int) {
