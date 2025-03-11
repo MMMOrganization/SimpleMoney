@@ -17,8 +17,10 @@ protocol DataRepositoryInterface {
     func readGraphData() -> [(String, Double)]
     func readAmountsDict() -> [String : Int]
     func readDataForCreateCell(of type : CreateType, selectedIndex : Int) -> [CreateCellIcon]
+    func readDateList() -> [String]
     
     func setDate(type : DateButtonType)
+    func setDate(dateStr : String)
     func setState(type : ButtonType)
     func setDay(of day : Int)
     

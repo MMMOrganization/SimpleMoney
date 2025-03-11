@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class graphDateToastView : UIViewController {
     
     var viewModel : GraphViewModelInterface
+    var disposeBag : DisposeBag = .init()
     
     let mainView : UIView = {
         let v = UIView()
@@ -33,7 +36,7 @@ class graphDateToastView : UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .blackColor
-        label.font = UIFont(size: 14.0)
+        label.font = UIFont(size: 18.0)
         label.text = "월 선택하기"
         return label
     }()
@@ -62,12 +65,20 @@ class graphDateToastView : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setTableView()
         setLayout()
         setAnimation()
+        setReactive()
     }
     
     lazy var mainViewHeightAnchor = mainView.heightAnchor.constraint(equalToConstant: 550)
     lazy var mainViewBottomAnchor = mainView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 400)
+    
+    func setTableView() {
+        tableView.separatorStyle = .none
+        tableView.rowHeight = 50
+        tableView.register(DateTableViewCell.self, forCellReuseIdentifier: DateTableViewCell.identifier)
+    }
     
     func setLayout() {
         view.addSubview(mainView)
@@ -84,7 +95,7 @@ class graphDateToastView : UIViewController {
             headerStackView.leadingAnchor.constraint(equalTo: self.mainView.leadingAnchor, constant: 15),
             headerStackView.trailingAnchor.constraint(equalTo: self.mainView.trailingAnchor),
             headerStackView.topAnchor.constraint(equalTo: self.mainView.topAnchor),
-            headerStackView.heightAnchor.constraint(equalToConstant: 40),
+            headerStackView.heightAnchor.constraint(equalToConstant: 55),
             
             headerLabel.leadingAnchor.constraint(equalTo: self.headerStackView.leadingAnchor),
             headerLabel.centerYAnchor.constraint(equalTo: self.headerStackView.centerYAnchor),
@@ -105,5 +116,34 @@ class graphDateToastView : UIViewController {
         UIView.animate(withDuration: 0.3) {
             self.mainView.layoutIfNeeded() // 레이아웃 업데이트가 애니메이션되도록 함
         }
+    }
+    
+    func setReactive() {
+        // MARK: - DateList Cell 바인딩
+        viewModel.dateListObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: tableView.rx.items(cellIdentifier: DateTableViewCell.identifier, cellType: DateTableViewCell.self)) { (index, item, cell) in
+                cell.configure(dateStr: item)
+            }.disposed(by: disposeBag)
+        
+        // MARK: - Dismiss 버튼 탭 바인딩
+        headerButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                self.willMove(toParent: nil)
+                self.view.removeFromSuperview()
+                self.removeFromParent()
+            }.disposed(by: disposeBag)
+        
+        // MARK: - Cell Index 클릭 바인딩
+        tableView.rx.itemSelected
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] indexPath in
+                guard let self = self else { return }
+                guard let indexPath = indexPath.element else { return }
+                guard let cellData = tableView.cellForRow(at: indexPath) as? DateTableViewCell, let dateStr = cellData.dateLabel.text else { return }
+                viewModel.selectDateObserver.onNext(dateStr)
+            }.disposed(by: disposeBag)
     }
 }
