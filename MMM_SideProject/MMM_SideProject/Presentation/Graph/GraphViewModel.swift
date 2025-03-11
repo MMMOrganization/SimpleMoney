@@ -17,6 +17,7 @@ protocol GraphViewModelInterface {
     var graphDataObservable : Observable<[(String, Double)]> { get }
     var typeButtonDataObservable : Observable<[(String, UIColor)]> { get }
     var entityDataObservable : Observable<[Entity]> { get }
+    var dateObservable : Observable<String> { get }
 }
 
 protocol GraphViewModelDelegate : AnyObject {
@@ -33,6 +34,7 @@ class GraphViewModel : GraphViewModelInterface {
     // MARK: - Subject (Observable)
     var graphDataSubject: BehaviorSubject<[(String, Double)]>
     var entityDataSubject: PublishSubject<[Entity]>
+    var dateSubject: BehaviorSubject<String>
     
     // MARK: - Observer
     var dismissButtonObserver: AnyObserver<Void>
@@ -43,6 +45,7 @@ class GraphViewModel : GraphViewModelInterface {
     var graphDataObservable: Observable<[(String, Double)]>
     var typeButtonDataObservable : Observable<[(String, UIColor)]>
     var entityDataObservable: Observable<[Entity]>
+    var dateObservable: Observable<String>
     
     weak var delegate : GraphViewModelDelegate?
     
@@ -64,6 +67,7 @@ class GraphViewModel : GraphViewModelInterface {
         // Date 포멧을 어떻게 할지 고민해봐야함.
         graphDataSubject = BehaviorSubject<[(String, Double)]>(value: repository.readGraphData())
         entityDataSubject = PublishSubject<[Entity]>()
+        dateSubject = BehaviorSubject(value: repository.readDate())
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
         typeButtonDataObserver = typeButtonDataSubject.asObserver()
@@ -72,6 +76,7 @@ class GraphViewModel : GraphViewModelInterface {
         graphDataObservable = graphDataSubject
         typeButtonDataObservable = typeButtonDataSubject
         entityDataObservable = entityDataSubject
+        dateObservable = dateSubject
         
         setCoordinator()
         setReactive()
