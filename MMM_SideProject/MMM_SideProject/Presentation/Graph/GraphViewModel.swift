@@ -12,7 +12,7 @@ import RxCocoa
 protocol GraphViewModelInterface {
     var dismissButtonObserver : AnyObserver<Void> { get }
     var typeButtonDataObserver : AnyObserver<[(String, UIColor)]> { get }
-    var typeButtonTapObserver : AnyObserver<(String, UIColor)> { get }
+    var typeButtonTapObserver : AnyObserver<String> { get }
     var selectDateObserver : AnyObserver<String> { get }
     
     var graphDataObservable : Observable<[(String, Double)]> { get }
@@ -31,7 +31,7 @@ class GraphViewModel : GraphViewModelInterface {
     // MARK: - Subject (Observer)
     var dismissButtonSubject: PublishSubject<Void>
     var typeButtonDataSubject: PublishSubject<[(String, UIColor)]>
-    var typeButtonTapSubject : BehaviorSubject<(String, UIColor)>
+    var typeButtonTapSubject : BehaviorSubject<String>
     var selectDateSubject : PublishSubject<String>
     
     // MARK: - Subject (Observable)
@@ -43,7 +43,7 @@ class GraphViewModel : GraphViewModelInterface {
     // MARK: - Observer
     var dismissButtonObserver: AnyObserver<Void>
     var typeButtonDataObserver: AnyObserver<[(String, UIColor)]>
-    var typeButtonTapObserver: AnyObserver<(String, UIColor)>
+    var typeButtonTapObserver: AnyObserver<String>
     var selectDateObserver: AnyObserver<String>
     
     // MARK: - Observable
@@ -68,7 +68,7 @@ class GraphViewModel : GraphViewModelInterface {
         
         dismissButtonSubject = PublishSubject<Void>()
         typeButtonDataSubject = PublishSubject<[(String, UIColor)]>()
-        typeButtonTapSubject = BehaviorSubject<(String, UIColor)>(value: ("", .mainColor))
+        typeButtonTapSubject = BehaviorSubject<String>(value: "")
         selectDateSubject = PublishSubject<String>()
         
         graphDataSubject = BehaviorSubject<[(String, Double)]>(value: repository.readGraphData())
@@ -105,7 +105,8 @@ class GraphViewModel : GraphViewModelInterface {
                 guard let self = self, let typeItem = typeItem.element else {
                     return
                 }
-                entityDataSubject.onNext(repository.readData(typeName: typeItem.0, color: typeItem.1))
+                
+                entityDataSubject.onNext(repository.readData(typeName: typeItem))
             }.disposed(by: disposeBag)
         
         selectDateSubject
@@ -115,6 +116,9 @@ class GraphViewModel : GraphViewModelInterface {
                 guard let dateStr = selectedDate.element else { return }
                 dateSubject.onNext(dateStr)
                 repository.setDate(dateStr: dateStr)
+                graphDataSubject.onNext(repository.readGraphData())
+                entityDataSubject.onNext(repository.readData(typeName: ""))
+                // TODO: - entityDataSubject 도 함께 호출
             }.disposed(by: disposeBag)
     }
 }

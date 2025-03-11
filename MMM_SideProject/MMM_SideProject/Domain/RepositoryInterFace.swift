@@ -12,7 +12,7 @@ import UIKit
 protocol DataRepositoryInterface {
     // MARK: - Read
     func readData() -> [Entity]
-    func readData(typeName : String, color : UIColor) -> [Entity]
+    func readData(typeName : String) -> [Entity]
     func readDate() -> String
     func readDataOfDay() -> [Entity]
     func readGraphData() -> [(String, Double)]

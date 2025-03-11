@@ -25,7 +25,7 @@ class DataRepository : DataRepositoryInterface {
         }
     }
     
-    func readData(typeName: String, color: UIColor) -> [Entity] {
+    func readData(typeName: String) -> [Entity] {
         return []
     }
     

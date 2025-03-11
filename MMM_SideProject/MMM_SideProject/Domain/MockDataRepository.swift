@@ -42,7 +42,8 @@ class MockDataRepository : DataRepositoryInterface {
             .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString , createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
-    func readData(typeName : String, color : UIColor = .clear) -> [Entity] {
+    func readData(typeName : String) -> [Entity] {
+        // TODO: - typeName을 기준으로 GraphData 뽑아와야 함.
         return []
     }
     
@@ -79,12 +80,16 @@ class MockDataRepository : DataRepositoryInterface {
         // TODO: - date를 받아서 해당 date에 맞는 데이터를 디비에서 가져옴
         // 디비에서 받아온 데이터를 타입마다 분류하여 전달함.
         
-        return [("기타",12.0),
-                ("용돈",1.0),
-                ("음주",5.0),
-                ("음식",7.0),
-                ("커피",10.0),
-                ("하이",7.0)]
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readGraphData")
+            return []
+        }
+        
+        let userDB = realm.objects(UserDB.self)
+        
+        // TODO: - userDB TypeString 카운팅
+        
+        return []
     }
     
     func readDataForCreateCell(of type : CreateType, selectedIndex : Int) -> [CreateCellIcon] {
@@ -125,7 +130,7 @@ class MockDataRepository : DataRepositoryInterface {
     }
     
     func setDate(dateStr : String) {
-        var tempStr = dateStr.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "월", with: "")
+        let tempStr = dateStr.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "월", with: "")
             .split(separator: "년")
         
         guard let year = Int(tempStr[0]), let month = Int(tempStr[1]) else {

@@ -36,7 +36,7 @@ class TypeButtonCVCell: UICollectionViewCell {
             .subscribe { [weak self] _ in
                 guard let self = self else { return }
                 guard let typeName = typeButton.titleLabel?.text else { return }
-                viewModel.typeButtonTapObserver.onNext(item)
+                viewModel.typeButtonTapObserver.onNext(item.0)
             }.disposed(by: disposeBag)
         
         typeButton.setTitle(item.0, for: .normal)

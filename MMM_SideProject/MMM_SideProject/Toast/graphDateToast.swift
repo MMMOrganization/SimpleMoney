@@ -147,6 +147,7 @@ class graphDateToastView : UIViewController {
     }
     
     func removeView() {
+        // TODO: - 사라지는 애니메이션 추가
         self.willMove(toParent: nil)
         self.view.removeFromSuperview()
         self.removeFromParent()
