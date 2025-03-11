@@ -25,7 +25,7 @@ class DataRepository : DataRepositoryInterface {
         }
     }
     
-    func readData(typeName: String, color: UIColor) -> [Entity] {
+    func readData(typeName: String) -> [Entity] {
         return []
     }
     
@@ -46,7 +46,32 @@ class DataRepository : DataRepositoryInterface {
     }
     
     func readGraphData() -> [(String, Double)] {
-        return []
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readGraphData")
+            return []
+        }
+        
+        let userDB = realm.objects(UserDB.self).where {
+            $0.createType == .expend
+        }
+        
+        var tempDict : [String : Double] = .init()
+        var resultList : [(String, Double)] = []
+        
+        userDB.forEach {
+            if tempDict[$0.typeString] == nil {
+                tempDict[$0.typeString] = 1
+            }
+            else {
+                tempDict[$0.typeString]! += 1
+            }
+        }
+        
+        for (key, value) in tempDict.sorted(by: { $0.value > $1.value }) {
+            resultList.append((key, value))
+        }
+        
+        return resultList
     }
     
     func readAmountsDict() -> [String : Int] {

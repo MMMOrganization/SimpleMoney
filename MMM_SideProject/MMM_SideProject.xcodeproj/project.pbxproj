@@ -56,7 +56,6 @@
 		267DDB1C2D3BC3AD00F66CB8 /* YearMonthDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB1B2D3BC3AD00F66CB8 /* YearMonthDay.swift */; };
 		267DDB1E2D3BC3D600F66CB8 /* SectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB1D2D3BC3D600F66CB8 /* SectionModel.swift */; };
 		267DDB282D3FBB6900F66CB8 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 267DDB272D3FBB6900F66CB8 /* FSCalendar */; };
-		267DDB2A2D3FC59700F66CB8 /* Reactive+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB292D3FC59700F66CB8 /* Reactive+Extension.swift */; };
 		267DDB392D44F3F800F66CB8 /* GraphViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB382D44F3F800F66CB8 /* GraphViewModel.swift */; };
 		267DDB3D2D44FFB400F66CB8 /* GraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB3C2D44FFB400F66CB8 /* GraphViewController.swift */; };
 		267DDB3F2D44FFE100F66CB8 /* GraphCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DDB3E2D44FFE100F66CB8 /* GraphCoordinator.swift */; };
@@ -116,7 +115,6 @@
 		267DDB132D3B751100F66CB8 /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
 		267DDB1B2D3BC3AD00F66CB8 /* YearMonthDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearMonthDay.swift; sourceTree = "<group>"; };
 		267DDB1D2D3BC3D600F66CB8 /* SectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionModel.swift; sourceTree = "<group>"; };
-		267DDB292D3FC59700F66CB8 /* Reactive+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reactive+Extension.swift"; sourceTree = "<group>"; };
 		267DDB382D44F3F800F66CB8 /* GraphViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphViewModel.swift; sourceTree = "<group>"; };
 		267DDB3C2D44FFB400F66CB8 /* GraphViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphViewController.swift; sourceTree = "<group>"; };
 		267DDB3E2D44FFE100F66CB8 /* GraphCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphCoordinator.swift; sourceTree = "<group>"; };
@@ -186,7 +184,6 @@
 				267DDA252D2ADA1000F66CB8 /* UIFont+Extension.swift */,
 				267DDB112D3B694A00F66CB8 /* Date+Extension.swift */,
 				267DDB132D3B751100F66CB8 /* Int+Extension.swift */,
-				267DDB292D3FC59700F66CB8 /* Reactive+Extension.swift */,
 				267DDB752D75CBE500F66CB8 /* String+Extension.swift */,
 			);
 			path = Constants;
@@ -479,7 +476,6 @@
 				267DDB742D75ABBD00F66CB8 /* ToastMessage.swift in Sources */,
 				267DDAB42D32798600F66CB8 /* DetailCoordinator.swift in Sources */,
 				2602BF102D7FFBB20002DECD /* DateTableViewCell.swift in Sources */,
-				267DDB2A2D3FC59700F66CB8 /* Reactive+Extension.swift in Sources */,
 				2602BF0C2D7EB50B0002DECD /* DeleteToast.swift in Sources */,
 				267DDB122D3B694A00F66CB8 /* Date+Extension.swift in Sources */,
 				267DD9CC2D211AF800F66CB8 /* UIButton+Extension.swift in Sources */,
