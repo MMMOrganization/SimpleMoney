@@ -91,12 +91,6 @@ class GraphViewController: UIViewController {
     func setNavigationController() {
         self.navigationItem.leftBarButtonItem = dismissButtonItem
         self.navigationItem.titleView = navigationTitleButton
-        
-        navigationTitleButton.rx.tap
-            .observe(on: MainScheduler.instance)
-            .subscribe { _ in
-                print("dd")
-            }
     }
     
     func setDelegate() {
@@ -176,6 +170,16 @@ class GraphViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: navigationTitleButton.rx.title())
             .disposed(by: disposeBag)
+        
+        navigationTitleButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                let toastVC = graphDateToastView(viewModel: viewModel)
+                addChild(toastVC)
+                view.addSubview(toastVC.view)
+                toastVC.didMove(toParent: self)
+            }.disposed(by: disposeBag)
     }
 }
 
