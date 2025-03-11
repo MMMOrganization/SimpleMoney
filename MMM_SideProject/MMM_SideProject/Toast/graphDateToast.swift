@@ -34,6 +34,7 @@ class graphDateToastView : UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .blackColor
         label.font = UIFont(size: 14.0)
+        label.text = "월 선택하기"
         return label
     }()
     
@@ -62,7 +63,11 @@ class graphDateToastView : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setLayout()
+        setAnimation()
     }
+    
+    lazy var mainViewHeightAnchor = mainView.heightAnchor.constraint(equalToConstant: 550)
+    lazy var mainViewBottomAnchor = mainView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 400)
     
     func setLayout() {
         view.addSubview(mainView)
@@ -70,26 +75,35 @@ class graphDateToastView : UIViewController {
         mainView.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            mainView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
-            mainView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
-            mainView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
-            mainView.heightAnchor.constraint(equalToConstant: 400),
+            mainView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 15),
+            mainView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -15),
             
-            headerStackView.leadingAnchor.constraint(equalTo: self.mainView.leadingAnchor),
+            mainViewHeightAnchor,
+            mainViewBottomAnchor,
+            
+            headerStackView.leadingAnchor.constraint(equalTo: self.mainView.leadingAnchor, constant: 15),
             headerStackView.trailingAnchor.constraint(equalTo: self.mainView.trailingAnchor),
             headerStackView.topAnchor.constraint(equalTo: self.mainView.topAnchor),
-            headerStackView.heightAnchor.constraint(equalToConstant: 60),
+            headerStackView.heightAnchor.constraint(equalToConstant: 40),
             
-            headerLabel.leadingAnchor.constraint(equalTo: self.headerStackView.leadingAnchor, constant: 15),
+            headerLabel.leadingAnchor.constraint(equalTo: self.headerStackView.leadingAnchor),
             headerLabel.centerYAnchor.constraint(equalTo: self.headerStackView.centerYAnchor),
             
-            headerButton.trailingAnchor.constraint(equalTo: self.headerStackView.trailingAnchor, constant: -15),
+            headerButton.trailingAnchor.constraint(equalTo: self.headerStackView.trailingAnchor),
             headerButton.centerYAnchor.constraint(equalTo: self.headerStackView.centerYAnchor),
+            headerButton.widthAnchor.constraint(equalToConstant: 30),
             
             tableView.leadingAnchor.constraint(equalTo: self.mainView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.mainView.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: self.mainView.bottomAnchor),
             tableView.topAnchor.constraint(equalTo: self.headerStackView.bottomAnchor)
         ])
+    }
+    
+    func setAnimation() {
+        self.mainViewBottomAnchor.constant -= 420
+        UIView.animate(withDuration: 0.3) {
+            self.mainView.layoutIfNeeded() // 레이아웃 업데이트가 애니메이션되도록 함
+        }
     }
 }
