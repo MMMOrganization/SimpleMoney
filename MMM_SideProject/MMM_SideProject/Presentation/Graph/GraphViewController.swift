@@ -117,7 +117,7 @@ class GraphViewController: UIViewController {
             buttonCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
             buttonCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
             buttonCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-            buttonCollectionView.heightAnchor.constraint(equalToConstant: 60),
+            buttonCollectionView.heightAnchor.constraint(equalToConstant: 50),
             
             pieChartView.leadingAnchor.constraint(equalTo: self.headerView.leadingAnchor),
             pieChartView.trailingAnchor.constraint(equalTo: self.headerView.trailingAnchor),
@@ -126,7 +126,7 @@ class GraphViewController: UIViewController {
             
             tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
             tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
-            tableView.topAnchor.constraint(equalTo: self.buttonCollectionView.bottomAnchor, constant: 15),
+            tableView.topAnchor.constraint(equalTo: self.buttonCollectionView.bottomAnchor, constant: 10),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
         ])
         

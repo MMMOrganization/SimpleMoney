@@ -43,8 +43,14 @@ class MockDataRepository : DataRepositoryInterface {
     }
     
     func readData(typeName : String) -> [Entity] {
-        // TODO: - typeName을 기준으로 GraphData 뽑아와야 함.
-        return []
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readData(typeName : String)")
+            return []
+        }
+        
+        return realm.objects(UserDB.self)
+            .filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())' AND createType == 'expend' AND typeString == '\(typeName)'")
+            .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage)}
     }
     
     func readDate() -> String {
@@ -82,9 +88,8 @@ class MockDataRepository : DataRepositoryInterface {
             return []
         }
         
-        let userDB = realm.objects(UserDB.self).where {
-            $0.createType == .expend
-        }
+        let userDB = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+            .where { $0.createType == .expend }
         
         var tempDict : [String : Double] = .init()
         var resultList : [(String, Double)] = []
@@ -116,6 +121,7 @@ class MockDataRepository : DataRepositoryInterface {
         }
     }
     
+    // TODO: - 로직 필요
     func readDateList() -> [String] {
         return ["2025년 3월", "2025년 2월", "2025년 1월", "2024년 12월", "2024년 11월", "2024년 10월", "2024년 9월", "2024년 8월", "2024년 7월"]
     }
@@ -156,7 +162,7 @@ class MockDataRepository : DataRepositoryInterface {
     }
     
     func setDay(of day : Int) {
-        self.dateType.setDay(of: day)
+        dateType.setDay(of: day)
     }
     
     func deleteData(id: UUID) {
