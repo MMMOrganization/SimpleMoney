@@ -98,14 +98,12 @@ class GraphViewModel : GraphViewModelInterface {
     }
     
     func setReactive() {
-        // TODO: - 날짜의 변경을 감지하고 graphDataSubject에 스트림을 보내야 함.
         typeButtonTapSubject
             .observe(on: MainScheduler.instance)
             .subscribe { [weak self] typeItem in
-                guard let self = self, let typeItem = typeItem.element else {
-                    return
-                }
+                guard let self = self, let typeItem = typeItem.element else { return }
                 
+                print(typeItem)
                 entityDataSubject.onNext(repository.readData(typeName: typeItem))
             }.disposed(by: disposeBag)
         

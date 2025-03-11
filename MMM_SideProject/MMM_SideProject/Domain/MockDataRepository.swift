@@ -77,19 +77,32 @@ class MockDataRepository : DataRepositoryInterface {
     }
     
     func readGraphData() -> [(String, Double)] {
-        // TODO: - date를 받아서 해당 date에 맞는 데이터를 디비에서 가져옴
-        // 디비에서 받아온 데이터를 타입마다 분류하여 전달함.
-        
         guard let realm = try? Realm() else {
             print("MockData - Realm Error readGraphData")
             return []
         }
         
-        let userDB = realm.objects(UserDB.self)
+        let userDB = realm.objects(UserDB.self).where {
+            $0.createType == .expend
+        }
         
-        // TODO: - userDB TypeString 카운팅
+        var tempDict : [String : Double] = .init()
+        var resultList : [(String, Double)] = []
         
-        return []
+        userDB.forEach {
+            if tempDict[$0.typeString] == nil {
+                tempDict[$0.typeString] = 1
+            }
+            else {
+                tempDict[$0.typeString]! += 1
+            }
+        }
+        
+        for (key, value) in tempDict.sorted(by: { $0.value > $1.value }) {
+            resultList.append((key, value))
+        }
+        
+        return resultList
     }
     
     func readDataForCreateCell(of type : CreateType, selectedIndex : Int) -> [CreateCellIcon] {
