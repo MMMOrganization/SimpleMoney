@@ -21,7 +21,6 @@ class GraphViewController: UIViewController {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
             return UITableViewCell()
         }
-        
         cell.configure(item: item)
         cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.05)
         return cell
@@ -82,8 +81,10 @@ class GraphViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setNavigationController()
         setDelegate()
+        setAnimate()
         setLayout()
         setReactive()
     }
@@ -104,6 +105,12 @@ class GraphViewController: UIViewController {
         
         buttonCollectionView.register(TypeButtonCVCell.self, forCellWithReuseIdentifier: TypeButtonCVCell.identifier)
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
+    }
+    
+    func setAnimate() {
+        dataSource.animationConfiguration = AnimationConfiguration(
+            deleteAnimation: .none
+        )
     }
     
     func setLayout() {
@@ -162,7 +169,7 @@ class GraphViewController: UIViewController {
             .subscribe { [weak self] eventList in
                 guard let eventList = eventList.element else { return }
                 guard let self = self else { return }
-                setPieChart(eventList: eventList)
+                self.setPieChart(eventList: eventList)
             }.disposed(by: disposeBag)
         
         viewModel.dateObservable

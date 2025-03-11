@@ -151,8 +151,6 @@ class CreateViewModel : CreateViewModelInterface {
         createTypeSubject.subscribe { [weak self] createType in
             guard let self = self, let createType = createType.element else { return }
             self.createType = createType
-            // 화면 기본값으로 초기화
-            stringTypeSubject.onNext("기타")
             stringDateSubject.onNext(repository.readDate())
             dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: 0))
         }.disposed(by: disposeBag)

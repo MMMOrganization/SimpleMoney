@@ -48,9 +48,17 @@ class MockDataRepository : DataRepositoryInterface {
             return []
         }
         
+        // TODO: - 가장 많은 타입으로 반환.
+        if typeName == "" {
+            realm.objects(UserDB.self)
+        }
+        
         return realm.objects(UserDB.self)
             .filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())' AND createType == 'expend' AND typeString == '\(typeName)'")
             .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage)}
+            .sorted {
+                $0.dateStr > $1.dateStr
+            }
     }
     
     func readDate() -> String {
