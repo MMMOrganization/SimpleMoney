@@ -131,9 +131,7 @@ class graphDateToastView : UIViewController {
             .observe(on: MainScheduler.instance)
             .subscribe { [weak self] _ in
                 guard let self = self else { return }
-                self.willMove(toParent: nil)
-                self.view.removeFromSuperview()
-                self.removeFromParent()
+                removeView()
             }.disposed(by: disposeBag)
         
         // MARK: - Cell Index 클릭 바인딩
@@ -144,6 +142,13 @@ class graphDateToastView : UIViewController {
                 guard let indexPath = indexPath.element else { return }
                 guard let cellData = tableView.cellForRow(at: indexPath) as? DateTableViewCell, let dateStr = cellData.dateLabel.text else { return }
                 viewModel.selectDateObserver.onNext(dateStr)
+                removeView()
             }.disposed(by: disposeBag)
+    }
+    
+    func removeView() {
+        self.willMove(toParent: nil)
+        self.view.removeFromSuperview()
+        self.removeFromParent()
     }
 }
