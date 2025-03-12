@@ -11,11 +11,6 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-// CalendarVC 킬 때, 선택된 달의 지출 데이터 받아오기. (없으면 "-" 라고 표시)
-// 클릭한 날짜의 전체 데이터 받아오기.
-
-// 좌클릭, 우클릭 바인딩 하기 (달이 바뀐 것을 관찰하고 데이터 받아와야 함.)
-
 class CalendarViewController: UIViewController {
     
     var disposeBag : DisposeBag = DisposeBag()
@@ -51,34 +46,44 @@ class CalendarViewController: UIViewController {
         return view
     }()
     
-    // TODO: - SelectionStyle UI 변경 필요
     let calendarView : FSCalendar = {
         let calendar = FSCalendar(frame: .zero)
         calendar.translatesAutoresizingMaskIntoConstraints = false
-        calendar.weekdayHeight = 30 // 요일 글자와 날짜의 높이 차이
-        calendar.appearance.weekdayFont = UIFont(name: FontConst.mainFont, size: 14)
-        calendar.appearance.subtitleFont = UIFont(name: FontConst.mainFont, size: 10)
-        calendar.appearance.headerTitleFont = UIFont(name: FontConst.mainFont, size: 14)
-        calendar.appearance.titleTodayColor = .mainColor
+        // MARK: - 요일 글자와 날짜의 높이 차이
+        calendar.weekdayHeight = 30
+        
+        // MARK: - Font 적용
+        calendar.appearance.weekdayFont = UIFont(size: 14.0)
+        calendar.appearance.subtitleFont = UIFont(size: 9.0)
+        calendar.appearance.headerTitleFont = UIFont(size: 14)
+        
         calendar.scope = .month
-        calendar.appearance.selectionColor = .clear
-        calendar.appearance.todayColor = .clear
-        calendar.appearance.titleSelectionColor = .black
+        // MARK: - Header제거 (Custom Header 사용)
         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
-        calendar.appearance.borderSelectionColor = .mainColor
+        calendar.headerHeight = 0
+        
+        // MARK: - 한국 시간 사용
         calendar.locale = Locale(identifier: "ko_KR")
-        calendar.scope = .month
+        
         calendar.clipsToBounds = true
         calendar.layer.cornerRadius = 20
-        calendar.headerHeight = 0
-        calendar.layer.borderColor = UIColor.red.cgColor
-        calendar.swipeToChooseGesture.isEnabled = false
-        calendar.scrollEnabled = false
-        calendar.backgroundColor = .white
         
-        calendar.appearance.subtitleOffset = CGPoint(x: 0, y: 2) // 서브타이틀 위치 조정
-        calendar.appearance.subtitleDefaultColor = .gray // 기본 서브타이틀 색상
-        calendar.appearance.subtitleSelectionColor = .blue // 선택됐을 때 서브타이틀 색상
+        // MARK: - 오늘 날짜 색 세팅
+        calendar.appearance.todayColor = .red.withAlphaComponent(0.05)
+        calendar.appearance.titleTodayColor = .blackColor
+        calendar.appearance.subtitleTodayColor = .gray
+        
+        // MARK: - 선택됐을 때 색 세팅
+        calendar.appearance.titleSelectionColor = .blackColor
+        calendar.appearance.selectionColor = .mainColor.withAlphaComponent(0.10)
+        
+        // MARK: - 서브타이틀 위치 조정
+        calendar.appearance.subtitleOffset = CGPoint(x: 0, y: 2)
+        
+        // MARK: - 기본 서브타이틀 색, 선택됐을 때 색
+        calendar.appearance.subtitleDefaultColor = .gray
+        calendar.appearance.subtitleSelectionColor = .blue
+        
         return calendar
     }()
     
@@ -264,24 +269,8 @@ extension CalendarViewController : FSCalendarDataSource, FSCalendarDelegate {
     // 날짜에 Subtitle 넣는 delegate 메소드
     func calendar(_ calendar: FSCalendar, subtitleFor date: Date) -> String? {
         guard let amount = viewModel.getAmountForDay(date) else { return "-" }
-      
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        return numberFormatter.string(from: NSNumber(value: amount))
-    }
-}
-
-extension CalendarViewController {
-    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let delete = UIContextualAction(style: .normal, title: "") { (_, _, success: @escaping (Bool) -> Void) in
-            // 원하는 액션 추가
-            success(true)
-        }
         
-        delete.backgroundColor = .white
-        delete.image = UIImage(named: "addImage")
-        
-        return UISwipeActionsConfiguration(actions: [delete])
+        return amount.toCurrency.replacingOccurrences(of: "원", with: "")
     }
 }
 
