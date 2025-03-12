@@ -231,7 +231,6 @@ class CreateViewController: UIViewController {
         view.addSubview(typeHiddenTextField)
         view.addSubview(inputMoneyLabel)
         view.addSubview(inputMoneyHiddenTextField)
-        view.addSubview(separatorLine)
         view.addSubview(iconConstLabel)
         view.addSubview(iconCollectionView)
         
@@ -260,10 +259,12 @@ class CreateViewController: UIViewController {
             // MARK: - typeLabel Layout
             typeLabel.topAnchor.constraint(equalTo: self.dateButton.bottomAnchor, constant: 15),
             typeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            typeLabel.heightAnchor.constraint(equalToConstant: 20),
             
             // MARK: - typeHiddenTextField Layout
             typeHiddenTextField.centerXAnchor.constraint(equalTo: self.typeLabel.centerXAnchor),
             typeHiddenTextField.topAnchor.constraint(equalTo: self.typeLabel.topAnchor),
+            typeHiddenTextField.heightAnchor.constraint(equalToConstant: 20),
             
             // MARK: - inputMoneyLabel Layout
             inputMoneyLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
@@ -272,16 +273,10 @@ class CreateViewController: UIViewController {
             // MARK: - inputMoneyHiddenTextField Layout
             inputMoneyHiddenTextField.centerXAnchor.constraint(equalTo: self.inputMoneyLabel.centerXAnchor),
             inputMoneyHiddenTextField.topAnchor.constraint(equalTo: self.inputMoneyLabel.topAnchor),
-
-            // MARK: - separatorLine Layout
-            separatorLine.heightAnchor.constraint(equalToConstant: 1),
-            separatorLine.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            separatorLine.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            separatorLine.topAnchor.constraint(equalTo: self.inputMoneyLabel.bottomAnchor, constant: 25),
             
             // MARK: - iconConstLabel Layout
-            iconConstLabel.topAnchor.constraint(equalTo: self.separatorLine.bottomAnchor, constant: 10),
-            iconConstLabel.leadingAnchor.constraint(equalTo: self.separatorLine.leadingAnchor, constant: 15),
+            iconConstLabel.topAnchor.constraint(equalTo: self.inputMoneyLabel.bottomAnchor, constant: 20),
+            iconConstLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 15),
             
             // MARK: - iconCollectionView Layout
             iconCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 15),

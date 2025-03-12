@@ -193,6 +193,8 @@ class DetailViewModel : DetailViewModelInterface {
             entitySubject.onNext(data)
         }.disposed(by: disposeBag) }
         
+        
+        
         // MARK: - Toast Delete 버튼 Click 바인딩
         deleteDataSubject.subscribe { [weak self] entityData in
             guard let self = self, let entity = entityData.element else { return

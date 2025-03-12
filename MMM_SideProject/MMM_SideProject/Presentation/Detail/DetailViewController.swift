@@ -377,6 +377,8 @@ final class DetailViewController: UIViewController {
             .bind(to: viewModel.barGraphButtonObserver)
             .disposed(by: disposeBag)
         
+        
+        
         // MARK: - Coordinator 바인딩
         calendarBarButton.rx.tap
             .observe(on: MainScheduler.instance)

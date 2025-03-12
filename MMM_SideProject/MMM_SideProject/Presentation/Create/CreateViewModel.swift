@@ -46,7 +46,7 @@ class CreateViewModel : CreateViewModelInterface {
     var dismissButtonSubject: PublishSubject<Void>
     var createTypeSubject : BehaviorSubject<CreateType>
     var stringDateSubject : BehaviorSubject<String>
-    var stringTypeSubject : PublishSubject<String>
+    var stringTypeSubject : BehaviorSubject<String>
     var inputMoneySubject : BehaviorSubject<String>
     var selectedCellIndexSubject : BehaviorSubject<Int>
     var completeButtonSubject : PublishSubject<Void>
@@ -87,7 +87,7 @@ class CreateViewModel : CreateViewModelInterface {
         dismissButtonSubject = PublishSubject<Void>()
         createTypeSubject = BehaviorSubject<CreateType>(value: .expend)
         stringDateSubject = BehaviorSubject<String>(value: repository.readDate())
-        stringTypeSubject = PublishSubject<String>()
+        stringTypeSubject = BehaviorSubject<String>(value: "타입을 입력해주세요.")
         inputMoneySubject = BehaviorSubject<String>(value: "")
         selectedCellIndexSubject = BehaviorSubject<Int>(value: 0)
         completeButtonSubject = PublishSubject<Void>()
