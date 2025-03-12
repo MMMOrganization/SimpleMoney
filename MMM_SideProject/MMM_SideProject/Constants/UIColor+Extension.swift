@@ -39,6 +39,7 @@ extension UIColor {
 extension UIColor {
     /// GraphView에 들어갈 랜덤 색상
     static var randomColor : UIColor {
-        return [self.red, self.blue, self.yellow, self.green, self.blue, self.magenta, self.brown, self.orange, self.purple, self.gray, self.mainColor, self.cyan].randomElement()!.withAlphaComponent(0.1)
+        return [self.blue, self.purple, self.mainColor]
+            .randomElement()!.withAlphaComponent(0.1)
     }
 }
