@@ -46,7 +46,7 @@ class CreateViewModel : CreateViewModelInterface {
     var dismissButtonSubject: PublishSubject<Void>
     var createTypeSubject : BehaviorSubject<CreateType>
     var stringDateSubject : BehaviorSubject<String>
-    var stringTypeSubject : BehaviorSubject<String>
+    var stringTypeSubject : PublishSubject<String>
     var inputMoneySubject : BehaviorSubject<String>
     var selectedCellIndexSubject : BehaviorSubject<Int>
     var completeButtonSubject : PublishSubject<Void>
@@ -75,10 +75,7 @@ class CreateViewModel : CreateViewModelInterface {
         }
     
     lazy var stringTypeObservable : Observable<String> = stringTypeSubject
-        .map {
-            if $0 == "" { return "기타" }
-            return $0
-        }
+        .map { $0 }
     
     weak var delegate : CreateViewModelDelegate?
     
@@ -90,7 +87,7 @@ class CreateViewModel : CreateViewModelInterface {
         dismissButtonSubject = PublishSubject<Void>()
         createTypeSubject = BehaviorSubject<CreateType>(value: .expend)
         stringDateSubject = BehaviorSubject<String>(value: repository.readDate())
-        stringTypeSubject = BehaviorSubject<String>(value: "기타")
+        stringTypeSubject = PublishSubject<String>()
         inputMoneySubject = BehaviorSubject<String>(value: "")
         selectedCellIndexSubject = BehaviorSubject<Int>(value: 0)
         completeButtonSubject = PublishSubject<Void>()
@@ -167,13 +164,13 @@ class CreateViewModel : CreateViewModelInterface {
         // MARK: - Date 클릭시에 ViewModel이 가지는 dateString과의 바인딩
         stringDateSubject.subscribe { [weak self] stringDate in
             guard let self = self, let stringDate = stringDate.element else { return }
-            print(stringDate)
             self.dateString = stringDate
         }.disposed(by: disposeBag)
         
         // MARK: - 타입 클릭시에 ViewModel이 가지는 typeLabel과의 바인딩
         stringTypeSubject.subscribe { [weak self] stringType in
             guard let self = self, let stringType = stringType.element else { return }
+            print(stringType)
             self.typeString = stringType
         }.disposed(by: disposeBag)
         
