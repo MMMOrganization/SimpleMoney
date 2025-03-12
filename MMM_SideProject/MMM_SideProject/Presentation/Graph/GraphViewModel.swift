@@ -111,9 +111,5 @@ class GraphViewModel : GraphViewModelInterface {
                 graphDataSubject.onNext(repository.readGraphData())
                 entityDataSubject.onNext(repository.readData(typeName: ""))
             }.disposed(by: disposeBag)
-        
-        entityDataSubject.subscribe { _ in
-            print("ViewModel EntityDataSubject 작동")
-        }.disposed(by: disposeBag)
     }
 }

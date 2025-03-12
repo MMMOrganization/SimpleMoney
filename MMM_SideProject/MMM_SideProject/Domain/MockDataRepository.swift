@@ -131,7 +131,7 @@ class MockDataRepository : DataRepositoryInterface {
     
     // TODO: - 로직 필요
     func readDateList() -> [String] {
-        return ["2025년 3월", "2025년 2월", "2025년 1월", "2024년 12월", "2024년 11월", "2024년 10월", "2024년 9월", "2024년 8월", "2024년 7월"]
+        // 
     }
     
     func setState(type : ButtonType) {
