@@ -43,18 +43,18 @@ class MockDataRepository : DataRepositoryInterface {
     }
     
     func readData(typeName : String) -> [Entity] {
+        var tempTypeName : String = typeName
         guard let realm = try? Realm() else {
             print("MockData - Realm Error readData(typeName : String)")
             return []
         }
         
-        // TODO: - 가장 많은 타입으로 반환.
-        if typeName == "" {
-            realm.objects(UserDB.self)
-        }
+        // MARK: - 가장 많은 타입으로 반환.
+        /// 아무런 값 (초기값이 들어왔을 때)이 들어오지 않았을 때 가장 많은 타입으로 반환한다.
+        if typeName == "" { tempTypeName = readMostTypeName() }
         
         return realm.objects(UserDB.self)
-            .filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())' AND createType == 'expend' AND typeString == '\(typeName)'")
+            .filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())' AND createType == 'expend' AND typeString == '\(tempTypeName)'")
             .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage)}
             .sorted {
                 $0.dateStr > $1.dateStr
@@ -131,7 +131,7 @@ class MockDataRepository : DataRepositoryInterface {
     
     // TODO: - 로직 필요
     func readDateList() -> [String] {
-        return ["2025년 3월", "2025년 2월", "2025년 1월", "2024년 12월", "2024년 11월", "2024년 10월", "2024년 9월", "2024년 8월", "2024년 7월"]
+        // 
     }
     
     func setState(type : ButtonType) {
@@ -226,5 +226,30 @@ private extension MockDataRepository {
         
         return realmData.sorted { $0.dateString > $1.dateString }
             .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString , createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
+    }
+    
+    private func readMostTypeName() -> String {
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readMostTypeName()")
+            return ""
+        }
+        
+        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+            .where { $0.createType == .expend }
+            
+        var tempDict : [String : Double] = .init()
+        
+        realmData.forEach {
+            if tempDict[$0.typeString] == nil {
+                tempDict[$0.typeString] = 1
+            }
+            else {
+                tempDict[$0.typeString]! += 1
+            }
+        }
+        
+        guard let mostTypeName = tempDict.sorted(by: { $0.value > $1.value }).first?.key else { return "" }
+        
+        return mostTypeName
     }
 }

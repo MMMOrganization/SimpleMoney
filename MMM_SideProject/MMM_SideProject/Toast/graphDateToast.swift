@@ -67,17 +67,23 @@ class graphDateToastView : UIViewController {
         super.viewDidLoad()
         setTableView()
         setLayout()
-        setAnimation()
         setReactive()
     }
     
-    lazy var mainViewHeightAnchor = mainView.heightAnchor.constraint(equalToConstant: 550)
-    lazy var mainViewBottomAnchor = mainView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 400)
+    lazy var mainViewHeightAnchor = mainView.heightAnchor.constraint(equalToConstant: 60)
     
     func setTableView() {
-        tableView.separatorStyle = .none
         tableView.rowHeight = 50
         tableView.register(DateTableViewCell.self, forCellReuseIdentifier: DateTableViewCell.identifier)
+    }
+    
+    func setAnimation() {
+        // MARK: - 무조건 이 시점에는 tableView.contentSize가 정해짐.
+        self.mainViewHeightAnchor.constant = (self.tableView.contentSize.height + self.headerStackView.frame.height) <= 400 ? (self.tableView.contentSize.height + self.headerStackView.frame.height) : 400
+        
+        UIView.animate(withDuration: 0.2) {
+            self.mainView.layoutIfNeeded()
+        }
     }
     
     func setLayout() {
@@ -88,9 +94,9 @@ class graphDateToastView : UIViewController {
         NSLayoutConstraint.activate([
             mainView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 15),
             mainView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -15),
+            mainView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -5),
             
             mainViewHeightAnchor,
-            mainViewBottomAnchor,
             
             headerStackView.leadingAnchor.constraint(equalTo: self.mainView.leadingAnchor, constant: 15),
             headerStackView.trailingAnchor.constraint(equalTo: self.mainView.trailingAnchor),
@@ -106,24 +112,20 @@ class graphDateToastView : UIViewController {
             
             tableView.leadingAnchor.constraint(equalTo: self.mainView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.mainView.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: self.headerStackView.bottomAnchor),
             tableView.bottomAnchor.constraint(equalTo: self.mainView.bottomAnchor),
-            tableView.topAnchor.constraint(equalTo: self.headerStackView.bottomAnchor)
         ])
-    }
-    
-    func setAnimation() {
-        self.mainViewBottomAnchor.constant -= 420
-        UIView.animate(withDuration: 0.3) {
-            self.mainView.layoutIfNeeded() // 레이아웃 업데이트가 애니메이션되도록 함
-        }
     }
     
     func setReactive() {
         // MARK: - DateList Cell 바인딩
         viewModel.dateListObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: tableView.rx.items(cellIdentifier: DateTableViewCell.identifier, cellType: DateTableViewCell.self)) { (index, item, cell) in
+            .bind(to: tableView.rx.items(cellIdentifier: DateTableViewCell.identifier, cellType: DateTableViewCell.self)) { [weak self] (index, item, cell) in
+                guard let self = self else { return }
                 cell.configure(dateStr: item)
+                // Cell 개수에 따른 애니메이션 적용.
+                setAnimation()
             }.disposed(by: disposeBag)
         
         // MARK: - Dismiss 버튼 탭 바인딩
@@ -147,7 +149,6 @@ class graphDateToastView : UIViewController {
     }
     
     func removeView() {
-        // TODO: - 사라지는 애니메이션 추가
         self.willMove(toParent: nil)
         self.view.removeFromSuperview()
         self.removeFromParent()
