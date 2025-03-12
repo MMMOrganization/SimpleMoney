@@ -129,9 +129,21 @@ class MockDataRepository : DataRepositoryInterface {
         }
     }
     
-    // TODO: - 로직 필요
     func readDateList() -> [String] {
-        // 
+        var dateList = Set<String>()
+        guard let realm = try? Realm() else {
+            print("MockData - Realm Error readDataList")
+            return []
+        }
+        
+        let realmData = realm.objects(UserDB.self)
+        
+        realmData.forEach {
+            let tempList = $0.dateString.split(separator: "-")
+            dateList.insert("\(tempList[0])년 \(Int(tempList[1]) ?? 0)월")
+        }
+        
+        return dateList.sorted { $0 > $1 }
     }
     
     func setState(type : ButtonType) {
