@@ -10,7 +10,6 @@ import RxSwift
 import RxCocoa
 
 // MARK: - Legacy 코드 (사용하지 않는 ViewController)
-
 class MainViewController: UIViewController {
     
     // MARK: - 스크롤 뷰

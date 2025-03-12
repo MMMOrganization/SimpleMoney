@@ -31,12 +31,12 @@ class GraphViewModel : GraphViewModelInterface {
     // MARK: - Subject (Observer)
     var dismissButtonSubject: PublishSubject<Void>
     var typeButtonDataSubject: PublishSubject<[(String, UIColor)]>
-    var typeButtonTapSubject : BehaviorSubject<String>
+    var typeButtonTapSubject : PublishSubject<String>
     var selectDateSubject : PublishSubject<String>
     
     // MARK: - Subject (Observable)
     var graphDataSubject: BehaviorSubject<[(String, Double)]>
-    var entityDataSubject: PublishSubject<[Entity]>
+    var entityDataSubject: BehaviorSubject<[Entity]>
     var dateSubject: BehaviorSubject<String>
     var dateListSubject : BehaviorSubject<[String]>
     
@@ -62,17 +62,13 @@ class GraphViewModel : GraphViewModelInterface {
     init(repository : DataRepositoryInterface) {
         self.repository = repository
         
-        // TODO: - 지출타입의 데이터베이스를 다 긁어온다.
-        // TODO: - 딕셔너리로 값을 받는다.
-        // TODO: - 정리해서 그래프로 넘긴다.
-        
         dismissButtonSubject = PublishSubject<Void>()
         typeButtonDataSubject = PublishSubject<[(String, UIColor)]>()
-        typeButtonTapSubject = BehaviorSubject<String>(value: "")
+        typeButtonTapSubject = PublishSubject<String>()
         selectDateSubject = PublishSubject<String>()
         
         graphDataSubject = BehaviorSubject<[(String, Double)]>(value: repository.readGraphData())
-        entityDataSubject = PublishSubject<[Entity]>()
+        entityDataSubject = BehaviorSubject<[Entity]>(value: repository.readData(typeName: ""))
         dateSubject = BehaviorSubject<String>(value: repository.readDate())
         dateListSubject = BehaviorSubject<[String]>(value: repository.readDateList())
         
@@ -83,7 +79,7 @@ class GraphViewModel : GraphViewModelInterface {
         
         graphDataObservable = graphDataSubject
         typeButtonDataObservable = typeButtonDataSubject
-        entityDataObservable = entityDataSubject
+        entityDataObservable = entityDataSubject.asObservable()
         dateObservable = dateSubject
         dateListObservable = dateListSubject
         
@@ -102,8 +98,6 @@ class GraphViewModel : GraphViewModelInterface {
             .observe(on: MainScheduler.instance)
             .subscribe { [weak self] typeItem in
                 guard let self = self, let typeItem = typeItem.element else { return }
-                
-                print(typeItem)
                 entityDataSubject.onNext(repository.readData(typeName: typeItem))
             }.disposed(by: disposeBag)
         
@@ -116,7 +110,10 @@ class GraphViewModel : GraphViewModelInterface {
                 repository.setDate(dateStr: dateStr)
                 graphDataSubject.onNext(repository.readGraphData())
                 entityDataSubject.onNext(repository.readData(typeName: ""))
-                // TODO: - entityDataSubject 도 함께 호출
             }.disposed(by: disposeBag)
+        
+        entityDataSubject.subscribe { _ in
+            print("ViewModel EntityDataSubject 작동")
+        }.disposed(by: disposeBag)
     }
 }

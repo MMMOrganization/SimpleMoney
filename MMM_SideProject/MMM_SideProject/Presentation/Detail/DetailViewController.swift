@@ -364,6 +364,11 @@ final class DetailViewController: UIViewController {
     
     func setReactive() {
         
+        self.rx.viewWillAppear
+            .observe(on: MainScheduler.instance)
+            .bind(to: viewModel.viewWillAppearObserver)
+            .disposed(by: disposeBag)
+        
         // TODO: - BarGraph, OneGraph 화면 생성.
         circleGraphBarButton.rx.tap
             .observe(on: MainScheduler.instance)

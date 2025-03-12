@@ -71,14 +71,11 @@ class CreateViewModel : CreateViewModelInterface {
         .map {
             if $0 == "" { return "0원" }
             guard let intValue = Int($0) else { return "" }
-            return intValue.toCurrency
+            return intValue.absToCurrency
         }
     
     lazy var stringTypeObservable : Observable<String> = stringTypeSubject
-        .map {
-            if $0 == "" { return "기타" }
-            return $0
-        }
+        .map { $0 }
     
     weak var delegate : CreateViewModelDelegate?
     
@@ -90,7 +87,7 @@ class CreateViewModel : CreateViewModelInterface {
         dismissButtonSubject = PublishSubject<Void>()
         createTypeSubject = BehaviorSubject<CreateType>(value: .expend)
         stringDateSubject = BehaviorSubject<String>(value: repository.readDate())
-        stringTypeSubject = BehaviorSubject<String>(value: "기타")
+        stringTypeSubject = BehaviorSubject<String>(value: "타입을 입력해주세요.")
         inputMoneySubject = BehaviorSubject<String>(value: "")
         selectedCellIndexSubject = BehaviorSubject<Int>(value: 0)
         completeButtonSubject = PublishSubject<Void>()
@@ -151,9 +148,6 @@ class CreateViewModel : CreateViewModelInterface {
         createTypeSubject.subscribe { [weak self] createType in
             guard let self = self, let createType = createType.element else { return }
             self.createType = createType
-            // 화면 기본값으로 초기화
-            inputMoneySubject.onNext("")
-            stringTypeSubject.onNext("기타")
             stringDateSubject.onNext(repository.readDate())
             dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: 0))
         }.disposed(by: disposeBag)
@@ -170,13 +164,13 @@ class CreateViewModel : CreateViewModelInterface {
         // MARK: - Date 클릭시에 ViewModel이 가지는 dateString과의 바인딩
         stringDateSubject.subscribe { [weak self] stringDate in
             guard let self = self, let stringDate = stringDate.element else { return }
-            print(stringDate)
             self.dateString = stringDate
         }.disposed(by: disposeBag)
         
         // MARK: - 타입 클릭시에 ViewModel이 가지는 typeLabel과의 바인딩
         stringTypeSubject.subscribe { [weak self] stringType in
             guard let self = self, let stringType = stringType.element else { return }
+            print(stringType)
             self.typeString = stringType
         }.disposed(by: disposeBag)
         

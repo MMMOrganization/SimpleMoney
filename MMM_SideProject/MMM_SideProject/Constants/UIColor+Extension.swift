@@ -35,3 +35,10 @@ extension UIColor {
     /// Custom Color - hex : 767676
     static let grayColor = UIColor(hexCode: ColorConst.grayColorString)
 }
+
+extension UIColor {
+    /// GraphView에 들어갈 랜덤 색상
+    static var randomColor : UIColor {
+        return [self.red, self.blue, self.yellow, self.green, self.blue, self.magenta, self.brown, self.orange, self.purple, self.gray, self.mainColor, self.cyan].randomElement()!.withAlphaComponent(0.1)
+    }
+}

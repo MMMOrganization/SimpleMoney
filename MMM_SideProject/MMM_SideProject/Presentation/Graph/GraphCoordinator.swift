@@ -18,7 +18,6 @@ class GraphCoordinator : Coordinator, GraphViewModelDelegate {
     }
     
     func start() {
-        // TODO: - graphStyle 에 따라서 표현하는 View가 달라짐.
         let dataRepository = MockDataRepository()
         let viewModel = GraphViewModel(repository: dataRepository)
         viewModel.delegate = self

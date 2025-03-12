@@ -12,6 +12,7 @@ import RxCocoa
 protocol DetailViewModelInterface {
     var dateButtonObserver : AnyObserver<Void> { get }
     var plusButtonObserver : AnyObserver<Void> { get }
+    var viewWillAppearObserver : AnyObserver<Void> { get }
     var circleGraphButtonObserver : AnyObserver<GraphType> { get }
     var barGraphButtonObserver : AnyObserver<GraphType> { get }
     
@@ -43,6 +44,7 @@ class DetailViewModel : DetailViewModelInterface {
     // MARK: - Observer (Subject)
     var dateButtonSubject : PublishSubject<Void>
     var plusButtonSubject : PublishSubject<Void>
+    var viewWillAppearSubject : PublishSubject<Void>
     var circleGraphButtonSubject : PublishSubject<GraphType>
     var barGraphButtonSubject : PublishSubject<GraphType>
     var totalDataSubject : BehaviorSubject<ButtonType>
@@ -62,6 +64,7 @@ class DetailViewModel : DetailViewModelInterface {
     // MARK: - Observer
     var dateButtonObserver: AnyObserver<Void>
     var plusButtonObserver: AnyObserver<Void>
+    var viewWillAppearObserver: AnyObserver<Void>
     var circleGraphButtonObserver: AnyObserver<GraphType>
     var barGraphButtonObserver: AnyObserver<GraphType>
     var totalDataObserver: AnyObserver<ButtonType>
@@ -108,6 +111,7 @@ class DetailViewModel : DetailViewModelInterface {
         // MARK: - Observer (Subject)
         dateButtonSubject = PublishSubject<Void>()
         plusButtonSubject = PublishSubject<Void>()
+        viewWillAppearSubject = PublishSubject<Void>()
         barGraphButtonSubject = PublishSubject<GraphType>()
         circleGraphButtonSubject = PublishSubject<GraphType>()
         totalDataSubject = BehaviorSubject<ButtonType>(value: .total)
@@ -124,6 +128,7 @@ class DetailViewModel : DetailViewModelInterface {
         // MARK: - Observer
         dateButtonObserver = dateButtonSubject.asObserver()
         plusButtonObserver = plusButtonSubject.asObserver()
+        viewWillAppearObserver = viewWillAppearSubject.asObserver()
         barGraphButtonObserver = barGraphButtonSubject.asObserver()
         circleGraphButtonObserver = circleGraphButtonSubject.asObserver()
         totalDataObserver = totalDataSubject.asObserver()
@@ -161,9 +166,13 @@ class DetailViewModel : DetailViewModelInterface {
     }
     
     func setBind() {
-        // MARK: - showButton <-> Data 바인딩
+        // MARK: - viewWillAppear 셀 데이터 초기화 바인딩
+        viewWillAppearSubject.subscribe { [weak self] _ in
+            guard let self = self else { return }
+            entitySubject.onNext(repository.readData())
+        }.disposed(by: disposeBag)
         
-        // 구독이 될 때 즉시 초기값을 던져주는 BehaivorSubject를 사용해서 처음에 total을 보여주도록 설정.
+        // MARK: - showButton <-> Data 바인딩
         [totalDataSubject, incomeDataSubject, expendDataSubject].forEach { $0.subscribe { [weak self] selectedButton in
             guard let self = self, let selectedButtonType = selectedButton.element else { return }
             repository.setState(type: selectedButtonType)
@@ -197,8 +206,6 @@ class DetailViewModel : DetailViewModelInterface {
         deleteDataSubject.subscribe { [weak self] entityData in
             guard let self = self, let entity = entityData.element else { return
             }
-            
-            // TODO: - Entity UUID를 보내서 삭제.
             self.repository.deleteData(id: entity.id)
             self.entitySubject.onNext(self.repository.readData())
         }.disposed(by: disposeBag)
