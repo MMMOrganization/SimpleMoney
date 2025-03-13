@@ -51,6 +51,7 @@ class DateTableViewCell: UITableViewCell {
     }
     
     func configure(dateStr : String) {
-        self.dateLabel.text = dateStr
+        dateLabel.text = dateStr
+        selectionStyle = .none
     }
 }
