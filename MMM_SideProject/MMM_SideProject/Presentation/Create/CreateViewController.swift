@@ -415,29 +415,8 @@ class CreateViewController: UIViewController {
         // MARK: - 지출, 수입 타입 바인딩
         typeHiddenTextField.rx.text
             .observe(on: MainScheduler.instance)
-            .map {
-                guard let text = $0 else { return "" }
-                return text.isEmpty ? "타입을 입력해주세요." : text
-            }
-            .bind(to: viewModel.stringTypeObserver)
-            .disposed(by: disposeBag)
-        
-        // TODO: - text가 입력이 될 때 클리어하기
-        typeHiddenTextField.rx.controlEvent(.editingDidBegin)
-            .map { [weak self] _ in
-                guard let self = self else { return "" }
-                typeHiddenTextField.text = ""
-                return ""
-            }
-            .bind(to: viewModel.stringTypeObserver)
-            .disposed(by: disposeBag)
-        
-        typeHiddenTextField.rx.controlEvent(.editingDidEnd)
-            .map { [weak self] _ in
-                guard let self = self else { return "" }
-                guard let text = typeHiddenTextField.text else { return "" }
-                return text.isEmpty ? "타입을 입력해주세요." : text
-            }.bind(to: viewModel.stringTypeObserver)
+            .map { $0 ?? "" }
+            .bind(to: viewModel.keyboardTypeTapObserver)
             .disposed(by: disposeBag)
         
         viewModel.stringTypeObservable
@@ -551,4 +530,8 @@ private extension CreateViewController {
                 .disposed(by: disposeBag)
         }
     }
+}
+
+extension CreateViewController : UITextFieldDelegate {
+    
 }

@@ -136,6 +136,11 @@ class GraphViewController: UIViewController {
         setToastReactive()
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        resignToastView()
+    }
+    
     func setNavigationController() {
         self.navigationItem.leftBarButtonItem = dismissButtonItem
         self.navigationItem.titleView = navigationTitleButton
@@ -279,7 +284,7 @@ extension GraphViewController {
         toastMainViewHeight = (toastTableView.contentSize.height + toastHeaderStackView.frame.height) <= 400 ? (toastTableView.contentSize.height + toastHeaderStackView.frame.height) : 400
         
         toastMainViewHeightAnchor.constant = toastMainViewHeight
-        toastMainViewBottomAnchor.constant = 0
+        toastMainViewBottomAnchor.constant = -10
         
         UIView.animate(withDuration: 0.2) { [weak self] in
             guard let self = self else { return }
