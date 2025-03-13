@@ -14,6 +14,9 @@ class CreateViewController: UIViewController {
     let disposeBag : DisposeBag = DisposeBag()
     var viewModel : CreateViewModelInterface!
     
+    lazy var cancelButtonTag : Int = 999
+    lazy var doneButtonTag : Int = 1000
+    
     // MARK: - outLine (지출, 수입) 선택 애니메이션
     lazy var outLineViewLeadingAnchor = outLineView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
     lazy var outLineViewTrailingAnchor = outLineView.trailingAnchor.constraint(equalTo: self.expendButton.trailingAnchor)
@@ -172,7 +175,7 @@ class CreateViewController: UIViewController {
         let firstSV : UIStackView = createHorizonStackView(arr : [1, 2, 3])
         let secondSV : UIStackView = createHorizonStackView(arr : [4, 5, 6])
         let thirdSV : UIStackView = createHorizonStackView(arr : [7, 8, 9])
-        let fourthSV : UIStackView = createHorizonStackView(arr: [nil, 0, nil])
+        let fourthSV : UIStackView = createHorizonStackView(arr: [doneButtonTag, 0, cancelButtonTag])
         [firstSV, secondSV, thirdSV, fourthSV].forEach { sv.addArrangedSubview($0)}
         sv.axis = .vertical
         sv.spacing = 0
@@ -181,10 +184,10 @@ class CreateViewController: UIViewController {
         return sv
     }()
     
-    func createHorizonStackView(arr : [Int?]) -> UIStackView {
+    func createHorizonStackView(arr : [Int]) -> UIStackView {
         lazy var stackView : UIStackView = {
             let sv = UIStackView()
-            arr.forEach { sv.addArrangedSubview(createNumberButton(num: $0)) }
+            arr.forEach { sv.addArrangedSubview(createKeyboardButton(num: $0)) }
             sv.axis = .horizontal
             sv.spacing = 0
             sv.alignment = .fill
@@ -196,30 +199,46 @@ class CreateViewController: UIViewController {
     }
     
     // MARK: - KeyBoardView에 들어갈 StackView의 버튼 생성
-    func createNumberButton(num : Int?) -> UIButton {
-        guard let num = num else {
-            let b = UIButton()
-            b.translatesAutoresizingMaskIntoConstraints = false
-            b.backgroundColor = .white
-            return b
+    func createKeyboardButton(num : Int) -> UIButton {
+        switch num {
+        case doneButtonTag:
+            lazy var button : UIButton = {
+                let b = UIButton()
+                b.translatesAutoresizingMaskIntoConstraints = false
+                b.setImage(UIImage(named: "DateImage"), for: .normal)
+                b.backgroundColor = .white
+                b.tag = num
+                setKeyboardTapBinding(b)
+                return b
+            }()
+            return button
+        case cancelButtonTag:
+            lazy var button : UIButton = {
+                let b = UIButton()
+                b.translatesAutoresizingMaskIntoConstraints = false
+                b.setImage(UIImage(named: "DateImage"), for: .normal)
+                b.backgroundColor = .white
+                b.tag = num
+                setKeyboardTapBinding(b)
+                return b
+            }()
+            return button
+        default:
+            lazy var button : UIButton = {
+                let b = UIButton()
+                b.translatesAutoresizingMaskIntoConstraints = false
+                b.titleLabel?.textAlignment = .center
+                b.setTitleColor(.blackColor, for: .normal)
+                b.setTitle(String(num), for: .normal)
+                b.backgroundColor = .white
+                b.tag = num
+                b.titleLabel?.font = UIFont(size: 18)
+                setKeyboardTapBinding(b)
+                return b
+            }()
+            return button
         }
-        
-        lazy var button : UIButton = {
-            let b = UIButton()
-            b.translatesAutoresizingMaskIntoConstraints = false
-            b.titleLabel?.textAlignment = .center
-            b.setTitleColor(.blackColor, for: .normal)
-            b.setTitle(String(num), for: .normal)
-            b.backgroundColor = .white
-            b.tag = num
-            b.titleLabel?.font = UIFont(size: 18)
-            setKeyboardTapBinding(b)
-            return b
-        }()
-        
-        return button
     }
-    
     
     // MARK: - Initializer
     init(viewModel: CreateViewModelInterface) {
@@ -261,14 +280,21 @@ class CreateViewController: UIViewController {
     }
     
     func setKeyboardTapBinding(_ button : UIButton) {
-        // TODO: - 숫자 클릭
-        button.rx.tap
-            .observe(on: MainScheduler.instance)
-            .map { String(button.tag) }
-            .bind(to: inputMoneyHiddenTextField.rx.text)
-            .disposed(by: disposeBag)
-        
-        // TODO: - 취소 클릭
+        switch button.tag {
+        case doneButtonTag:
+            customKeyboardResign()
+        case cancelButtonTag:
+            button.rx.tap
+                .observe(on: MainScheduler.instance)
+                .bind(to: viewModel.keyboardCancelTapObserver)
+                .disposed(by: disposeBag)
+        default:
+            button.rx.tap
+                .observe(on: MainScheduler.instance)
+                .map { String(button.tag) }
+                .bind(to: viewModel.keyboardNumberTapObserver)
+                .disposed(by: disposeBag)
+        }
     }
     
     // TODO: - Lagacy (바인딩으로 변경 필요)
@@ -283,10 +309,20 @@ class CreateViewController: UIViewController {
     // MARK: - KeyBoard 비활성화
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        inputMoneyHiddenTextField.resignFirstResponder()
         typeHiddenTextField.resignFirstResponder()
-        
+        customKeyboardResign()
+    }
+    
+    func customKeyboardResign() {
         keyboardBottomAnchor.constant = keyboardHeight
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            guard let self = self else { return }
+            view.layoutIfNeeded()
+        }
+    }
+    
+    func customKeyboardBecome() {
+        keyboardBottomAnchor.constant = 0
         UIView.animate(withDuration: 0.2) { [weak self] in
             guard let self = self else { return }
             view.layoutIfNeeded()
@@ -394,11 +430,7 @@ class CreateViewController: UIViewController {
         inputMoneyTapGesture.rx.event
             .subscribe { [weak self] _ in
                 guard let self = self else { return }
-                keyboardBottomAnchor.constant = 0
-                UIView.animate(withDuration: 0.2) { [weak self] in
-                    guard let self = self else { return }
-                    view.layoutIfNeeded()
-                }
+                customKeyboardBecome()
             }.disposed(by: disposeBag)
         
         // MARK: - SaveButton 바인딩
@@ -490,13 +522,6 @@ class CreateViewController: UIViewController {
         viewModel.stringTypeObservable
             .observe(on: MainScheduler.instance)
             .bind(to: typeLabel.rx.text)
-            .disposed(by: disposeBag)
-        
-        // MARK: - inputMoney 바인딩
-        inputMoneyHiddenTextField.rx.text
-            .observe(on: MainScheduler.instance)
-            .map { $0 ?? "" }
-            .bind(to: viewModel.inputMoneyObserver)
             .disposed(by: disposeBag)
         
         // MARK: - inputMoney View 바인딩
