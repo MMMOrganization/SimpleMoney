@@ -116,6 +116,7 @@ class CreateViewModel : CreateViewModelInterface {
             self?.delegate?.popCreateVC()
         }.disposed(by: disposeBag)
         
+        // MARK: - 저장버튼과의 바인딩 (예외 처리)
         completeButtonSubject.subscribe { [weak self] _ in
             guard let self = self else { return }
             
@@ -175,7 +176,7 @@ class CreateViewModel : CreateViewModelInterface {
         }.disposed(by: disposeBag)
         
         // MARK: - 금액 클릭시에 ViewModel이 가지는 inputMoney과의 바인딩
-        inputMoneyObservable.subscribe { [weak self] inputMoney in
+        inputMoneySubject.subscribe { [weak self] inputMoney in
             guard let self = self, let inputMoney = inputMoney.element else { return }
             self.inputMoney = inputMoney
         }.disposed(by: disposeBag)

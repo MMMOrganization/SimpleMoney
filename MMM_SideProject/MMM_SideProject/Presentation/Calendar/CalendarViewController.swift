@@ -52,6 +52,9 @@ class CalendarViewController: UIViewController {
         // MARK: - 요일 글자와 날짜의 높이 차이
         calendar.weekdayHeight = 30
         
+        // MARK: - 현재 Custom Header와 제스쳐가 바인딩 되어 있지 않음.
+        calendar.swipeToChooseGesture.isEnabled = false
+        
         // MARK: - Font 적용
         calendar.appearance.weekdayFont = UIFont(size: 14.0)
         calendar.appearance.subtitleFont = UIFont(size: 9.0)

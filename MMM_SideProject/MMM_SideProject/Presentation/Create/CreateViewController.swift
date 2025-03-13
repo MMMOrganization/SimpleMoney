@@ -14,6 +14,20 @@ class CreateViewController: UIViewController {
     let disposeBag : DisposeBag = DisposeBag()
     var viewModel : CreateViewModelInterface!
     
+    // MARK: - outLine (지출, 수입) 선택 애니메이션
+    lazy var outLineViewLeadingAnchor = outLineView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
+    lazy var outLineViewTrailingAnchor = outLineView.trailingAnchor.constraint(equalTo: self.expendButton.trailingAnchor)
+    
+    // MARK: - keyboardView 애니메이션
+    lazy var keyboardHeight : CGFloat = 400
+    lazy var keyboardBottomAnchor = keyboardView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: keyboardHeight)
+    
+    // MARK: - Gesture 설정
+    lazy var typeTapGesture : UITapGestureRecognizer = UITapGestureRecognizer()
+    lazy var inputMoneyTapGesture : UITapGestureRecognizer = UITapGestureRecognizer()
+    
+    
+    // MARK: - 각종 Layout에 적용될 View
     lazy var topStackView : UIStackView = {
         let sv = UIStackView(arrangedSubviews: [expendButton, incomeButton])
         sv.translatesAutoresizingMaskIntoConstraints = false
@@ -190,7 +204,7 @@ class CreateViewController: UIViewController {
             return b
         }
         
-        let button : UIButton = {
+        lazy var button : UIButton = {
             let b = UIButton()
             b.translatesAutoresizingMaskIntoConstraints = false
             b.titleLabel?.textAlignment = .center
@@ -199,6 +213,7 @@ class CreateViewController: UIViewController {
             b.backgroundColor = .white
             b.tag = num
             b.titleLabel?.font = UIFont(size: 18)
+            setKeyboardTapBinding(b)
             return b
         }()
         
@@ -238,13 +253,22 @@ class CreateViewController: UIViewController {
     }
     
     func setGesture() {
-        let typeTapGesture = UITapGestureRecognizer(target: self, action: #selector(typeLabelClicked))
         typeLabel.addGestureRecognizer(typeTapGesture)
         typeLabel.isUserInteractionEnabled = true
         
-        let inputMoneyTapGesture = UITapGestureRecognizer(target: self, action: #selector(inputMoneyClicked))
         inputMoneyLabel.addGestureRecognizer(inputMoneyTapGesture)
         inputMoneyLabel.isUserInteractionEnabled = true
+    }
+    
+    func setKeyboardTapBinding(_ button : UIButton) {
+        // TODO: - 숫자 클릭
+        button.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { String(button.tag) }
+            .bind(to: inputMoneyHiddenTextField.rx.text)
+            .disposed(by: disposeBag)
+        
+        // TODO: - 취소 클릭
     }
     
     // TODO: - Lagacy (바인딩으로 변경 필요)
@@ -259,33 +283,16 @@ class CreateViewController: UIViewController {
     // MARK: - KeyBoard 비활성화
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        self.inputMoneyHiddenTextField.resignFirstResponder()
-        self.typeHiddenTextField.resignFirstResponder()
-    }
-    
-    // MARK: - KeyBoard 활성화
-    @objc func typeLabelClicked() {
-        //typeHiddenTextField.becomeFirstResponder()
+        inputMoneyHiddenTextField.resignFirstResponder()
+        typeHiddenTextField.resignFirstResponder()
         
-        keyboardBottomAnchor.constant -= keyboardHeight
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
+        keyboardBottomAnchor.constant = keyboardHeight
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            guard let self = self else { return }
+            view.layoutIfNeeded()
         }
     }
     
-    @objc func inputMoneyClicked() {
-        inputMoneyHiddenTextField.becomeFirstResponder()
-    }
-    
-    // MARK: - outLine (지출, 수입) 선택 애니메이션
-    lazy var outLineViewLeadingAnchor = outLineView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
-    lazy var outLineViewTrailingAnchor = outLineView.trailingAnchor.constraint(equalTo: self.expendButton.trailingAnchor)
-    
-    // MARK: - keyboardView 애니메이션
-    lazy var keyboardHeight : CGFloat = 450
-    lazy var keyboardBottomAnchor = keyboardView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: keyboardHeight)
-    
-
     func setLayout() {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.scrollEdgeAppearance =
@@ -377,7 +384,24 @@ class CreateViewController: UIViewController {
             .bind(to: viewModel.dismissButtonObserver)
             .disposed(by: disposeBag)
         
-        // TODO: - Save 되면서 데이터가 저장되고, 만약 조건이 부족하다면 조건을 알려주는 역할을 ViewModel에서 필요함.
+        // MARK: - Gesture 바인딩
+        typeTapGesture.rx.event
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                typeHiddenTextField.becomeFirstResponder()
+            }.disposed(by: disposeBag)
+        
+        inputMoneyTapGesture.rx.event
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                keyboardBottomAnchor.constant = 0
+                UIView.animate(withDuration: 0.2) { [weak self] in
+                    guard let self = self else { return }
+                    view.layoutIfNeeded()
+                }
+            }.disposed(by: disposeBag)
+        
+        // MARK: - SaveButton 바인딩
         saveButton.rx.tap
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.completeButtonObserver)
@@ -404,7 +428,6 @@ class CreateViewController: UIViewController {
                     outLineViewLeadingAnchor.constant -= topStackView.frame.width / 2
                     outLineViewTrailingAnchor.constant -= topStackView.frame.width / 2
                 }
-                
                 UIView.animate(withDuration: 0.3) {
                     self.view.layoutIfNeeded()
                 }
@@ -418,7 +441,6 @@ class CreateViewController: UIViewController {
                     outLineViewLeadingAnchor.constant += topStackView.frame.width / 2
                     outLineViewTrailingAnchor.constant += topStackView.frame.width / 2
                 }
-                
                 UIView.animate(withDuration: 0.3) {
                     self.view.layoutIfNeeded()
                 }
