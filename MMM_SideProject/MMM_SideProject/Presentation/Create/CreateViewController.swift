@@ -198,47 +198,7 @@ class CreateViewController: UIViewController {
         return stackView
     }
     
-    // MARK: - KeyBoardView에 들어갈 StackView의 버튼 생성
-    func createKeyboardButton(num : Int) -> UIButton {
-        switch num {
-        case doneButtonTag:
-            lazy var button : UIButton = {
-                let b = UIButton()
-                b.translatesAutoresizingMaskIntoConstraints = false
-                b.setImage(UIImage(named: "DateImage"), for: .normal)
-                b.backgroundColor = .white
-                b.tag = num
-                setKeyboardTapBinding(b)
-                return b
-            }()
-            return button
-        case cancelButtonTag:
-            lazy var button : UIButton = {
-                let b = UIButton()
-                b.translatesAutoresizingMaskIntoConstraints = false
-                b.setImage(UIImage(named: "DateImage"), for: .normal)
-                b.backgroundColor = .white
-                b.tag = num
-                setKeyboardTapBinding(b)
-                return b
-            }()
-            return button
-        default:
-            lazy var button : UIButton = {
-                let b = UIButton()
-                b.translatesAutoresizingMaskIntoConstraints = false
-                b.titleLabel?.textAlignment = .center
-                b.setTitleColor(.blackColor, for: .normal)
-                b.setTitle(String(num), for: .normal)
-                b.backgroundColor = .white
-                b.tag = num
-                b.titleLabel?.font = UIFont(size: 18)
-                setKeyboardTapBinding(b)
-                return b
-            }()
-            return button
-        }
-    }
+    
     
     // MARK: - Initializer
     init(viewModel: CreateViewModelInterface) {
@@ -279,24 +239,6 @@ class CreateViewController: UIViewController {
         inputMoneyLabel.isUserInteractionEnabled = true
     }
     
-    func setKeyboardTapBinding(_ button : UIButton) {
-        switch button.tag {
-        case doneButtonTag:
-            customKeyboardResign()
-        case cancelButtonTag:
-            button.rx.tap
-                .observe(on: MainScheduler.instance)
-                .bind(to: viewModel.keyboardCancelTapObserver)
-                .disposed(by: disposeBag)
-        default:
-            button.rx.tap
-                .observe(on: MainScheduler.instance)
-                .map { String(button.tag) }
-                .bind(to: viewModel.keyboardNumberTapObserver)
-                .disposed(by: disposeBag)
-        }
-    }
-    
     // TODO: - Lagacy (바인딩으로 변경 필요)
     @objc func buttontapped() {
         let dateVC = DateToastView(viewModel: viewModel)
@@ -313,21 +255,7 @@ class CreateViewController: UIViewController {
         customKeyboardResign()
     }
     
-    func customKeyboardResign() {
-        keyboardBottomAnchor.constant = keyboardHeight
-        UIView.animate(withDuration: 0.2) { [weak self] in
-            guard let self = self else { return }
-            view.layoutIfNeeded()
-        }
-    }
     
-    func customKeyboardBecome() {
-        keyboardBottomAnchor.constant = 0
-        UIView.animate(withDuration: 0.2) { [weak self] in
-            guard let self = self else { return }
-            view.layoutIfNeeded()
-        }
-    }
     
     func setLayout() {
         navigationController?.navigationBar.backgroundColor = .white
@@ -543,5 +471,91 @@ class CreateViewController: UIViewController {
                 
                 ToastManager.shared.showToast(message: errorMessage)
             }.disposed(by: disposeBag)
+    }
+}
+
+
+
+
+// MARK: - Custom Keyboard Method
+private extension CreateViewController {
+    func customKeyboardResign() {
+        keyboardBottomAnchor.constant = keyboardHeight
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            guard let self = self else { return }
+            view.layoutIfNeeded()
+        }
+    }
+    
+    func customKeyboardBecome() {
+        keyboardBottomAnchor.constant = 0
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            guard let self = self else { return }
+            view.layoutIfNeeded()
+        }
+    }
+    
+    // MARK: - KeyBoardView에 들어갈 StackView의 버튼 생성
+    func createKeyboardButton(num : Int) -> UIButton {
+        switch num {
+        case doneButtonTag:
+            lazy var button : UIButton = {
+                let b = UIButton()
+                b.translatesAutoresizingMaskIntoConstraints = false
+                b.setImage(UIImage(named: "DateImage"), for: .normal)
+                b.backgroundColor = .white
+                b.tag = num
+                setKeyboardTapBinding(b)
+                return b
+            }()
+            return button
+        case cancelButtonTag:
+            lazy var button : UIButton = {
+                let b = UIButton()
+                b.translatesAutoresizingMaskIntoConstraints = false
+                b.setImage(UIImage(named: "DateImage"), for: .normal)
+                b.backgroundColor = .white
+                b.tag = num
+                setKeyboardTapBinding(b)
+                return b
+            }()
+            return button
+        default:
+            lazy var button : UIButton = {
+                let b = UIButton()
+                b.translatesAutoresizingMaskIntoConstraints = false
+                b.titleLabel?.textAlignment = .center
+                b.setTitleColor(.blackColor, for: .normal)
+                b.setTitle(String(num), for: .normal)
+                b.backgroundColor = .white
+                b.tag = num
+                b.titleLabel?.font = UIFont(size: 18)
+                setKeyboardTapBinding(b)
+                return b
+            }()
+            return button
+        }
+    }
+    
+    func setKeyboardTapBinding(_ button : UIButton) {
+        switch button.tag {
+        case doneButtonTag:
+            button.rx.tap
+                .subscribe { [weak self] _ in
+                    guard let self = self else { return }
+                    customKeyboardResign()
+                }.disposed(by: disposeBag)
+        case cancelButtonTag:
+            button.rx.tap
+                .observe(on: MainScheduler.instance)
+                .bind(to: viewModel.keyboardCancelTapObserver)
+                .disposed(by: disposeBag)
+        default:
+            button.rx.tap
+                .observe(on: MainScheduler.instance)
+                .map { String(button.tag) }
+                .bind(to: viewModel.keyboardNumberTapObserver)
+                .disposed(by: disposeBag)
+        }
     }
 }
