@@ -145,6 +145,67 @@ class CreateViewController: UIViewController {
         return cv
     }()
     
+    let keyboardView : UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = .black
+        return v
+    }()
+    
+    lazy var keyboardStackView : UIStackView = {
+        let sv = UIStackView()
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        let firstSV : UIStackView = createHorizonStackView(arr : [1, 2, 3])
+        let secondSV : UIStackView = createHorizonStackView(arr : [4, 5, 6])
+        let thirdSV : UIStackView = createHorizonStackView(arr : [7, 8, 9])
+        let fourthSV : UIStackView = createHorizonStackView(arr: [nil, 0, nil])
+        [firstSV, secondSV, thirdSV, fourthSV].forEach { sv.addArrangedSubview($0)}
+        sv.axis = .vertical
+        sv.spacing = 0
+        sv.alignment = .fill
+        sv.distribution = .fillEqually
+        return sv
+    }()
+    
+    func createHorizonStackView(arr : [Int?]) -> UIStackView {
+        lazy var stackView : UIStackView = {
+            let sv = UIStackView()
+            arr.forEach { sv.addArrangedSubview(createNumberButton(num: $0)) }
+            sv.axis = .horizontal
+            sv.spacing = 0
+            sv.alignment = .fill
+            sv.distribution = .fillEqually
+            return sv
+        }()
+        
+        return stackView
+    }
+    
+    // MARK: - KeyBoardView에 들어갈 StackView의 버튼 생성
+    func createNumberButton(num : Int?) -> UIButton {
+        guard let num = num else {
+            let b = UIButton()
+            b.translatesAutoresizingMaskIntoConstraints = false
+            b.backgroundColor = .white
+            return b
+        }
+        
+        let button : UIButton = {
+            let b = UIButton()
+            b.translatesAutoresizingMaskIntoConstraints = false
+            b.titleLabel?.textAlignment = .center
+            b.setTitleColor(.blackColor, for: .normal)
+            b.setTitle(String(num), for: .normal)
+            b.backgroundColor = .white
+            b.tag = num
+            b.titleLabel?.font = UIFont(size: 18)
+            return b
+        }()
+        
+        return button
+    }
+    
+    
     // MARK: - Initializer
     init(viewModel: CreateViewModelInterface) {
         self.viewModel = viewModel
@@ -192,7 +253,6 @@ class CreateViewController: UIViewController {
         addChild(dateVC)
         view.addSubview(dateVC.view)
         dateVC.didMove(toParent: self)
-        
         dateVC.view.frame = view.bounds
     }
     
@@ -205,16 +265,26 @@ class CreateViewController: UIViewController {
     
     // MARK: - KeyBoard 활성화
     @objc func typeLabelClicked() {
-        typeHiddenTextField.becomeFirstResponder()
+        //typeHiddenTextField.becomeFirstResponder()
+        
+        keyboardBottomAnchor.constant -= keyboardHeight
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
     }
     
     @objc func inputMoneyClicked() {
         inputMoneyHiddenTextField.becomeFirstResponder()
     }
     
+    // MARK: - outLine (지출, 수입) 선택 애니메이션
     lazy var outLineViewLeadingAnchor = outLineView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
-    
     lazy var outLineViewTrailingAnchor = outLineView.trailingAnchor.constraint(equalTo: self.expendButton.trailingAnchor)
+    
+    // MARK: - keyboardView 애니메이션
+    lazy var keyboardHeight : CGFloat = 450
+    lazy var keyboardBottomAnchor = keyboardView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: keyboardHeight)
+    
 
     func setLayout() {
         navigationController?.navigationBar.backgroundColor = .white
@@ -233,6 +303,9 @@ class CreateViewController: UIViewController {
         view.addSubview(inputMoneyHiddenTextField)
         view.addSubview(iconConstLabel)
         view.addSubview(iconCollectionView)
+        view.addSubview(keyboardView)
+        
+        keyboardView.addSubview(keyboardStackView)
         
         NSLayoutConstraint.activate([
             // MARK: - 지출 수입 버튼 Layout
@@ -284,6 +357,16 @@ class CreateViewController: UIViewController {
             iconCollectionView.topAnchor.constraint(equalTo: self.iconConstLabel.bottomAnchor, constant: 10),
             iconCollectionView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
             
+            // MARK: - keyboardView Layout
+            keyboardView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            keyboardView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            keyboardView.heightAnchor.constraint(equalToConstant: keyboardHeight),
+            keyboardBottomAnchor,
+            
+            keyboardStackView.leadingAnchor.constraint(equalTo: self.keyboardView.leadingAnchor),
+            keyboardStackView.trailingAnchor.constraint(equalTo: self.keyboardView.trailingAnchor),
+            keyboardStackView.topAnchor.constraint(equalTo: self.keyboardView.topAnchor),
+            keyboardStackView.bottomAnchor.constraint(equalTo: self.keyboardView.bottomAnchor),
         ])
     }
     
