@@ -17,6 +17,8 @@ protocol CreateViewModelInterface {
     var stringDateObserver : AnyObserver<String> { get }
     var stringTypeObserver : AnyObserver<String> { get }
     var inputMoneyObserver : AnyObserver<String> { get }
+    var keyboardNumberTapObserver : AnyObserver<String> { get }
+    var keyboardCancelTapObserver : AnyObserver<Void> { get }
     var selectedCellIndexObserver : AnyObserver<Int> { get }
     
     var dataObservable : Observable<[CreateCellIcon]> { get }
@@ -35,9 +37,9 @@ class CreateViewModel : CreateViewModelInterface {
     // TODO: - ViewModel에서 Create로 만들어진 구조체가 있어야 함.
     // TODO: - 구조체를 통해서 Realm 에 Create를 진행해야 함.
     
+    var inputMoney : String = ""
     var dateString : String?
     var typeString : String?
-    var inputMoney : String?
     var iconImage : UIImage?
     var createType : CreateType = .expend
     
@@ -50,6 +52,8 @@ class CreateViewModel : CreateViewModelInterface {
     var inputMoneySubject : BehaviorSubject<String>
     var selectedCellIndexSubject : BehaviorSubject<Int>
     var completeButtonSubject : PublishSubject<Void>
+    var keyboardNumberTapSubject : PublishSubject<String>
+    var keyboardCancelTapSubject : PublishSubject<Void>
     
     var dataSubject : BehaviorSubject<[CreateCellIcon]>
     var errorSubject : PublishSubject<CreateError>
@@ -61,6 +65,8 @@ class CreateViewModel : CreateViewModelInterface {
     var inputMoneyObserver: AnyObserver<String>
     var selectedCellIndexObserver: AnyObserver<Int>
     var completeButtonObserver: AnyObserver<Void>
+    var keyboardNumberTapObserver: AnyObserver<String>
+    var keyboardCancelTapObserver: AnyObserver<Void>
     
     var dataObservable: Observable<[CreateCellIcon]>
     var stringDateObservable: Observable<String>
@@ -91,6 +97,8 @@ class CreateViewModel : CreateViewModelInterface {
         inputMoneySubject = BehaviorSubject<String>(value: "")
         selectedCellIndexSubject = BehaviorSubject<Int>(value: 0)
         completeButtonSubject = PublishSubject<Void>()
+        keyboardNumberTapSubject = PublishSubject<String>()
+        keyboardCancelTapSubject = PublishSubject<Void>()
         errorSubject = PublishSubject<CreateError>()
         
         dataSubject = BehaviorSubject<[CreateCellIcon]>(value: repository.readDataForCreateCell(of: createType, selectedIndex: 0))
@@ -103,6 +111,8 @@ class CreateViewModel : CreateViewModelInterface {
         inputMoneyObserver = inputMoneySubject.asObserver()
         selectedCellIndexObserver = selectedCellIndexSubject.asObserver()
         completeButtonObserver = completeButtonSubject.asObserver()
+        keyboardNumberTapObserver = keyboardNumberTapSubject.asObserver()
+        keyboardCancelTapObserver = keyboardCancelTapSubject.asObserver()
         
         dataObservable = dataSubject
         stringDateObservable = stringDateSubject
@@ -116,32 +126,41 @@ class CreateViewModel : CreateViewModelInterface {
             self?.delegate?.popCreateVC()
         }.disposed(by: disposeBag)
         
+        // MARK: - 저장버튼과의 바인딩 (예외 처리)
         completeButtonSubject.subscribe { [weak self] _ in
             guard let self = self else { return }
             
-            guard let dateString = dateString, let inputMoney = inputMoney else { return }
+            guard let dateString = dateString else { return }
             
-            if dateString.split(separator: "년").count > 1 {
+            guard dateString.split(separator: "년").count <= 1 else {
                 errorSubject.onNext(.noneSetDate)
+                return
             }
-            else if inputMoney == "0원" {
+            // TODO: - 조건 수정
+            guard let money = Int(inputMoney), money > 0 else {
+                // TODO: - Money 값이 초과됐어.
                 errorSubject.onNext(.zeroInputMoney)
+                return
             }
-            else {
-                // MARK: - Realm 디비 저장
-                guard let typeString = typeString else { return }
-                guard let realm = try? Realm() else {
-                    return
-                }
-                
-                let userDB = UserDB(createType: createType, moneyAmount: inputMoney.toAmount(with: createType), iconImageType: .date, typeString: typeString, dateString: dateString)
-                
-                try! realm.write {
-                    realm.add(userDB)
-                }
-                
-                self.delegate?.popCreateVC()
+            
+            // MARK: - Realm 디비 저장
+            guard let typeString = typeString else {
+                // TODO: - 타입이 너무 길어.
+                return
             }
+            
+            guard let realm = try? Realm() else {
+                errorSubject.onNext(.dataBaseError)
+                return
+            }
+            
+            let userDB = UserDB(createType: createType, moneyAmount: inputMoney.toAmount(with: createType), iconImageType: .date, typeString: typeString, dateString: dateString)
+            
+            try! realm.write {
+                realm.add(userDB)
+            }
+            
+            self.delegate?.popCreateVC()
         }.disposed(by: disposeBag)
         
         // MARK: - CreateCell Icon 과 지출, 수입 버튼의 바인딩
@@ -174,10 +193,36 @@ class CreateViewModel : CreateViewModelInterface {
             self.typeString = stringType
         }.disposed(by: disposeBag)
         
-        // MARK: - 금액 클릭시에 ViewModel이 가지는 inputMoney과의 바인딩
-        inputMoneyObservable.subscribe { [weak self] inputMoney in
-            guard let self = self, let inputMoney = inputMoney.element else { return }
-            self.inputMoney = inputMoney
+        // MARK: - Custom KeyBoard 숫자 탭과의 바인딩
+        keyboardNumberTapSubject.subscribe { [weak self] tappedNumber in
+            guard let self = self, let number = tappedNumber.element else { return }
+            plusInputMoney(number)
+            inputMoneySubject.onNext(getInputMoney())
+            print(getInputMoney())
         }.disposed(by: disposeBag)
+        
+        // MARK: - Custom KeyBoard 취소 탭과의 바인딩
+        keyboardCancelTapSubject.subscribe { [weak self] _ in
+            guard let self = self else { return }
+            minusInputMoney()
+            inputMoneySubject.onNext(getInputMoney())
+            print(getInputMoney())
+        }.disposed(by: disposeBag)
+    }
+}
+
+extension CreateViewModel {
+    // MARK: - InputMoney 조정
+    func getInputMoney() -> String {
+        return inputMoney
+    }
+    
+    func plusInputMoney(_ num : String) {
+        inputMoney = "\(inputMoney)\(num)"
+    }
+    
+    func minusInputMoney() {
+        guard let money = Int(inputMoney) else { return }
+        inputMoney = String(money / 10)
     }
 }
