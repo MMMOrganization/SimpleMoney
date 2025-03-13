@@ -126,34 +126,41 @@ class CreateViewModel : CreateViewModelInterface {
             self?.delegate?.popCreateVC()
         }.disposed(by: disposeBag)
         
-        // MARK: - 저장버튼과의 바인딩 (예외 철)
+        // MARK: - 저장버튼과의 바인딩 (예외 처리)
         completeButtonSubject.subscribe { [weak self] _ in
             guard let self = self else { return }
             
             guard let dateString = dateString else { return }
             
-            if dateString.split(separator: "년").count > 1 {
+            guard dateString.split(separator: "년").count <= 1 else {
                 errorSubject.onNext(.noneSetDate)
+                return
             }
             // TODO: - 조건 수정
-            else if inputMoney == "0원" {
+            guard let money = Int(inputMoney), money > 0 else {
+                // TODO: - Money 값이 초과됐어.
                 errorSubject.onNext(.zeroInputMoney)
+                return
             }
-            else {
-                // MARK: - Realm 디비 저장
-                guard let typeString = typeString else { return }
-                guard let realm = try? Realm() else {
-                    return
-                }
-                
-                let userDB = UserDB(createType: createType, moneyAmount: inputMoney.toAmount(with: createType), iconImageType: .date, typeString: typeString, dateString: dateString)
-                
-                try! realm.write {
-                    realm.add(userDB)
-                }
-                
-                self.delegate?.popCreateVC()
+            
+            // MARK: - Realm 디비 저장
+            guard let typeString = typeString else {
+                // TODO: - 타입이 너무 길어.
+                return
             }
+            
+            guard let realm = try? Realm() else {
+                errorSubject.onNext(.dataBaseError)
+                return
+            }
+            
+            let userDB = UserDB(createType: createType, moneyAmount: inputMoney.toAmount(with: createType), iconImageType: .date, typeString: typeString, dateString: dateString)
+            
+            try! realm.write {
+                realm.add(userDB)
+            }
+            
+            self.delegate?.popCreateVC()
         }.disposed(by: disposeBag)
         
         // MARK: - CreateCell Icon 과 지출, 수입 버튼의 바인딩
@@ -191,6 +198,7 @@ class CreateViewModel : CreateViewModelInterface {
             guard let self = self, let number = tappedNumber.element else { return }
             plusInputMoney(number)
             inputMoneySubject.onNext(getInputMoney())
+            print(getInputMoney())
         }.disposed(by: disposeBag)
         
         // MARK: - Custom KeyBoard 취소 탭과의 바인딩
@@ -198,6 +206,7 @@ class CreateViewModel : CreateViewModelInterface {
             guard let self = self else { return }
             minusInputMoney()
             inputMoneySubject.onNext(getInputMoney())
+            print(getInputMoney())
         }.disposed(by: disposeBag)
     }
 }

@@ -124,14 +124,6 @@ class CreateViewController: UIViewController {
         return label
     }()
     
-    let inputMoneyHiddenTextField : UITextField = {
-        let tf = UITextField()
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.isHidden = true
-        tf.keyboardType = .numberPad
-        return tf
-    }()
-    
     let separatorLine : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -271,7 +263,6 @@ class CreateViewController: UIViewController {
         view.addSubview(typeLabel)
         view.addSubview(typeHiddenTextField)
         view.addSubview(inputMoneyLabel)
-        view.addSubview(inputMoneyHiddenTextField)
         view.addSubview(iconConstLabel)
         view.addSubview(iconCollectionView)
         view.addSubview(keyboardView)
@@ -313,10 +304,6 @@ class CreateViewController: UIViewController {
             // MARK: - inputMoneyLabel Layout
             inputMoneyLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             inputMoneyLabel.topAnchor.constraint(equalTo: self.typeLabel.bottomAnchor, constant: 15),
-            
-            // MARK: - inputMoneyHiddenTextField Layout
-            inputMoneyHiddenTextField.centerXAnchor.constraint(equalTo: self.inputMoneyLabel.centerXAnchor),
-            inputMoneyHiddenTextField.topAnchor.constraint(equalTo: self.inputMoneyLabel.topAnchor),
             
             // MARK: - iconConstLabel Layout
             iconConstLabel.topAnchor.constraint(equalTo: self.inputMoneyLabel.bottomAnchor, constant: 20),
