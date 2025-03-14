@@ -17,8 +17,12 @@ class GraphViewController: UIViewController {
     var disposeBag : DisposeBag = DisposeBag()
     var viewModel : GraphViewModelInterface!
     
-    let dataSource = RxTableViewSectionedAnimatedDataSource<SingleSectionModel>(configureCell: { _, tableView, indexPath, item in
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
+    lazy var toastMainViewHeight : CGFloat = 60
+    lazy var toastMainViewHeightAnchor = toastMainView.heightAnchor.constraint(equalToConstant: toastMainViewHeight)
+    lazy var toastMainViewBottomAnchor = toastMainView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: toastMainViewHeight)
+    
+    let dataSource = RxTableViewSectionedAnimatedDataSource<SingleSectionModel>(configureCell: { _, graphTableView, indexPath, item in
+        guard let cell = graphTableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
             return UITableViewCell()
         }
         cell.configure(item: item)
@@ -55,7 +59,7 @@ class GraphViewController: UIViewController {
     
     lazy var headerView : UIView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 300))
     
-    let tableView : UITableView = {
+    let graphTableView : UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
@@ -68,6 +72,48 @@ class GraphViewController: UIViewController {
         b.titleLabel?.font = UIFont(size: 14.0)
         return b
     }()
+    
+    // MARK: - Toast View
+    let toastMainView : UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = .white
+        v.clipsToBounds = true
+        v.layer.cornerRadius = 20
+        return v
+    }()
+    
+    lazy var toastHeaderStackView : UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [toastHeaderLabel, toastHeaderButton])
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.axis = .horizontal
+        sv.distribution = .fill
+        sv.alignment = .fill
+        return sv
+    }()
+    
+    let toastHeaderLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .blackColor
+        label.font = UIFont(size: 18.0)
+        label.text = "월 선택하기"
+        return label
+    }()
+    
+    let toastHeaderButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(named: "following"), for: .normal)
+        return button
+    }()
+    
+    let toastTableView : UITableView = {
+        let tv = UITableView()
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        return tv
+    }()
+    
     
     init(viewModel : GraphViewModelInterface) {
         self.viewModel = viewModel
@@ -87,6 +133,12 @@ class GraphViewController: UIViewController {
         setAnimate()
         setLayout()
         setReactive()
+        setToastReactive()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        resignToastView()
     }
     
     func setNavigationController() {
@@ -98,13 +150,19 @@ class GraphViewController: UIViewController {
         pieChartView.delegate = self
         
         buttonCollectionView.dataSource = nil
-        tableView.dataSource = nil
         
-        tableView.rowHeight = 65
-        tableView.separatorStyle = .none
+        graphTableView.rowHeight = 65
+        graphTableView.separatorStyle = .none
+        graphTableView.dataSource = nil
+        
+        toastTableView.rowHeight = 50
+        toastTableView.separatorStyle = .none
+        
+        toastTableView.dataSource = nil
         
         buttonCollectionView.register(TypeButtonCVCell.self, forCellWithReuseIdentifier: TypeButtonCVCell.identifier)
-        tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
+        graphTableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
+        toastTableView.register(DateTableViewCell.self, forCellReuseIdentifier: DateTableViewCell.identifier)
     }
     
     func setAnimate() {
@@ -113,12 +171,19 @@ class GraphViewController: UIViewController {
         )
     }
     
+    
+    
     func setLayout() {
         self.view.backgroundColor = .white
         
         headerView.addSubview(pieChartView)
         self.view.addSubview(buttonCollectionView)
-        self.view.addSubview(tableView)
+        self.view.addSubview(graphTableView)
+        
+        self.view.addSubview(toastMainView)
+        
+        toastMainView.addSubview(toastHeaderStackView)
+        toastMainView.addSubview(toastTableView)
         
         NSLayoutConstraint.activate([
             buttonCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
@@ -131,15 +196,40 @@ class GraphViewController: UIViewController {
             pieChartView.topAnchor.constraint(equalTo: self.headerView.topAnchor),
             pieChartView.heightAnchor.constraint(equalToConstant: 300),
             
-            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
-            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
-            tableView.topAnchor.constraint(equalTo: self.buttonCollectionView.bottomAnchor, constant: 10),
-            tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            graphTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
+            graphTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
+            graphTableView.topAnchor.constraint(equalTo: self.buttonCollectionView.bottomAnchor, constant: 10),
+            graphTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
         ])
         
-        tableView.tableHeaderView = headerView
+        graphTableView.tableHeaderView = headerView
+        
+        // MARK: - ToastView Layout
+        NSLayoutConstraint.activate([
+            toastMainView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 15),
+            toastMainView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -15),
+            
+            toastMainViewHeightAnchor,
+            toastMainViewBottomAnchor,
+            
+            toastHeaderStackView.leadingAnchor.constraint(equalTo: self.toastMainView.leadingAnchor, constant: 15),
+            toastHeaderStackView.trailingAnchor.constraint(equalTo: self.toastMainView.trailingAnchor),
+            toastHeaderStackView.topAnchor.constraint(equalTo: self.toastMainView.topAnchor),
+            toastHeaderStackView.heightAnchor.constraint(equalToConstant: 55),
+            
+            toastHeaderLabel.leadingAnchor.constraint(equalTo: self.toastHeaderStackView.leadingAnchor),
+            toastHeaderLabel.centerYAnchor.constraint(equalTo: self.toastHeaderStackView.centerYAnchor),
+            
+            toastHeaderButton.trailingAnchor.constraint(equalTo: self.toastHeaderStackView.trailingAnchor),
+            toastHeaderButton.centerYAnchor.constraint(equalTo: self.toastHeaderStackView.centerYAnchor),
+            toastHeaderButton.widthAnchor.constraint(equalToConstant: 30),
+            
+            toastTableView.leadingAnchor.constraint(equalTo: self.toastMainView.leadingAnchor),
+            toastTableView.trailingAnchor.constraint(equalTo: self.toastMainView.trailingAnchor),
+            toastTableView.topAnchor.constraint(equalTo: self.toastHeaderStackView.bottomAnchor),
+            toastTableView.bottomAnchor.constraint(equalTo: self.toastMainView.bottomAnchor),
+        ])
     }
-    
     
     func setReactive() {
         // MARK: - Coordinator 화면 전환 바인딩
@@ -152,7 +242,7 @@ class GraphViewController: UIViewController {
         viewModel.entityDataObservable
             .observe(on: MainScheduler.instance)
             .map { [SingleSectionModel(items: $0)] }
-            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .bind(to: graphTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
         // MARK: - Button 타입 라벨 바인딩
@@ -181,13 +271,65 @@ class GraphViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .subscribe { [weak self] _ in
                 guard let self = self else { return }
-                let toastVC = graphDateToastView(viewModel: viewModel)
-                addChild(toastVC)
-                view.addSubview(toastVC.view)
-                toastVC.didMove(toParent: self)
+                becomeToastView()
+            }.disposed(by: disposeBag)
+    }
+    
+    
+}
+
+// MARK: - ToastView
+extension GraphViewController {
+    func becomeToastView() {
+        toastMainViewHeight = (toastTableView.contentSize.height + toastHeaderStackView.frame.height) <= 400 ? (toastTableView.contentSize.height + toastHeaderStackView.frame.height) : 400
+        
+        toastMainViewHeightAnchor.constant = toastMainViewHeight
+        toastMainViewBottomAnchor.constant = -10
+        
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            guard let self = self else { return }
+            view.layoutIfNeeded()
+        }
+    }
+    
+    func resignToastView() {
+        self.toastMainViewBottomAnchor.constant = toastMainViewHeight
+        
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            guard let self = self else { return }
+            view.layoutIfNeeded()
+        }
+    }
+    
+    func setToastReactive() {
+        // MARK: - DateList Cell 바인딩
+        viewModel.dateListObservable
+            .observe(on: MainScheduler.instance)
+            .bind(to: toastTableView.rx.items(cellIdentifier: DateTableViewCell.identifier, cellType: DateTableViewCell.self)) { (index, item, cell) in
+                cell.configure(dateStr: item)
+            }.disposed(by: disposeBag)
+        
+        // MARK: - Dismiss 버튼 탭 바인딩
+        toastHeaderButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                resignToastView()
+            }.disposed(by: disposeBag)
+        
+        // MARK: - Cell Index 클릭 바인딩
+        toastTableView.rx.itemSelected
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] indexPath in
+                guard let self = self else { return }
+                guard let indexPath = indexPath.element else { return }
+                guard let cellData = toastTableView.cellForRow(at: indexPath) as? DateTableViewCell, let dateStr = cellData.dateLabel.text else { return }
+                resignToastView()
+                viewModel.selectDateObserver.onNext(dateStr)
             }.disposed(by: disposeBag)
     }
 }
+
 
 // MARK: - ChartViewDelegate
 extension GraphViewController : ChartViewDelegate {

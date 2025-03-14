@@ -26,8 +26,9 @@ class CreateViewController: UIViewController {
     lazy var keyboardBottomAnchor = keyboardView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: keyboardHeight)
     
     // MARK: - Gesture 설정
-    lazy var typeTapGesture : UITapGestureRecognizer = UITapGestureRecognizer()
-    lazy var inputMoneyTapGesture : UITapGestureRecognizer = UITapGestureRecognizer()
+    lazy var typeTapGesture = UITapGestureRecognizer()
+    lazy var inputMoneyTapGesture = UITapGestureRecognizer()
+    lazy var iconCVTapGesture = UITapGestureRecognizer()
     
     
     // MARK: - 각종 Layout에 적용될 View
@@ -142,7 +143,6 @@ class CreateViewController: UIViewController {
     
     let iconCollectionView : UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
-        //let tempWidth = (UIScreen.main.bounds.width - 15 * 3) / 4
         
         flowLayout.scrollDirection = .vertical
         flowLayout.itemSize = CGSize(width: 70, height: 70)
@@ -190,8 +190,6 @@ class CreateViewController: UIViewController {
         return stackView
     }
     
-    
-    
     // MARK: - Initializer
     init(viewModel: CreateViewModelInterface) {
         self.viewModel = viewModel
@@ -229,6 +227,16 @@ class CreateViewController: UIViewController {
         
         inputMoneyLabel.addGestureRecognizer(inputMoneyTapGesture)
         inputMoneyLabel.isUserInteractionEnabled = true
+        
+        // 중요: 다른 터치 이벤트 영향 안주게 설정
+        iconCVTapGesture.cancelsTouchesInView = false
+        iconCollectionView.addGestureRecognizer(iconCVTapGesture)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        typeHiddenTextField.resignFirstResponder()
+        customKeyboardResign()
     }
     
     // TODO: - Lagacy (바인딩으로 변경 필요)
@@ -239,15 +247,6 @@ class CreateViewController: UIViewController {
         dateVC.didMove(toParent: self)
         dateVC.view.frame = view.bounds
     }
-    
-    // MARK: - KeyBoard 비활성화
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        typeHiddenTextField.resignFirstResponder()
-        customKeyboardResign()
-    }
-    
-    
     
     func setLayout() {
         navigationController?.navigationBar.backgroundColor = .white
@@ -348,6 +347,13 @@ class CreateViewController: UIViewController {
                 customKeyboardBecome()
             }.disposed(by: disposeBag)
         
+        iconCVTapGesture.rx.event
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                customKeyboardResign()
+                typeHiddenTextField.resignFirstResponder()
+            }.disposed(by: disposeBag)
+        
         // MARK: - SaveButton 바인딩
         saveButton.rx.tap
             .observe(on: MainScheduler.instance)
@@ -409,29 +415,17 @@ class CreateViewController: UIViewController {
         // MARK: - 지출, 수입 타입 바인딩
         typeHiddenTextField.rx.text
             .observe(on: MainScheduler.instance)
-            .map {
-                guard let text = $0 else { return "" }
-                return text.isEmpty ? "타입을 입력해주세요." : text
-            }
-            .bind(to: viewModel.stringTypeObserver)
-            .disposed(by: disposeBag)
-        
-        // TODO: - text가 입력이 될 때 클리어하기
-        typeHiddenTextField.rx.controlEvent(.editingDidBegin)
-            .map { [weak self] _ in
+            .map { [weak self] in
                 guard let self = self else { return "" }
-                typeHiddenTextField.text = ""
-                return ""
+                if ((0...12) ~= (typeHiddenTextField.text?.count ?? 0)) {
+                    return $0 ?? ""
+                }
+                else {
+                    typeHiddenTextField.text = (typeHiddenTextField.text ?? "").map { String($0) }[0..<12].joined()
+                    return $0 ?? ""
+                }
             }
-            .bind(to: viewModel.stringTypeObserver)
-            .disposed(by: disposeBag)
-        
-        typeHiddenTextField.rx.controlEvent(.editingDidEnd)
-            .map { [weak self] _ in
-                guard let self = self else { return "" }
-                guard let text = typeHiddenTextField.text else { return "" }
-                return text.isEmpty ? "타입을 입력해주세요." : text
-            }.bind(to: viewModel.stringTypeObserver)
+            .bind(to: viewModel.keyboardTypeTapObserver)
             .disposed(by: disposeBag)
         
         viewModel.stringTypeObservable
@@ -464,7 +458,7 @@ class CreateViewController: UIViewController {
 
 
 
-// MARK: - Custom Keyboard Method
+// MARK: - Custom Keyboard, KeyBoard Method
 private extension CreateViewController {
     func customKeyboardResign() {
         keyboardBottomAnchor.constant = keyboardHeight
@@ -545,4 +539,8 @@ private extension CreateViewController {
                 .disposed(by: disposeBag)
         }
     }
+}
+
+extension CreateViewController : UITextFieldDelegate {
+    
 }

@@ -17,6 +17,7 @@ protocol CreateViewModelInterface {
     var stringDateObserver : AnyObserver<String> { get }
     var stringTypeObserver : AnyObserver<String> { get }
     var inputMoneyObserver : AnyObserver<String> { get }
+    var keyboardTypeTapObserver : AnyObserver<String> { get }
     var keyboardNumberTapObserver : AnyObserver<String> { get }
     var keyboardCancelTapObserver : AnyObserver<Void> { get }
     var selectedCellIndexObserver : AnyObserver<Int> { get }
@@ -52,6 +53,7 @@ class CreateViewModel : CreateViewModelInterface {
     var inputMoneySubject : BehaviorSubject<String>
     var selectedCellIndexSubject : BehaviorSubject<Int>
     var completeButtonSubject : PublishSubject<Void>
+    var keyboardTypeTapSubject : PublishSubject<String>
     var keyboardNumberTapSubject : PublishSubject<String>
     var keyboardCancelTapSubject : PublishSubject<Void>
     
@@ -65,6 +67,7 @@ class CreateViewModel : CreateViewModelInterface {
     var inputMoneyObserver: AnyObserver<String>
     var selectedCellIndexObserver: AnyObserver<Int>
     var completeButtonObserver: AnyObserver<Void>
+    var keyboardTypeTapObserver: AnyObserver<String>
     var keyboardNumberTapObserver: AnyObserver<String>
     var keyboardCancelTapObserver: AnyObserver<Void>
     
@@ -93,10 +96,11 @@ class CreateViewModel : CreateViewModelInterface {
         dismissButtonSubject = PublishSubject<Void>()
         createTypeSubject = BehaviorSubject<CreateType>(value: .expend)
         stringDateSubject = BehaviorSubject<String>(value: repository.readDate())
-        stringTypeSubject = BehaviorSubject<String>(value: "타입을 입력해주세요.")
+        stringTypeSubject = BehaviorSubject<String>(value: "기타")
         inputMoneySubject = BehaviorSubject<String>(value: "")
         selectedCellIndexSubject = BehaviorSubject<Int>(value: 0)
         completeButtonSubject = PublishSubject<Void>()
+        keyboardTypeTapSubject = PublishSubject<String>()
         keyboardNumberTapSubject = PublishSubject<String>()
         keyboardCancelTapSubject = PublishSubject<Void>()
         errorSubject = PublishSubject<CreateError>()
@@ -111,6 +115,7 @@ class CreateViewModel : CreateViewModelInterface {
         inputMoneyObserver = inputMoneySubject.asObserver()
         selectedCellIndexObserver = selectedCellIndexSubject.asObserver()
         completeButtonObserver = completeButtonSubject.asObserver()
+        keyboardTypeTapObserver = keyboardTypeTapSubject.asObserver()
         keyboardNumberTapObserver = keyboardNumberTapSubject.asObserver()
         keyboardCancelTapObserver = keyboardCancelTapSubject.asObserver()
         
@@ -136,16 +141,14 @@ class CreateViewModel : CreateViewModelInterface {
                 errorSubject.onNext(.noneSetDate)
                 return
             }
-            // TODO: - 조건 수정
+            
             guard let money = Int(inputMoney), money > 0 else {
-                // TODO: - Money 값이 초과됐어.
                 errorSubject.onNext(.zeroInputMoney)
                 return
             }
             
             // MARK: - Realm 디비 저장
             guard let typeString = typeString else {
-                // TODO: - 타입이 너무 길어.
                 return
             }
             
@@ -187,15 +190,36 @@ class CreateViewModel : CreateViewModelInterface {
         }.disposed(by: disposeBag)
         
         // MARK: - 타입 클릭시에 ViewModel이 가지는 typeLabel과의 바인딩
-        stringTypeSubject.subscribe { [weak self] stringType in
+        keyboardTypeTapSubject.subscribe { [weak self] stringType in
             guard let self = self, let stringType = stringType.element else { return }
+            
             print(stringType)
-            self.typeString = stringType
+            
+            guard stringType != "" else {
+                stringTypeSubject.onNext("기타")
+                return
+            }
+            
+            guard (0...12) ~= stringType.count else {
+                return
+            }
+        
+            guard !(getTypeString().isEmpty && stringType == " ") else {
+                return
+            }
+            
+            setTypeString(stringType)
+            stringTypeSubject.onNext(getTypeString())
         }.disposed(by: disposeBag)
         
         // MARK: - Custom KeyBoard 숫자 탭과의 바인딩
         keyboardNumberTapSubject.subscribe { [weak self] tappedNumber in
             guard let self = self, let number = tappedNumber.element else { return }
+            
+            guard (0...10) ~= getInputMoney().count else {
+                return
+            }
+            
             plusInputMoney(number)
             inputMoneySubject.onNext(getInputMoney())
             print(getInputMoney())
@@ -204,9 +228,9 @@ class CreateViewModel : CreateViewModelInterface {
         // MARK: - Custom KeyBoard 취소 탭과의 바인딩
         keyboardCancelTapSubject.subscribe { [weak self] _ in
             guard let self = self else { return }
+            
             minusInputMoney()
             inputMoneySubject.onNext(getInputMoney())
-            print(getInputMoney())
         }.disposed(by: disposeBag)
     }
 }
@@ -217,12 +241,22 @@ extension CreateViewModel {
         return inputMoney
     }
     
+    func getTypeString() -> String {
+        return typeString ?? ""
+    }
+    
     func plusInputMoney(_ num : String) {
-        inputMoney = "\(inputMoney)\(num)"
+        //0을 계속 클릭하면 000000.. 하고 계속 늘어나는 것을 막기 위해
+        guard let inputMoneyAmount = Int("\(inputMoney)\(num)") else { return }
+        self.inputMoney = String(inputMoneyAmount)
     }
     
     func minusInputMoney() {
         guard let money = Int(inputMoney) else { return }
         inputMoney = String(money / 10)
+    }
+    
+    func setTypeString(_ typeName : String) {
+        self.typeString = typeName
     }
 }
