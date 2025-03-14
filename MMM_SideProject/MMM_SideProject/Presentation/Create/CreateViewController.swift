@@ -415,7 +415,16 @@ class CreateViewController: UIViewController {
         // MARK: - 지출, 수입 타입 바인딩
         typeHiddenTextField.rx.text
             .observe(on: MainScheduler.instance)
-            .map { $0 ?? "" }
+            .map { [weak self] in
+                guard let self = self else { return "" }
+                if ((0...12) ~= (typeHiddenTextField.text?.count ?? 0)) {
+                    return $0 ?? ""
+                }
+                else {
+                    typeHiddenTextField.text = (typeHiddenTextField.text ?? "").map { String($0) }[0..<12].joined()
+                    return $0 ?? ""
+                }
+            }
             .bind(to: viewModel.keyboardTypeTapObserver)
             .disposed(by: disposeBag)
         

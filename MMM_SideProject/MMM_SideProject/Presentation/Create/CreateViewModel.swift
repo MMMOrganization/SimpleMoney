@@ -191,7 +191,9 @@ class CreateViewModel : CreateViewModelInterface {
         
         // MARK: - 타입 클릭시에 ViewModel이 가지는 typeLabel과의 바인딩
         keyboardTypeTapSubject.subscribe { [weak self] stringType in
-            guard let self = self, let stringType = stringType.element?.replacingOccurrences(of: " ", with: "") else { return }
+            guard let self = self, let stringType = stringType.element else { return }
+            
+            print(stringType)
             
             guard stringType != "" else {
                 stringTypeSubject.onNext("기타")
@@ -201,11 +203,10 @@ class CreateViewModel : CreateViewModelInterface {
             guard (0...12) ~= stringType.count else {
                 return
             }
-            
-            // TODO: 12글자 이상 막아버리기 (텍스트필드도 같이 막아야함.)
-            // TODO: 처음으로 공백문자 들어오면 막아버리기
-            
-            // (1) 해결방안 : 아에 TextField는 한글자보내고 초기화를 하고 typeString에서 상태관리하기.
+        
+            guard !(getTypeString().isEmpty && stringType == " ") else {
+                return
+            }
             
             setTypeString(stringType)
             stringTypeSubject.onNext(getTypeString())
