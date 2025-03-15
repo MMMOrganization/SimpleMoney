@@ -35,9 +35,6 @@ protocol CreateViewModelDelegate : AnyObject {
 
 class CreateViewModel : CreateViewModelInterface {
     
-    // TODO: - ViewModel에서 Create로 만들어진 구조체가 있어야 함.
-    // TODO: - 구조체를 통해서 Realm 에 Create를 진행해야 함.
-    
     var inputMoney : String = ""
     var dateString : String?
     var typeString : String?
@@ -193,14 +190,13 @@ class CreateViewModel : CreateViewModelInterface {
         keyboardTypeTapSubject.subscribe { [weak self] stringType in
             guard let self = self, let stringType = stringType.element else { return }
             
-            print(stringType)
-            
             guard stringType != "" else {
                 stringTypeSubject.onNext("기타")
+                setTypeString("기타")
                 return
             }
             
-            guard (0...12) ~= stringType.count else {
+            guard (0...8) ~= stringType.count else {
                 return
             }
         

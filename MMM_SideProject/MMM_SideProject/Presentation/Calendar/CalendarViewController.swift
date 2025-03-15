@@ -251,7 +251,6 @@ class CalendarViewController: UIViewController {
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
-        
         // MARK: - Calendar DayOfMonth Amount 바인딩
         viewModel.dailyAmountsObservable
             .observe(on: MainScheduler.instance)
