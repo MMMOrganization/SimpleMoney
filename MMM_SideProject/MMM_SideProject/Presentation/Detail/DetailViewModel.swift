@@ -13,8 +13,7 @@ protocol DetailViewModelInterface {
     var dateButtonObserver : AnyObserver<Void> { get }
     var plusButtonObserver : AnyObserver<Void> { get }
     var viewWillAppearObserver : AnyObserver<Void> { get }
-    var circleGraphButtonObserver : AnyObserver<GraphType> { get }
-    var barGraphButtonObserver : AnyObserver<GraphType> { get }
+    var graphButtonObserver : AnyObserver<Void> { get }
     
     var totalDataObserver : AnyObserver<ButtonType> { get }
     var incomeDataObserver : AnyObserver<ButtonType> { get }
@@ -45,8 +44,7 @@ class DetailViewModel : DetailViewModelInterface {
     var dateButtonSubject : PublishSubject<Void>
     var plusButtonSubject : PublishSubject<Void>
     var viewWillAppearSubject : PublishSubject<Void>
-    var circleGraphButtonSubject : PublishSubject<GraphType>
-    var barGraphButtonSubject : PublishSubject<GraphType>
+    var graphButtonSubject : PublishSubject<Void>
     var totalDataSubject : BehaviorSubject<ButtonType>
     var incomeDataSubject : PublishSubject<ButtonType>
     var expendDataSubject : PublishSubject<ButtonType>
@@ -65,8 +63,7 @@ class DetailViewModel : DetailViewModelInterface {
     var dateButtonObserver: AnyObserver<Void>
     var plusButtonObserver: AnyObserver<Void>
     var viewWillAppearObserver: AnyObserver<Void>
-    var circleGraphButtonObserver: AnyObserver<GraphType>
-    var barGraphButtonObserver: AnyObserver<GraphType>
+    var graphButtonObserver: AnyObserver<Void>
     var totalDataObserver: AnyObserver<ButtonType>
     var incomeDataObserver: AnyObserver<ButtonType>
     var expendDataObserver: AnyObserver<ButtonType>
@@ -112,8 +109,7 @@ class DetailViewModel : DetailViewModelInterface {
         dateButtonSubject = PublishSubject<Void>()
         plusButtonSubject = PublishSubject<Void>()
         viewWillAppearSubject = PublishSubject<Void>()
-        barGraphButtonSubject = PublishSubject<GraphType>()
-        circleGraphButtonSubject = PublishSubject<GraphType>()
+        graphButtonSubject = PublishSubject<Void>()
         totalDataSubject = BehaviorSubject<ButtonType>(value: .total)
         incomeDataSubject = PublishSubject<ButtonType>()
         expendDataSubject = PublishSubject<ButtonType>()
@@ -129,8 +125,7 @@ class DetailViewModel : DetailViewModelInterface {
         dateButtonObserver = dateButtonSubject.asObserver()
         plusButtonObserver = plusButtonSubject.asObserver()
         viewWillAppearObserver = viewWillAppearSubject.asObserver()
-        barGraphButtonObserver = barGraphButtonSubject.asObserver()
-        circleGraphButtonObserver = circleGraphButtonSubject.asObserver()
+        graphButtonObserver = graphButtonSubject.asObserver()
         totalDataObserver = totalDataSubject.asObserver()
         incomeDataObserver = incomeDataSubject.asObserver()
         expendDataObserver = expendDataSubject.asObserver()
@@ -156,13 +151,9 @@ class DetailViewModel : DetailViewModelInterface {
             self?.delegate?.pushCreateVC()
         }.disposed(by: disposeBag)
         
-        [circleGraphButtonSubject, barGraphButtonSubject].forEach {
-            $0.subscribe { graphType in
-                // TODO: - GraphType 뱉지 않도록.
-                guard let graphType = graphType.element else { return }
-                self.delegate?.pushGraphVC()
-            }.disposed(by: disposeBag)
-        }
+        graphButtonSubject.subscribe { [weak self] _ in
+            self?.delegate?.pushGraphVC()
+        }.disposed(by: disposeBag)
     }
     
     func setBind() {
@@ -211,3 +202,4 @@ class DetailViewModel : DetailViewModelInterface {
         }.disposed(by: disposeBag)
     }
 }
+

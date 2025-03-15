@@ -35,14 +35,7 @@ final class DetailViewController: UIViewController {
         return button
     }()
     
-    lazy var circleGraphBarButton : UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setImage(UIImage(named: "circleGraph"), for: .normal)
-        button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
-        return button
-    }()
-    
-    lazy var barGraphBarButton : UIButton = {
+    lazy var graphBarButton : UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
         button.setImage(UIImage(named: "barGraph"), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
@@ -50,8 +43,7 @@ final class DetailViewController: UIViewController {
     }()
     
     lazy var calendarBarButtonItem = UIBarButtonItem(customView : calendarBarButton)
-    lazy var circleGraphBarButtonItem = UIBarButtonItem(customView: circleGraphBarButton)
-    lazy var barGraphBarButtonItem = UIBarButtonItem(customView: barGraphBarButton)
+    lazy var graphBarButtonItem = UIBarButtonItem(customView: graphBarButton)
     
     let topView : UIView = {
         // 160 height
@@ -231,7 +223,7 @@ final class DetailViewController: UIViewController {
         navigationController?.navigationBar.standardAppearance
         navigationController?.isToolbarHidden = true
         navigationItem.rightBarButtonItem = calendarBarButtonItem
-        navigationItem.leftBarButtonItems = [circleGraphBarButtonItem, barGraphBarButtonItem]
+        navigationItem.leftBarButtonItem = graphBarButtonItem
         
         view.backgroundColor = .white
         
@@ -363,23 +355,14 @@ final class DetailViewController: UIViewController {
     }
     
     func setReactive() {
-        
         self.rx.viewWillAppear
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.viewWillAppearObserver)
             .disposed(by: disposeBag)
-        
-        // TODO: - BarGraph, OneGraph 화면 생성.
-        circleGraphBarButton.rx.tap
+
+        graphBarButton.rx.tap
             .observe(on: MainScheduler.instance)
-            .map { GraphType.circle }
-            .bind(to: viewModel.circleGraphButtonObserver)
-            .disposed(by: disposeBag)
-        
-        barGraphBarButton.rx.tap
-            .observe(on: MainScheduler.instance)
-            .map { GraphType.bar }
-            .bind(to: viewModel.barGraphButtonObserver)
+            .bind(to: viewModel.graphButtonObserver)
             .disposed(by: disposeBag)
         
         // MARK: - Coordinator 바인딩
