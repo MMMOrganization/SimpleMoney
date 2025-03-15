@@ -20,7 +20,7 @@ class ToastManager {
             // 토스트 컨테이너 생성
             let toastContainer = UIView()
             toastContainer.tag = 9999
-            toastContainer.backgroundColor = UIColor.mainColor.withAlphaComponent(0.4)
+            toastContainer.backgroundColor = UIColor.mainColor.withAlphaComponent(0.2)
             toastContainer.alpha = 0.0
             toastContainer.layer.cornerRadius = 15
             toastContainer.clipsToBounds = true
