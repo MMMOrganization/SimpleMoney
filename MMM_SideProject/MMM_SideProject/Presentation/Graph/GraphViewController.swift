@@ -31,8 +31,8 @@ class GraphViewController: UIViewController {
     })
     
     lazy var dismissButton : UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        let button = UIButton()
+        button.setImage(UIImage(named: "leftImage")?.resize(targetSize: CGSize(width: 25, height: 25)), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
     }()
@@ -49,7 +49,6 @@ class GraphViewController: UIViewController {
     let buttonCollectionView : UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
-        // TODO: - Content Size에 따라서 동적으로 ItemSize가 변해야 함.
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         flowLayout.minimumInteritemSpacing = 10
         flowLayout.minimumLineSpacing = 10
@@ -108,7 +107,7 @@ class GraphViewController: UIViewController {
     let toastHeaderButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "following"), for: .normal)
+        button.setImage(UIImage(named: "closeButton")?.resize(targetSize: CGSize(width: 20, height: 20)), for: .normal)
         return button
     }()
     
@@ -227,8 +226,7 @@ class GraphViewController: UIViewController {
             
             toastHeaderButton.trailingAnchor.constraint(equalTo: self.toastHeaderStackView.trailingAnchor),
             toastHeaderButton.centerYAnchor.constraint(equalTo: self.toastHeaderStackView.centerYAnchor),
-            toastHeaderButton.widthAnchor.constraint(equalToConstant: 30),
-            
+        
             toastTableView.leadingAnchor.constraint(equalTo: self.toastMainView.leadingAnchor),
             toastTableView.trailingAnchor.constraint(equalTo: self.toastMainView.trailingAnchor),
             toastTableView.topAnchor.constraint(equalTo: self.toastHeaderStackView.bottomAnchor),

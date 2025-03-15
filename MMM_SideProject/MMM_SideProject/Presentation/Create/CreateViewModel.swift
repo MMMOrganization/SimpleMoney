@@ -199,10 +199,6 @@ class CreateViewModel : CreateViewModelInterface {
             guard (0...8) ~= stringType.count else {
                 return
             }
-        
-            guard !(getTypeString().isEmpty && stringType == " ") else {
-                return
-            }
             
             setTypeString(stringType)
             stringTypeSubject.onNext(getTypeString())

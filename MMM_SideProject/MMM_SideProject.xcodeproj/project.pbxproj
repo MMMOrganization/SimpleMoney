@@ -11,6 +11,7 @@
 		2602BF0C2D7EB50B0002DECD /* DeleteToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602BF0B2D7EB50B0002DECD /* DeleteToast.swift */; };
 		2602BF102D7FFBB20002DECD /* DateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602BF0F2D7FFBB20002DECD /* DateTableViewCell.swift */; };
 		2602BF122D8162820002DECD /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602BF112D8162820002DECD /* UIViewController+Extension.swift */; };
+		2602BF352D855A530002DECD /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602BF342D855A530002DECD /* UIImage+Extension.swift */; };
 		267DD9CB2D211AF800F66CB8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9B52D211AF800F66CB8 /* Constants.swift */; };
 		267DD9CC2D211AF800F66CB8 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9B62D211AF800F66CB8 /* UIButton+Extension.swift */; };
 		267DD9CD2D211AF800F66CB8 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267DD9B72D211AF800F66CB8 /* UIColor+Extension.swift */; };
@@ -74,6 +75,7 @@
 		2602BF0B2D7EB50B0002DECD /* DeleteToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteToast.swift; sourceTree = "<group>"; };
 		2602BF0F2D7FFBB20002DECD /* DateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTableViewCell.swift; sourceTree = "<group>"; };
 		2602BF112D8162820002DECD /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
+		2602BF342D855A530002DECD /* UIImage+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
 		262F9AA12D09B75500AA7EA2 /* MMM_SideProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMM_SideProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		267DD9B52D211AF800F66CB8 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		267DD9B62D211AF800F66CB8 /* UIButton+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 				267DDB132D3B751100F66CB8 /* Int+Extension.swift */,
 				267DDB752D75CBE500F66CB8 /* String+Extension.swift */,
 				2602BF112D8162820002DECD /* UIViewController+Extension.swift */,
+				2602BF342D855A530002DECD /* UIImage+Extension.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -466,6 +469,7 @@
 				267DD9F52D29108C00F66CB8 /* CalendarTableViewCell.swift in Sources */,
 				267DD9CB2D211AF800F66CB8 /* Constants.swift in Sources */,
 				267DDAC42D33C92700F66CB8 /* DetailViewModel.swift in Sources */,
+				2602BF352D855A530002DECD /* UIImage+Extension.swift in Sources */,
 				267DDAF92D37EE6A00F66CB8 /* RepositoryInterFace.swift in Sources */,
 				267DD9DA2D211AF800F66CB8 /* SceneDelegate.swift in Sources */,
 				267DDAF72D3564E300F66CB8 /* Entity.swift in Sources */,

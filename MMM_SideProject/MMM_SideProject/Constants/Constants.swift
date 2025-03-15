@@ -52,7 +52,7 @@ public enum IconImageType : String, PersistableEnum {
     var getImage : UIImage {
         switch self {
         case .date:
-            return UIImage(named: "DateImage") ?? UIImage()
+            return UIImage(named: "dateImage") ?? UIImage()
         }
     }
 }

@@ -104,7 +104,7 @@ class DetailTableViewCell: UITableViewCell {
         self.cellStyle = style
         self.entityData = item
         
-        self.mainImageView.image = item.iconImage
+        self.mainImageView.image = item.iconImage.resize(targetSize: CGSize(width: 20, height: 20))
         self.mainLabel.text = item.typeStr
         self.dateLabel.text = item.dateStr
         self.moneyLabel.text = item.amount.toCurrency
@@ -128,8 +128,6 @@ class DetailTableViewCell: UITableViewCell {
             imageBorderView.heightAnchor.constraint(equalToConstant: 30),
             imageBorderView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
             
-            mainImageView.widthAnchor.constraint(equalToConstant: 20),
-            mainImageView.heightAnchor.constraint(equalToConstant: 20),
             mainImageView.centerXAnchor.constraint(equalTo: self.imageBorderView.centerXAnchor),
             mainImageView.centerYAnchor.constraint(equalTo: self.imageBorderView.centerYAnchor),
             

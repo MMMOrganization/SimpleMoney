@@ -23,7 +23,6 @@ extension Date {
         return (dateIntegerList[0], dateIntegerList[1], dateIntegerList[2])
     }
     
-    // TODO: - 로직 개선 해야함.
     /// DayOfMonth만 반환하는 계산 속성
     var getDay : Int {
         let dateFormatter = DateFormatter()

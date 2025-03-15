@@ -16,12 +16,12 @@ final class DetailViewController: UIViewController {
     private var viewModel : DetailViewModelInterface!
     
     // MARK: - Section 사용을 위한 TableView DataSource
-    // TODO: - 사용은 했지만, 제대로 뜯어보자!
     private let dataSource =
     RxTableViewSectionedAnimatedDataSource<SectionModel>(configureCell: { dataSource, tableView, indexPath, item in
         guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
             return UITableViewCell()
         }
+        
         cell.configure(with: .compact, item: item)
         return cell
     }) { dataSource, index in
@@ -29,15 +29,15 @@ final class DetailViewController: UIViewController {
     }
     
     lazy var calendarBarButton : UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setImage(UIImage(named: "DateImage2"), for: .normal)
+        let button = UIButton()
+        button.setImage(UIImage(named: "dateImage")?.resize(targetSize: CGSize(width: 25, height: 25)), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
     }()
     
     lazy var graphBarButton : UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setImage(UIImage(named: "barGraph"), for: .normal)
+        let button = UIButton()
+        button.setImage(UIImage(named: "barGraph")?.resize(targetSize: CGSize(width: 25, height: 25)), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
     }()
@@ -98,14 +98,14 @@ final class DetailViewController: UIViewController {
     lazy var topChangeLeftButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "previous"), for: .normal)
+        button.setImage(UIImage(named: "previous")?.resize(targetSize: CGSize(width: 20, height: 20)), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.blackColorString, alpha: 1.00)
         return button
     }()
     
     lazy var topChangeRightButton : UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "following"), for: .normal)
+        button.setImage(UIImage(named: "following")?.resize(targetSize: CGSize(width: 20, height: 20)), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = UIColor(hexCode: ColorConst.blackColorString, alpha: 1.00)
         return button
@@ -207,7 +207,6 @@ final class DetailViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         contentAddButton.layer.cornerRadius = contentAddButton.frame.width / 2
-        
         totalShowButton.layer.cornerRadius = totalShowButton.frame.height / 2
         incomeShowButton.layer.cornerRadius = incomeShowButton.frame.height / 2
         expendShowButton.layer.cornerRadius = expendShowButton.frame.height / 2
@@ -216,6 +215,7 @@ final class DetailViewController: UIViewController {
     func setTableView() {
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
         tableView.dataSource = nil
+        tableView.delegate = self
         tableView.rowHeight = 50
     }
     
@@ -267,13 +267,9 @@ final class DetailViewController: UIViewController {
             topChangeMonthLabel.centerXAnchor.constraint(equalTo: self.topChangeMonthView.centerXAnchor),
             topChangeMonthLabel.centerYAnchor.constraint(equalTo: self.topChangeMonthView.centerYAnchor),
             
-            topChangeLeftButton.widthAnchor.constraint(equalToConstant: 17),
-            topChangeLeftButton.heightAnchor.constraint(equalToConstant: 17),
             topChangeLeftButton.centerYAnchor.constraint(equalTo: self.topChangeMonthView.centerYAnchor),
             topChangeLeftButton.trailingAnchor.constraint(equalTo: self.topChangeMonthLabel.leadingAnchor, constant: -5),
-
-            topChangeRightButton.widthAnchor.constraint(equalToConstant: 17),
-            topChangeRightButton.heightAnchor.constraint(equalToConstant: 17),
+            
             topChangeRightButton.centerYAnchor.constraint(equalTo: self.topChangeMonthView.centerYAnchor),
             topChangeRightButton.leadingAnchor.constraint(equalTo: self.topChangeMonthLabel.trailingAnchor, constant: 5),
             
@@ -442,5 +438,14 @@ final class DetailViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: topTotalPriceLabel.rx.text)
             .disposed(by: disposeBag)
+    }
+}
+
+// MARK: - HeaderFooter Label 색 설정 -> 추후에 바인딩 방법으로 할 예정
+extension DetailViewController : UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let header = view as? UITableViewHeaderFooterView {
+            header.textLabel?.textColor = .gray.withAlphaComponent(0.6)
+        }
     }
 }

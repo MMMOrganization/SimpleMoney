@@ -100,9 +100,6 @@ class CalendarViewModel : CalendarViewModelInterface {
     }
     
     func setReactive() {
-        // TODO: - Date 계산, Observable 로 관찰 가능한 값으로 전달해야 함.
-        // Page 바인딩을 해야 함.
-        
         // MARK: - headerTitle UI 바인딩
         [decreaseSubject, increaseSubject].forEach { $0.subscribe { [weak self] dateButtonType in
             guard let dateButtonType = dateButtonType.element, let self = self else { return }
