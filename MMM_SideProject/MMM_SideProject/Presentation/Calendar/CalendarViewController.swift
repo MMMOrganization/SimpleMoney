@@ -54,6 +54,7 @@ class CalendarViewController: UIViewController {
         
         // MARK: - 현재 Custom Header와 제스쳐가 바인딩 되어 있지 않음.
         calendar.swipeToChooseGesture.isEnabled = false
+        calendar.scrollEnabled = false
         
         // MARK: - Font 적용
         calendar.appearance.weekdayFont = UIFont(size: 14.0)

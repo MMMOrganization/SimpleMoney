@@ -53,9 +53,12 @@ class TypeButtonCVCell: UICollectionViewCell {
         // layoutAttributes -> 레이아웃 객체가 제공하는 속성, 레이아웃이 셀에 적용하려는 값을 나타냄.
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
         
-        attributes.frame.size.width = typeButton.intrinsicContentSize.width > 54 ? typeButton.intrinsicContentSize.width + 10 : 54
+        // ContentSize의 크기는 54라는 최소 값을 가지고, 넘으면 10의 여백을 가지고 typeButton의 intrinsicContentSize 너비를 가진다.
         
-        // Cell에 적용할 최종 속성
+        attributes.frame.size.width = typeButton.intrinsicContentSize.width > 54 ? typeButton.intrinsicContentSize.width : 54
+        
+        attributes.frame.size.height = 50
+        
         return attributes
     }
     
