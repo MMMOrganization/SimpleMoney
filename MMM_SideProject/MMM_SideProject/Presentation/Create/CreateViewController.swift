@@ -121,6 +121,7 @@ class CreateViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: FontConst.mainFont, size: 35)
+        label.textColor = .blackColor
         label.textAlignment = .center
         return label
     }()
@@ -150,6 +151,7 @@ class CreateViewController: UIViewController {
         flowLayout.minimumLineSpacing = 20 // 줄 간격
     
         let cv = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        cv.backgroundColor = .white
         cv.translatesAutoresizingMaskIntoConstraints = false
         return cv
     }()

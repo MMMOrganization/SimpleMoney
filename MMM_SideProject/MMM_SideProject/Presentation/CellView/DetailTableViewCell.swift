@@ -9,12 +9,11 @@ import UIKit
 import RxSwift
 
 class DetailTableViewCell: UITableViewCell {
-
-    var cellStyle : DetailCellStyle = .compact
-    
-    var disposeBag : DisposeBag = .init()
     
     static let identifier = "DetailCell"
+    
+    var cellStyle : DetailCellStyle = .compact
+    var disposeBag : DisposeBag = .init()
     
     var entityData : Entity?
     
@@ -68,6 +67,7 @@ class DetailTableViewCell: UITableViewCell {
             contentView.frame = bounds.inset(by: UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0))
         }
         
+        contentView.layoutIfNeeded()
         imageBorderView.layer.cornerRadius = imageBorderView.frame.height / 2
     }
     
@@ -108,7 +108,9 @@ class DetailTableViewCell: UITableViewCell {
         self.mainLabel.text = item.typeStr
         self.dateLabel.text = item.dateStr
         self.moneyLabel.text = item.amount.toCurrency
+        self.backgroundColor = .white
         self.contentView.layer.cornerRadius = 15
+        self.contentView.backgroundColor = .white
         setNeedsLayout()
     }
     

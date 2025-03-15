@@ -68,6 +68,7 @@ final class DetailViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: FontConst.mainFont, size: 30)
         label.text = "+120,000원"
+        label.textColor = .blackColor
         label.textAlignment = .right
         return label
     }()
@@ -166,6 +167,7 @@ final class DetailViewController: UIViewController {
     var tableView : UITableView = {
         let tv = UITableView(frame: .zero, style: .insetGrouped)
         tv.translatesAutoresizingMaskIntoConstraints = false
+        tv.backgroundColor = .systemGray4.withAlphaComponent(0.05)
         return tv
     }()
     

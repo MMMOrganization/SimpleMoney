@@ -16,7 +16,7 @@ public enum ColorConst {
 }
 
 public enum FontConst {
-    static let mainFont = "Moneygraphy-Pixel"
+    static let mainFont = "Moneygraphy-Rounded"
 }
 
 public enum CreateType : String, PersistableEnum {

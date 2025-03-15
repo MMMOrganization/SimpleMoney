@@ -130,6 +130,7 @@ class CalendarViewController: UIViewController {
     
     let tableView : UITableView = {
         let tv = UITableView()
+        tv.backgroundColor = .white
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()

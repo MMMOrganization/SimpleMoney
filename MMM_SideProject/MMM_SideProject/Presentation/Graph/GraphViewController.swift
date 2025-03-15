@@ -42,6 +42,7 @@ class GraphViewController: UIViewController {
     let pieChartView : PieChartView = {
         let p = PieChartView(frame: .zero)
         p.translatesAutoresizingMaskIntoConstraints = false
+        p.backgroundColor = .white
         return p
     }()
     
@@ -53,6 +54,7 @@ class GraphViewController: UIViewController {
         flowLayout.minimumInteritemSpacing = 10
         flowLayout.minimumLineSpacing = 10
         let c = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        c.backgroundColor = .white
         c.translatesAutoresizingMaskIntoConstraints = false
         c.showsHorizontalScrollIndicator = false
         return c
@@ -63,6 +65,7 @@ class GraphViewController: UIViewController {
     let graphTableView : UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
+        tv.backgroundColor = .white
         return tv
     }()
     
@@ -112,6 +115,7 @@ class GraphViewController: UIViewController {
     let toastTableView : UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
+        tv.backgroundColor = .white
         return tv
     }()
     
@@ -202,6 +206,7 @@ class GraphViewController: UIViewController {
             graphTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
         ])
         
+        headerView.backgroundColor = .white
         graphTableView.tableHeaderView = headerView
         
         // MARK: - ToastView Layout
