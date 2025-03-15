@@ -485,7 +485,7 @@ private extension CreateViewController {
             lazy var button : UIButton = {
                 let b = UIButton()
                 b.translatesAutoresizingMaskIntoConstraints = false
-                b.setImage(UIImage(named: "DateImage"), for: .normal)
+                b.setImage(UIImage(named: "checkImage")?.resize(targetSize: CGSize(width: 20, height: 20)), for: .normal)
                 b.backgroundColor = .white
                 b.tag = num
                 setKeyboardTapBinding(b)
@@ -496,7 +496,7 @@ private extension CreateViewController {
             lazy var button : UIButton = {
                 let b = UIButton()
                 b.translatesAutoresizingMaskIntoConstraints = false
-                b.setImage(UIImage(named: "DateImage"), for: .normal)
+                b.setImage(UIImage(named: "closeButton")?.resize(targetSize: CGSize(width: 20, height: 20)), for: .normal)
                 b.backgroundColor = .white
                 b.tag = num
                 setKeyboardTapBinding(b)

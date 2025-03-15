@@ -42,8 +42,13 @@ final class DetailViewController: UIViewController {
         return button
     }()
     
+    // MARK: - Navigation 관련 프로퍼티
     lazy var calendarBarButtonItem = UIBarButtonItem(customView : calendarBarButton)
     lazy var graphBarButtonItem = UIBarButtonItem(customView: graphBarButton)
+    
+    // MARK: - 애니메이션 관련 프로퍼티
+    lazy var toastViewHeight : CGFloat = 150
+    lazy var toastViewBottomAnchor = toastView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: toastViewHeight)
     
     let topView : UIView = {
         // 160 height
@@ -181,6 +186,53 @@ final class DetailViewController: UIViewController {
         return button
     }()
     
+    // MARK: - ToastView
+    lazy var toastView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 20
+        return view
+    }()
+    
+    let toastMainLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "해당 데이터를 삭제할까요?"
+        label.textColor = .blackColor
+        label.font = UIFont(size: 14.0)
+        return label
+    }()
+    
+    lazy var toastButtonStackView : UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [toastCancelButton, toastDeleteButton])
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.axis = .horizontal
+        sv.distribution = .fillEqually
+        sv.spacing = 0
+        sv.alignment = .fill
+        return sv
+    }()
+    
+    lazy var toastCancelButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("취소", for: .normal)
+        button.titleLabel?.font = UIFont(size: 14.0)
+        button.setTitleColor(.blackColor, for: .normal)
+        return button
+    }()
+    
+    lazy var toastDeleteButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("삭제", for: .normal)
+        button.titleLabel?.font = UIFont(size: 14.0)
+        button.setTitleColor(.blackColor, for: .normal)
+        return button
+    }()
+    
     // MARK: - Initializer
     init(viewModel : DetailViewModelInterface) {
         self.viewModel = viewModel
@@ -199,6 +251,7 @@ final class DetailViewController: UIViewController {
         setAnimate()
         setTableView()
         setReactive()
+        setToastReactive()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -218,7 +271,7 @@ final class DetailViewController: UIViewController {
         tableView.delegate = self
         tableView.rowHeight = 50
     }
-    
+
     func setLayout() {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.scrollEdgeAppearance = 
@@ -234,6 +287,7 @@ final class DetailViewController: UIViewController {
         view.addSubview(separatorLine)
         view.addSubview(tableView)
         view.addSubview(contentAddButton)
+        view.addSubview(toastView)
         
         topView.addSubview(topMonthLabel)
         topView.addSubview(topTotalPriceLabel)
@@ -246,6 +300,9 @@ final class DetailViewController: UIViewController {
         buttonView.addSubview(totalShowButton)
         buttonView.addSubview(incomeShowButton)
         buttonView.addSubview(expendShowButton)
+        
+        toastView.addSubview(toastMainLabel)
+        toastView.addSubview(toastButtonStackView)
         
         NSLayoutConstraint.activate([
             topView.heightAnchor.constraint(equalToConstant: 160),
@@ -306,7 +363,23 @@ final class DetailViewController: UIViewController {
             contentAddButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
             contentAddButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30),
             contentAddButton.widthAnchor.constraint(equalToConstant: 60),
-            contentAddButton.heightAnchor.constraint(equalToConstant: 60)
+            contentAddButton.heightAnchor.constraint(equalToConstant: 60),
+        ])
+        
+        // MARK: - ToastView
+        NSLayoutConstraint.activate([
+            toastView.heightAnchor.constraint(equalToConstant: toastViewHeight),
+            toastView.widthAnchor.constraint(equalToConstant: 300),
+            toastView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            toastViewBottomAnchor,
+            
+            toastMainLabel.centerXAnchor.constraint(equalTo: toastView.centerXAnchor),
+            toastMainLabel.topAnchor.constraint(equalTo: self.toastView.topAnchor, constant: 55),
+            
+            toastButtonStackView.heightAnchor.constraint(equalToConstant: 50),
+            toastButtonStackView.leadingAnchor.constraint(equalTo: self.toastView.leadingAnchor),
+            toastButtonStackView.trailingAnchor.constraint(equalTo: self.toastView.trailingAnchor),
+            toastButtonStackView.bottomAnchor.constraint(equalTo: self.toastView.bottomAnchor),
         ])
     }
     
@@ -334,13 +407,8 @@ final class DetailViewController: UIViewController {
                 
                 guard let entityData = cell.entityData else { return }
                 
-                // TODO: - Legacy Code -> Coordinator로 바인딩
-                let deleteVC = DeleteToastView(viewModel: viewModel, entityData : entityData)
-                addChild(deleteVC)
-                view.addSubview(deleteVC.view)
-                deleteVC.didMove(toParent: self)
-                
-                deleteVC.view.frame = view.bounds
+                print(entityData)
+                becomeToastView()
             }.disposed(by: disposeBag)
     }
     
@@ -447,5 +515,49 @@ extension DetailViewController : UITableViewDelegate {
         if let header = view as? UITableViewHeaderFooterView {
             header.textLabel?.textColor = .gray.withAlphaComponent(0.6)
         }
+    }
+}
+
+// MARK: - Toast 관련 코드
+extension DetailViewController {
+    func becomeToastView() {
+        toastViewBottomAnchor.constant = -((view.frame.height / 2) - (toastViewHeight / 2))
+        
+        UIView.animate(withDuration: 0.1) { [weak self] in
+            guard let self = self else { return }
+            view.layoutIfNeeded()
+        }
+    }
+    
+    func resignToastView() {
+        toastViewBottomAnchor.constant = toastViewHeight
+        UIView.animate(withDuration: 0.1) { [weak self] in
+            guard let self = self else { return }
+            view.layoutIfNeeded()
+        }
+    }
+    
+    func setToastReactive() {
+        // MARK: - cancelButton 클릭 바인딩
+        toastCancelButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                resignToastView()
+            }.disposed(by: disposeBag)
+        
+        // MARK: - deleteButton 클릭 바인딩 (Entity 제거)
+        toastDeleteButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .map { [weak self] in
+                guard let self = self else
+                { return Entity(id: UUID(), dateStr: "", typeStr: "", createType: .total, amount: 0, iconImage: UIImage()) }
+                ToastManager.shared.showToast(message: "삭제 완료되었습니다.")
+                resignToastView()
+                // TODO: - 뭐였지 (Cell을 알아야함.)
+                return Entity(id: UUID(), dateStr: "", typeStr: "", createType: .total, amount: 0, iconImage: UIImage())
+            }
+            .bind(to: viewModel.deleteDataObserver)
+            .disposed(by: disposeBag)
     }
 }
