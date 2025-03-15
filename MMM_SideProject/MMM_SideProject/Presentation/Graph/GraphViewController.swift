@@ -48,7 +48,8 @@ class GraphViewController: UIViewController {
     let buttonCollectionView : UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
-        flowLayout.itemSize = CGSize(width: 60, height: 40)
+        // TODO: - Content Size에 따라서 동적으로 ItemSize가 변해야 함.
+        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         flowLayout.minimumInteritemSpacing = 10
         flowLayout.minimumLineSpacing = 10
         let c = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
@@ -127,7 +128,6 @@ class GraphViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setNavigationController()
         setDelegate()
         setAnimate()
@@ -250,7 +250,7 @@ class GraphViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: buttonCollectionView.rx.items(cellIdentifier: TypeButtonCVCell.identifier, cellType: TypeButtonCVCell.self)) { [weak self] (index, item, cell) in
                 guard let self = self else { return }
-                cell.configure(item: item, viewModel : viewModel)
+                cell.configure(item: item, viewModel: viewModel)
         }.disposed(by: disposeBag)
         
         // MARK: - graphData 바인딩

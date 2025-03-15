@@ -35,7 +35,6 @@ class TypeButtonCVCell: UICollectionViewCell {
             .observe(on: MainScheduler.instance)
             .subscribe { [weak self] _ in
                 guard let self = self else { return }
-                guard let typeName = typeButton.titleLabel?.text else { return }
                 viewModel.typeButtonTapObserver.onNext(item.0)
             }.disposed(by: disposeBag)
         
@@ -47,6 +46,20 @@ class TypeButtonCVCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         disposeBag = .init()
+    }
+    
+    // MARK: - 셀에 레이아웃 객체가 제공하는 속성을 수정할 수 있는 기회를 제공합니다.
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        // layoutAttributes -> 레이아웃 객체가 제공하는 속성, 레이아웃이 셀에 적용하려는 값을 나타냄.
+        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
+        
+        // ContentSize의 크기는 54라는 최소 값을 가지고, 넘으면 10의 여백을 가지고 typeButton의 intrinsicContentSize 너비를 가진다.
+        
+        attributes.frame.size.width = typeButton.intrinsicContentSize.width > 54 ? typeButton.intrinsicContentSize.width : 54
+        
+        attributes.frame.size.height = 50
+        
+        return attributes
     }
     
     override init(frame: CGRect) {
@@ -64,8 +77,8 @@ class TypeButtonCVCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             typeButton.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
             typeButton.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
-            typeButton.widthAnchor.constraint(equalToConstant: 54),
-            typeButton.heightAnchor.constraint(equalToConstant: 29)
+            typeButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 54),
+            typeButton.heightAnchor.constraint(equalToConstant: 29),
         ])
     }
 }

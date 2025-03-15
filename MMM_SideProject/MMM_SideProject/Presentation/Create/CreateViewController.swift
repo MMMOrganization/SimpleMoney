@@ -417,11 +417,11 @@ class CreateViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .map { [weak self] in
                 guard let self = self else { return "" }
-                if ((0...12) ~= (typeHiddenTextField.text?.count ?? 0)) {
+                if ((0...8) ~= (typeHiddenTextField.text?.count ?? 0)) {
                     return $0 ?? ""
                 }
                 else {
-                    typeHiddenTextField.text = (typeHiddenTextField.text ?? "").map { String($0) }[0..<12].joined()
+                    typeHiddenTextField.text = (typeHiddenTextField.text ?? "").map { String($0) }[0..<8].joined()
                     return $0 ?? ""
                 }
             }
