@@ -384,12 +384,10 @@ final class DetailViewController: UIViewController {
     }
     
     func setGestures() {
-        let gesture = UILongPressGestureRecognizer()
-        gesture.minimumPressDuration = 0.5
-        tableView.addGestureRecognizer(gesture)
+        let tapGesture = UITapGestureRecognizer()
+        tableView.addGestureRecognizer(tapGesture)
         
-        gesture.rx.event
-            .filter { $0.state == .began }
+        tapGesture.rx.event
             .subscribe { [weak self] gesture in
                 guard let self = self, let gesture = gesture.element else {
                     print("DetailView - Gesture Subscribe Fail")
@@ -407,7 +405,7 @@ final class DetailViewController: UIViewController {
                 
                 guard let entityData = cell.entityData else { return }
                 
-                print(entityData)
+                viewModel.selectedCellObserver.onNext(entityData)
                 becomeToastView()
             }.disposed(by: disposeBag)
     }
@@ -522,19 +520,20 @@ extension DetailViewController : UITableViewDelegate {
 extension DetailViewController {
     func becomeToastView() {
         toastViewBottomAnchor.constant = -((view.frame.height / 2) - (toastViewHeight / 2))
-        
-        UIView.animate(withDuration: 0.1) { [weak self] in
-            guard let self = self else { return }
-            view.layoutIfNeeded()
-        }
+        view.layoutIfNeeded()
+//        UIView.animate(withDuration: 0.1) { [weak self] in
+//            guard let self = self else { return }
+//            
+//        }
     }
     
     func resignToastView() {
         toastViewBottomAnchor.constant = toastViewHeight
-        UIView.animate(withDuration: 0.1) { [weak self] in
-            guard let self = self else { return }
-            view.layoutIfNeeded()
-        }
+        view.layoutIfNeeded()
+//        UIView.animate(withDuration: 0.1) { [weak self] in
+//            guard let self = self else { return }
+//            
+//        }
     }
     
     func setToastReactive() {
@@ -549,15 +548,11 @@ extension DetailViewController {
         // MARK: - deleteButton 클릭 바인딩 (Entity 제거)
         toastDeleteButton.rx.tap
             .observe(on: MainScheduler.instance)
-            .map { [weak self] in
-                guard let self = self else
-                { return Entity(id: UUID(), dateStr: "", typeStr: "", createType: .total, amount: 0, iconImage: UIImage()) }
-                ToastManager.shared.showToast(message: "삭제 완료되었습니다.")
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
                 resignToastView()
-                // TODO: - 뭐였지 (Cell을 알아야함.)
-                return Entity(id: UUID(), dateStr: "", typeStr: "", createType: .total, amount: 0, iconImage: UIImage())
+                viewModel.removeCellObserver.onNext(())
             }
-            .bind(to: viewModel.deleteDataObserver)
             .disposed(by: disposeBag)
     }
 }
