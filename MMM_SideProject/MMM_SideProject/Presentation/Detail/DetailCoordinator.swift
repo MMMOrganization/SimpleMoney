@@ -19,7 +19,7 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
     }
     
     func start() {
-        let repository = MockDataRepository()
+        let repository = DataRepository()
         let detailViewModel = DetailViewModel(repository: repository)
         detailViewModel.delegate = self
         

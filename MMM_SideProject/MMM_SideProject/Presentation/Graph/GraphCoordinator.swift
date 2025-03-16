@@ -18,7 +18,7 @@ class GraphCoordinator : Coordinator, GraphViewModelDelegate {
     }
     
     func start() {
-        let dataRepository = MockDataRepository()
+        let dataRepository = DataRepository()
         let viewModel = GraphViewModel(repository: dataRepository)
         viewModel.delegate = self
         

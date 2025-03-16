@@ -19,7 +19,7 @@ class CalendarCoordinator : Coordinator, CalendarViewModelDelegate {
     }
     
     func start() {
-        let repository = MockDataRepository()
+        let repository = DataRepository()
         let calendarViewModel = CalendarViewModel(repository: repository)
         calendarViewModel.delegate = self
         let calendarViewController = CalendarViewController(viewModel: calendarViewModel)
