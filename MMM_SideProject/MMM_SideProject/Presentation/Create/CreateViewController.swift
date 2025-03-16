@@ -380,10 +380,7 @@ class CreateViewController: UIViewController {
         typeTapGesture.rx.event
             .subscribe { [weak self] _ in
                 guard let self = self else { return }
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    typeHiddenTextField.becomeFirstResponder()
-                }
+                typeHiddenTextField.becomeFirstResponder()
             }.disposed(by: disposeBag)
         
         inputMoneyTapGesture.rx.event
