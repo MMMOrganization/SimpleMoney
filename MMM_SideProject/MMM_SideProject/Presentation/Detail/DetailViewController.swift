@@ -28,6 +28,8 @@ final class DetailViewController: UIViewController {
         return dataSource.sectionModels[index].header
     }
     
+    lazy var tapGesture = UITapGestureRecognizer()
+    
     lazy var calendarBarButton : UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "dateImage")?.resize(targetSize: CGSize(width: 25, height: 25)), for: .normal)
@@ -54,7 +56,7 @@ final class DetailViewController: UIViewController {
         // 160 height
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.08)
+        view.backgroundColor = .mainColor.withAlphaComponent(0.08)
         return view
     }()
     
@@ -86,7 +88,7 @@ final class DetailViewController: UIViewController {
             cornerRadius: 20,
             maskedCorners: CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
         )
-        view.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.10)
+        view.backgroundColor = .mainColor.withAlphaComponent(0.1)
         return view
     }()
     
@@ -165,7 +167,7 @@ final class DetailViewController: UIViewController {
     let separatorLine : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.20)
+        view.backgroundColor = .mainColor.withAlphaComponent(0.2)
         return view
     }()
     
@@ -246,6 +248,8 @@ final class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        setNavigation()
         setLayout()
         setGestures()
         setAnimate()
@@ -267,17 +271,17 @@ final class DetailViewController: UIViewController {
         tableView.delegate = self
         tableView.rowHeight = 50
     }
-
-    func setLayout() {
+    
+    func setNavigation() {
         navigationController?.navigationBar.backgroundColor = .white
-        navigationController?.navigationBar.scrollEdgeAppearance = 
+        navigationController?.navigationBar.scrollEdgeAppearance =
         navigationController?.navigationBar.standardAppearance
         navigationController?.isToolbarHidden = true
         navigationItem.rightBarButtonItem = calendarBarButtonItem
         navigationItem.leftBarButtonItem = graphBarButtonItem
-        
-        view.backgroundColor = .white
-        
+    }
+
+    func setLayout() {
         view.addSubview(topView)
         view.addSubview(buttonView)
         view.addSubview(separatorLine)
@@ -378,30 +382,7 @@ final class DetailViewController: UIViewController {
     }
     
     func setGestures() {
-        let tapGesture = UITapGestureRecognizer()
         tableView.addGestureRecognizer(tapGesture)
-        
-        tapGesture.rx.event
-            .subscribe { [weak self] gesture in
-                guard let self = self, let gesture = gesture.element else {
-                    print("DetailView - Gesture Subscribe Fail")
-                    return }
-                
-                let touchPoint : CGPoint = gesture.location(in: tableView)
-                guard let indexPath = tableView.indexPathForRow(at: touchPoint) else {
-                    print("DetailView - Gesture IndexPath Fail")
-                    return
-                }
-                
-                guard let cell = tableView.cellForRow(at: indexPath) as? DetailTableViewCell else {
-                    return
-                }
-                
-                guard let entityData = cell.entityData else { return }
-                
-                viewModel.selectedCellObserver.onNext(entityData)
-                becomeToastView()
-            }.disposed(by: disposeBag)
     }
     
     func setAnimate() {
@@ -433,6 +414,29 @@ final class DetailViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.plusButtonObserver)
             .disposed(by: disposeBag)
+        
+        // MARK: - tapGeture Entity 삭제 로직 바인딩
+        tapGesture.rx.event
+            .subscribe { [weak self] gesture in
+                guard let self = self, let gesture = gesture.element else {
+                    print("DetailView - Gesture Subscribe Fail")
+                    return }
+                
+                let touchPoint : CGPoint = gesture.location(in: tableView)
+                guard let indexPath = tableView.indexPathForRow(at: touchPoint) else {
+                    print("DetailView - Gesture IndexPath Fail")
+                    return
+                }
+                
+                guard let cell = tableView.cellForRow(at: indexPath) as? DetailTableViewCell else {
+                    return
+                }
+                
+                guard let entityData = cell.entityData else { return }
+                
+                viewModel.selectedCellObserver.onNext(entityData)
+                becomeToastView()
+            }.disposed(by: disposeBag)
     
         // MARK: - 수입 데이터 바인딩
         incomeShowButton.rx.tap

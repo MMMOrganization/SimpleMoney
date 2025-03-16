@@ -63,6 +63,7 @@ class GraphViewController: UIViewController {
         let v = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 350))
         // MARK: - TableView의 header, footer는 Frame 기반으로 설정됨.
         v.translatesAutoresizingMaskIntoConstraints = true
+        v.backgroundColor = .white
         return v
     }()
     
@@ -136,6 +137,7 @@ class GraphViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         setNavigationController()
         setDelegate()
         setAnimate()
@@ -180,8 +182,6 @@ class GraphViewController: UIViewController {
     }
     
     func setLayout() {
-        view.backgroundColor = .white
-        
         view.addSubview(graphTableView)
         headerView.addSubview(pieChartView)
         headerView.addSubview(buttonCollectionView)
@@ -207,7 +207,6 @@ class GraphViewController: UIViewController {
             graphTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
         ])
         
-        headerView.backgroundColor = .white
         graphTableView.tableHeaderView = headerView
         
         // MARK: - ToastView Layout

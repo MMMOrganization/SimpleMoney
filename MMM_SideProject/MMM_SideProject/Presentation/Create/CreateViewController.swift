@@ -135,7 +135,7 @@ class CreateViewController: UIViewController {
     let separatorLine : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.70)
+        view.backgroundColor = .mainColor.withAlphaComponent(0.7)
         return view
     }()
     
@@ -234,6 +234,8 @@ class CreateViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        setNavigation()
         setLayout()
         setCollectionView()
         setGesture()
@@ -272,14 +274,15 @@ class CreateViewController: UIViewController {
         resignToastDateView()
     }
     
-    func setLayout() {
+    func setNavigation() {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.scrollEdgeAppearance =
         navigationController?.navigationBar.standardAppearance
         navigationItem.leftBarButtonItem = dismissButtonItem
         navigationItem.rightBarButtonItem = saveButtonItem
-        
-        view.backgroundColor = .white
+    }
+    
+    func setLayout() {
         view.addSubview(topStackView)
         view.addSubview(outLineView)
         view.addSubview(dateButton)
