@@ -167,7 +167,6 @@ class CreateViewModel : CreateViewModelInterface {
         createTypeSubject.subscribe { [weak self] createType in
             guard let self = self, let createType = createType.element else { return }
             self.createType = createType
-            stringDateSubject.onNext(repository.readDate())
             dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: 0))
         }.disposed(by: disposeBag)
         

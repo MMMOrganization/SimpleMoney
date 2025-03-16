@@ -179,7 +179,7 @@ final class DetailViewController: UIViewController {
     lazy var contentAddButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "addImage"), for: .normal)
+        button.setImage(UIImage(named: "addImage")?.resize(targetSize: CGSize(width: 60, height: 60)), for: .normal)
         button.contentMode = .scaleAspectFit
         button.backgroundColor = .white
         button.clipsToBounds = true
@@ -362,8 +362,6 @@ final class DetailViewController: UIViewController {
             
             contentAddButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
             contentAddButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30),
-            contentAddButton.widthAnchor.constraint(equalToConstant: 60),
-            contentAddButton.heightAnchor.constraint(equalToConstant: 60),
         ])
         
         // MARK: - ToastView
@@ -519,6 +517,7 @@ extension DetailViewController : UITableViewDelegate {
 // MARK: - Toast 관련 코드
 extension DetailViewController {
     func becomeToastView() {
+        // MARK: - 화면 정중앙에 애니메이션
         toastViewBottomAnchor.constant = -((view.frame.height / 2) - (toastViewHeight / 2))
         view.layoutIfNeeded()
 //        UIView.animate(withDuration: 0.1) { [weak self] in
