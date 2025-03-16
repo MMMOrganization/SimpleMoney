@@ -121,9 +121,7 @@ class CalendarViewModel : CalendarViewModelInterface {
             guard let amountsDict = amountsDict.element, let self = self else {
                 return
             }
-            
-            // TODO: - 메소드 사용
-            self.amountsDict = amountsDict
+            setAmountsDict(amountsDict)
         }.disposed(by: disposeBag)
     }
     
@@ -134,5 +132,9 @@ class CalendarViewModel : CalendarViewModelInterface {
         
         let dateString = formatter.string(from: date)
         return amountsDict[dateString]
+    }
+    
+    func setAmountsDict(_ dict : [String:Int]) {
+        amountsDict = dict
     }
 }
