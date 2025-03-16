@@ -179,7 +179,7 @@ final class DetailViewController: UIViewController {
     lazy var contentAddButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "addImage")?.resize(targetSize: CGSize(width: 60, height: 60)), for: .normal)
+        button.setImage(UIImage(named: "addImage")?.resize(targetSize: CGSize(width: 35, height: 35)), for: .normal)
         button.contentMode = .scaleAspectFit
         button.backgroundColor = .white
         button.clipsToBounds = true
@@ -254,10 +254,6 @@ final class DetailViewController: UIViewController {
         setToastReactive()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    
     override func viewDidLayoutSubviews() {
         contentAddButton.layer.cornerRadius = contentAddButton.frame.width / 2
         totalShowButton.layer.cornerRadius = totalShowButton.frame.height / 2
@@ -306,11 +302,11 @@ final class DetailViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             topView.heightAnchor.constraint(equalToConstant: 160),
-            topView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            topView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             topView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
             topView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
             
-            topMonthLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 155),
+            topMonthLabel.centerYAnchor.constraint(equalTo: self.topView.centerYAnchor),
             topMonthLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
             
             topTotalPriceLabel.topAnchor.constraint(equalTo: self.topMonthLabel.bottomAnchor, constant: 5),
@@ -350,6 +346,9 @@ final class DetailViewController: UIViewController {
             expendShowButton.centerYAnchor.constraint(equalTo: self.buttonView.centerYAnchor),
             expendShowButton.leadingAnchor.constraint(equalTo: self.incomeShowButton.trailingAnchor, constant: 5),
             
+            contentAddButton.centerYAnchor.constraint(equalTo: self.buttonView.centerYAnchor),
+            contentAddButton.trailingAnchor.constraint(equalTo: self.buttonView.trailingAnchor, constant: -10),
+            
             separatorLine.heightAnchor.constraint(equalToConstant: 1),
             separatorLine.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             separatorLine.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
@@ -359,9 +358,6 @@ final class DetailViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            
-            contentAddButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
-            contentAddButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30),
         ])
         
         // MARK: - ToastView

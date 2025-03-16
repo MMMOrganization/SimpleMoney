@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "addImage.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Add_ring_duotone_line.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

@@ -146,13 +146,17 @@ class CreateViewController: UIViewController {
         return label
     }()
     
-    let iconCollectionView : UICollectionView = {
+    lazy var iconCollectionView : UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         
         flowLayout.scrollDirection = .vertical
-        flowLayout.itemSize = CGSize(width: 70, height: 70)
-        flowLayout.minimumInteritemSpacing = 23 // 아이템 사이 간격
-        flowLayout.minimumLineSpacing = 20 // 줄 간격
+        
+        let beforeItemSize = (view.frame.width - 30) / 4
+        let itemSize = beforeItemSize - (beforeItemSize / 4)
+        
+        flowLayout.itemSize = CGSize(width: itemSize, height: itemSize)
+        flowLayout.minimumInteritemSpacing = (itemSize / 4) // 아이템 사이 간격
+        flowLayout.minimumLineSpacing = (itemSize / 4) // 줄 간격
     
         let cv = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         cv.backgroundColor = .white
