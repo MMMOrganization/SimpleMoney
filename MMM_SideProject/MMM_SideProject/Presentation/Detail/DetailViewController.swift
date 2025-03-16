@@ -16,12 +16,12 @@ final class DetailViewController: UIViewController {
     private var viewModel : DetailViewModelInterface!
     
     // MARK: - Section 사용을 위한 TableView DataSource
-    // TODO: - 사용은 했지만, 제대로 뜯어보자!
     private let dataSource =
     RxTableViewSectionedAnimatedDataSource<SectionModel>(configureCell: { dataSource, tableView, indexPath, item in
         guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
             return UITableViewCell()
         }
+        
         cell.configure(with: .compact, item: item)
         return cell
     }) { dataSource, index in
@@ -29,21 +29,26 @@ final class DetailViewController: UIViewController {
     }
     
     lazy var calendarBarButton : UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setImage(UIImage(named: "DateImage2"), for: .normal)
+        let button = UIButton()
+        button.setImage(UIImage(named: "dateImage")?.resize(targetSize: CGSize(width: 25, height: 25)), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
     }()
     
     lazy var graphBarButton : UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setImage(UIImage(named: "barGraph"), for: .normal)
+        let button = UIButton()
+        button.setImage(UIImage(named: "barGraph")?.resize(targetSize: CGSize(width: 25, height: 25)), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
     }()
     
+    // MARK: - Navigation 관련 프로퍼티
     lazy var calendarBarButtonItem = UIBarButtonItem(customView : calendarBarButton)
     lazy var graphBarButtonItem = UIBarButtonItem(customView: graphBarButton)
+    
+    // MARK: - 애니메이션 관련 프로퍼티
+    lazy var toastViewHeight : CGFloat = 150
+    lazy var toastViewBottomAnchor = toastView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: toastViewHeight)
     
     let topView : UIView = {
         // 160 height
@@ -68,6 +73,7 @@ final class DetailViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: FontConst.mainFont, size: 30)
         label.text = "+120,000원"
+        label.textColor = .blackColor
         label.textAlignment = .right
         return label
     }()
@@ -97,14 +103,14 @@ final class DetailViewController: UIViewController {
     lazy var topChangeLeftButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "previous"), for: .normal)
+        button.setImage(UIImage(named: "previous")?.resize(targetSize: CGSize(width: 20, height: 20)), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.blackColorString, alpha: 1.00)
         return button
     }()
     
     lazy var topChangeRightButton : UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "following"), for: .normal)
+        button.setImage(UIImage(named: "following")?.resize(targetSize: CGSize(width: 20, height: 20)), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = UIColor(hexCode: ColorConst.blackColorString, alpha: 1.00)
         return button
@@ -166,6 +172,7 @@ final class DetailViewController: UIViewController {
     var tableView : UITableView = {
         let tv = UITableView(frame: .zero, style: .insetGrouped)
         tv.translatesAutoresizingMaskIntoConstraints = false
+        tv.backgroundColor = .systemGray4.withAlphaComponent(0.05)
         return tv
     }()
     
@@ -176,6 +183,53 @@ final class DetailViewController: UIViewController {
         button.contentMode = .scaleAspectFit
         button.backgroundColor = .white
         button.clipsToBounds = true
+        return button
+    }()
+    
+    // MARK: - ToastView
+    lazy var toastView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 20
+        return view
+    }()
+    
+    let toastMainLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "해당 데이터를 삭제할까요?"
+        label.textColor = .blackColor
+        label.font = UIFont(size: 14.0)
+        return label
+    }()
+    
+    lazy var toastButtonStackView : UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [toastCancelButton, toastDeleteButton])
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.axis = .horizontal
+        sv.distribution = .fillEqually
+        sv.spacing = 0
+        sv.alignment = .fill
+        return sv
+    }()
+    
+    lazy var toastCancelButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("취소", for: .normal)
+        button.titleLabel?.font = UIFont(size: 14.0)
+        button.setTitleColor(.blackColor, for: .normal)
+        return button
+    }()
+    
+    lazy var toastDeleteButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("삭제", for: .normal)
+        button.titleLabel?.font = UIFont(size: 14.0)
+        button.setTitleColor(.blackColor, for: .normal)
         return button
     }()
     
@@ -197,6 +251,7 @@ final class DetailViewController: UIViewController {
         setAnimate()
         setTableView()
         setReactive()
+        setToastReactive()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -205,7 +260,6 @@ final class DetailViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         contentAddButton.layer.cornerRadius = contentAddButton.frame.width / 2
-        
         totalShowButton.layer.cornerRadius = totalShowButton.frame.height / 2
         incomeShowButton.layer.cornerRadius = incomeShowButton.frame.height / 2
         expendShowButton.layer.cornerRadius = expendShowButton.frame.height / 2
@@ -214,9 +268,10 @@ final class DetailViewController: UIViewController {
     func setTableView() {
         tableView.register(DetailTableViewCell.self, forCellReuseIdentifier: DetailTableViewCell.identifier)
         tableView.dataSource = nil
+        tableView.delegate = self
         tableView.rowHeight = 50
     }
-    
+
     func setLayout() {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.scrollEdgeAppearance = 
@@ -232,6 +287,7 @@ final class DetailViewController: UIViewController {
         view.addSubview(separatorLine)
         view.addSubview(tableView)
         view.addSubview(contentAddButton)
+        view.addSubview(toastView)
         
         topView.addSubview(topMonthLabel)
         topView.addSubview(topTotalPriceLabel)
@@ -244,6 +300,9 @@ final class DetailViewController: UIViewController {
         buttonView.addSubview(totalShowButton)
         buttonView.addSubview(incomeShowButton)
         buttonView.addSubview(expendShowButton)
+        
+        toastView.addSubview(toastMainLabel)
+        toastView.addSubview(toastButtonStackView)
         
         NSLayoutConstraint.activate([
             topView.heightAnchor.constraint(equalToConstant: 160),
@@ -265,13 +324,9 @@ final class DetailViewController: UIViewController {
             topChangeMonthLabel.centerXAnchor.constraint(equalTo: self.topChangeMonthView.centerXAnchor),
             topChangeMonthLabel.centerYAnchor.constraint(equalTo: self.topChangeMonthView.centerYAnchor),
             
-            topChangeLeftButton.widthAnchor.constraint(equalToConstant: 17),
-            topChangeLeftButton.heightAnchor.constraint(equalToConstant: 17),
             topChangeLeftButton.centerYAnchor.constraint(equalTo: self.topChangeMonthView.centerYAnchor),
             topChangeLeftButton.trailingAnchor.constraint(equalTo: self.topChangeMonthLabel.leadingAnchor, constant: -5),
-
-            topChangeRightButton.widthAnchor.constraint(equalToConstant: 17),
-            topChangeRightButton.heightAnchor.constraint(equalToConstant: 17),
+            
             topChangeRightButton.centerYAnchor.constraint(equalTo: self.topChangeMonthView.centerYAnchor),
             topChangeRightButton.leadingAnchor.constraint(equalTo: self.topChangeMonthLabel.trailingAnchor, constant: 5),
             
@@ -308,17 +363,31 @@ final class DetailViewController: UIViewController {
             contentAddButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
             contentAddButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30),
             contentAddButton.widthAnchor.constraint(equalToConstant: 60),
-            contentAddButton.heightAnchor.constraint(equalToConstant: 60)
+            contentAddButton.heightAnchor.constraint(equalToConstant: 60),
+        ])
+        
+        // MARK: - ToastView
+        NSLayoutConstraint.activate([
+            toastView.heightAnchor.constraint(equalToConstant: toastViewHeight),
+            toastView.widthAnchor.constraint(equalToConstant: 300),
+            toastView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            toastViewBottomAnchor,
+            
+            toastMainLabel.centerXAnchor.constraint(equalTo: toastView.centerXAnchor),
+            toastMainLabel.topAnchor.constraint(equalTo: self.toastView.topAnchor, constant: 55),
+            
+            toastButtonStackView.heightAnchor.constraint(equalToConstant: 50),
+            toastButtonStackView.leadingAnchor.constraint(equalTo: self.toastView.leadingAnchor),
+            toastButtonStackView.trailingAnchor.constraint(equalTo: self.toastView.trailingAnchor),
+            toastButtonStackView.bottomAnchor.constraint(equalTo: self.toastView.bottomAnchor),
         ])
     }
     
     func setGestures() {
-        let gesture = UILongPressGestureRecognizer()
-        gesture.minimumPressDuration = 0.5
-        tableView.addGestureRecognizer(gesture)
+        let tapGesture = UITapGestureRecognizer()
+        tableView.addGestureRecognizer(tapGesture)
         
-        gesture.rx.event
-            .filter { $0.state == .began }
+        tapGesture.rx.event
             .subscribe { [weak self] gesture in
                 guard let self = self, let gesture = gesture.element else {
                     print("DetailView - Gesture Subscribe Fail")
@@ -336,13 +405,8 @@ final class DetailViewController: UIViewController {
                 
                 guard let entityData = cell.entityData else { return }
                 
-                // TODO: - Legacy Code -> Coordinator로 바인딩
-                let deleteVC = DeleteToastView(viewModel: viewModel, entityData : entityData)
-                addChild(deleteVC)
-                view.addSubview(deleteVC.view)
-                deleteVC.didMove(toParent: self)
-                
-                deleteVC.view.frame = view.bounds
+                viewModel.selectedCellObserver.onNext(entityData)
+                becomeToastView()
             }.disposed(by: disposeBag)
     }
     
@@ -439,6 +503,56 @@ final class DetailViewController: UIViewController {
         viewModel.totalAmountObservable
             .observe(on: MainScheduler.instance)
             .bind(to: topTotalPriceLabel.rx.text)
+            .disposed(by: disposeBag)
+    }
+}
+
+// MARK: - HeaderFooter Label 색 설정 -> 추후에 바인딩 방법으로 할 예정
+extension DetailViewController : UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let header = view as? UITableViewHeaderFooterView {
+            header.textLabel?.textColor = .gray.withAlphaComponent(0.6)
+        }
+    }
+}
+
+// MARK: - Toast 관련 코드
+extension DetailViewController {
+    func becomeToastView() {
+        toastViewBottomAnchor.constant = -((view.frame.height / 2) - (toastViewHeight / 2))
+        view.layoutIfNeeded()
+//        UIView.animate(withDuration: 0.1) { [weak self] in
+//            guard let self = self else { return }
+//            
+//        }
+    }
+    
+    func resignToastView() {
+        toastViewBottomAnchor.constant = toastViewHeight
+        view.layoutIfNeeded()
+//        UIView.animate(withDuration: 0.1) { [weak self] in
+//            guard let self = self else { return }
+//            
+//        }
+    }
+    
+    func setToastReactive() {
+        // MARK: - cancelButton 클릭 바인딩
+        toastCancelButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                resignToastView()
+            }.disposed(by: disposeBag)
+        
+        // MARK: - deleteButton 클릭 바인딩 (Entity 제거)
+        toastDeleteButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                resignToastView()
+                viewModel.removeCellObserver.onNext(())
+            }
             .disposed(by: disposeBag)
     }
 }

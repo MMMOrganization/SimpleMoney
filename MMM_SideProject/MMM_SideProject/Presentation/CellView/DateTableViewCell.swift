@@ -52,6 +52,7 @@ class DateTableViewCell: UITableViewCell {
     
     func configure(dateStr : String) {
         dateLabel.text = dateStr
+        contentView.backgroundColor = .white
         selectionStyle = .none
     }
 }

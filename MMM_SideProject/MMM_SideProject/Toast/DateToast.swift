@@ -11,7 +11,6 @@ import RxCocoa
 
 class DateToastView : UIViewController {
     
-    // TODO: - ViewModel을 받아서 DatePicker가 변경될 때마다 Date를 전달할 수 있도록 하자.
     var viewModel : CreateViewModelInterface!
     var disposeBag : DisposeBag = .init()
     
@@ -41,6 +40,7 @@ class DateToastView : UIViewController {
         picker.translatesAutoresizingMaskIntoConstraints = false
         picker.preferredDatePickerStyle = .wheels
         picker.datePickerMode = .date
+        picker.overrideUserInterfaceStyle = .light
         picker.locale = Locale(identifier: "ko_KR")
         return picker
     }()

@@ -43,15 +43,15 @@ class CreateViewController: UIViewController {
     }()
     
     lazy var dismissButton : UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        let button = UIButton()
+        button.setImage(UIImage(named: "leftImage")?.resize(targetSize: CGSize(width: 25, height: 25)), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
     }()
     
     lazy var saveButton : UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setImage(UIImage(named: "checkImage"), for: .normal)
+        let button = UIButton()
+        button.setImage(UIImage(named: "checkImage")?.resize(targetSize: CGSize(width: 25, height: 25)), for: .normal)
         return button
     }()
     
@@ -121,6 +121,7 @@ class CreateViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: FontConst.mainFont, size: 35)
+        label.textColor = .blackColor
         label.textAlignment = .center
         return label
     }()
@@ -150,6 +151,7 @@ class CreateViewController: UIViewController {
         flowLayout.minimumLineSpacing = 20 // 줄 간격
     
         let cv = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        cv.backgroundColor = .white
         cv.translatesAutoresizingMaskIntoConstraints = false
         return cv
     }()
@@ -483,7 +485,7 @@ private extension CreateViewController {
             lazy var button : UIButton = {
                 let b = UIButton()
                 b.translatesAutoresizingMaskIntoConstraints = false
-                b.setImage(UIImage(named: "DateImage"), for: .normal)
+                b.setImage(UIImage(named: "checkImage")?.resize(targetSize: CGSize(width: 20, height: 20)), for: .normal)
                 b.backgroundColor = .white
                 b.tag = num
                 setKeyboardTapBinding(b)
@@ -494,7 +496,7 @@ private extension CreateViewController {
             lazy var button : UIButton = {
                 let b = UIButton()
                 b.translatesAutoresizingMaskIntoConstraints = false
-                b.setImage(UIImage(named: "DateImage"), for: .normal)
+                b.setImage(UIImage(named: "closeButton")?.resize(targetSize: CGSize(width: 20, height: 20)), for: .normal)
                 b.backgroundColor = .white
                 b.tag = num
                 setKeyboardTapBinding(b)

@@ -14,13 +14,14 @@ protocol DetailViewModelInterface {
     var plusButtonObserver : AnyObserver<Void> { get }
     var viewWillAppearObserver : AnyObserver<Void> { get }
     var graphButtonObserver : AnyObserver<Void> { get }
+    var selectedCellObserver : AnyObserver<Entity> { get }
+    var removeCellObserver : AnyObserver<Void> { get }
     
     var totalDataObserver : AnyObserver<ButtonType> { get }
     var incomeDataObserver : AnyObserver<ButtonType> { get }
     var expendDataObserver : AnyObserver<ButtonType> { get }
     var dateIncreaseButtonObserver : AnyObserver<DateButtonType> { get }
     var dateDecreaseButtonObserver : AnyObserver<DateButtonType> { get }
-    var deleteDataObserver : AnyObserver<Entity> { get }
     
     var sectionModelObservable : Observable<[SectionModel]> { get }
     var selectedButtonIndexObservable : Observable<Int> { get }
@@ -40,6 +41,8 @@ class DetailViewModel : DetailViewModelInterface {
     
     var disposeBag : DisposeBag = DisposeBag()
     
+    var selectedData : Entity?
+    
     // MARK: - Observer (Subject)
     var dateButtonSubject : PublishSubject<Void>
     var plusButtonSubject : PublishSubject<Void>
@@ -50,7 +53,8 @@ class DetailViewModel : DetailViewModelInterface {
     var expendDataSubject : PublishSubject<ButtonType>
     var dateIncreaseButtonSubject : PublishSubject<DateButtonType>
     var dateDecreaseButtonSubject : PublishSubject<DateButtonType>
-    var deleteDataSubject : PublishSubject<Entity>
+    var selectedCellSubject : PublishSubject<Entity>
+    var removeCellSubject : PublishSubject<Void>
     
     
     // MARK: - Observable (Subject)
@@ -69,8 +73,8 @@ class DetailViewModel : DetailViewModelInterface {
     var expendDataObserver: AnyObserver<ButtonType>
     var dateIncreaseButtonObserver: AnyObserver<DateButtonType>
     var dateDecreaseButtonObserver: AnyObserver<DateButtonType>
-    var deleteDataObserver: AnyObserver<Entity>
-    
+    var selectedCellObserver: AnyObserver<Entity>
+    var removeCellObserver: AnyObserver<Void>
     
     // MARK: - Observable
     var entityObservable: Observable<[Entity]>
@@ -115,7 +119,8 @@ class DetailViewModel : DetailViewModelInterface {
         expendDataSubject = PublishSubject<ButtonType>()
         dateDecreaseButtonSubject = PublishSubject<DateButtonType>()
         dateIncreaseButtonSubject = PublishSubject<DateButtonType>()
-        deleteDataSubject = PublishSubject<Entity>()
+        selectedCellSubject = PublishSubject<Entity>()
+        removeCellSubject = PublishSubject<Void>()
         
         // MARK: - Observable (Subject)
         selectedButtonIndexSubject = PublishSubject<Int>()
@@ -131,7 +136,8 @@ class DetailViewModel : DetailViewModelInterface {
         expendDataObserver = expendDataSubject.asObserver()
         dateDecreaseButtonObserver = dateDecreaseButtonSubject.asObserver()
         dateIncreaseButtonObserver = dateIncreaseButtonSubject.asObserver()
-        deleteDataObserver = deleteDataSubject.asObserver()
+        selectedCellObserver = selectedCellSubject.asObserver()
+        removeCellObserver = removeCellSubject.asObserver()
         
         // MARK: - Observable
         selectedButtonIndexObservable = selectedButtonIndexSubject
@@ -194,12 +200,27 @@ class DetailViewModel : DetailViewModelInterface {
         }.disposed(by: disposeBag) }
         
         // MARK: - Toast Delete 버튼 Click 바인딩
-        deleteDataSubject.subscribe { [weak self] entityData in
-            guard let self = self, let entity = entityData.element else { return
-            }
-            self.repository.deleteData(id: entity.id)
-            self.entitySubject.onNext(self.repository.readData())
+        selectedCellSubject.subscribe { [weak self] entityData in
+            guard let self = self, let entityData = entityData.element else { return }
+            setSelectedData(entityData)
         }.disposed(by: disposeBag)
+        
+        removeCellSubject.subscribe { [weak self] _ in
+            guard let self = self else { return }
+            guard let entityData = getSelectedData() else { return }
+            repository.deleteData(id: entityData.id)
+            entitySubject.onNext(repository.readData())
+        }.disposed(by: disposeBag)
+    }
+}
+
+extension DetailViewModel {
+    func setSelectedData(_ data : Entity) {
+        selectedData = data
+    }
+    
+    func getSelectedData() -> Entity? {
+        return selectedData
     }
 }
 

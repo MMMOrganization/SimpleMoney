@@ -20,43 +20,43 @@ struct CreateCellIcon {
     
     static func readExpendData(at index : Int) -> [CreateCellIcon] {
         var dummyDataList = [
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType:.expend)
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType:.expend)
                             ]
         
         dummyDataList[index] =
-        CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend, isSelected: true)
+        CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend, isSelected: true)
         
         return dummyDataList
     }
     
     static func readIncomeData(at index : Int) -> [CreateCellIcon] {
         var dummyDataList = [
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .income)
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
+                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income)
                             ]
         
         dummyDataList[index] =
-        CreateCellIcon(iconImage: UIImage(named: "DateImage2") ?? UIImage(), createType: .expend, isSelected: true)
+        CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend, isSelected: true)
         
         return dummyDataList
     }
     
     static func readIconImage(at index : Int) -> UIImage {
-        return UIImage(named : "DateImage2") ?? UIImage()
+        return UIImage(named : "dateImage") ?? UIImage()
     }
 }

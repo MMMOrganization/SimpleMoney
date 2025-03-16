@@ -27,8 +27,8 @@ class CalendarViewController: UIViewController {
     })
     
     lazy var dismissButton : UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 10, height: 12))
-        button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        let button = UIButton()
+        button.setImage(UIImage(named: "leftImage")?.resize(targetSize: CGSize(width: 25, height: 25)), for: .normal)
         button.tintColor = UIColor(hexCode: ColorConst.mainColorString)
         return button
     }()
@@ -94,7 +94,7 @@ class CalendarViewController: UIViewController {
     lazy var headerStack : UIStackView = {
         let sv = UIStackView(arrangedSubviews: [previousButton, titleLabel, nextButton])
         sv.translatesAutoresizingMaskIntoConstraints = false
-        sv.distribution = .fill
+        sv.distribution = .fillEqually
         sv.spacing = 10
         sv.alignment = .fill
         sv.axis = .horizontal
@@ -113,14 +113,14 @@ class CalendarViewController: UIViewController {
     lazy var previousButton : UIButton = {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "previous"), for: .normal)
+        button.setImage(UIImage(named: "previous")?.resize(targetSize: CGSize(width: 20, height: 20)), for: .normal)
         return button
     }()
     
     lazy var nextButton : UIButton = {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "following"), for: .normal)
+        button.setImage(UIImage(named: "following")?.resize(targetSize: CGSize(width: 20, height: 20)), for: .normal)
         return button
     }()
     
@@ -130,6 +130,7 @@ class CalendarViewController: UIViewController {
     
     let tableView : UITableView = {
         let tv = UITableView()
+        tv.backgroundColor = .white
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()
@@ -176,14 +177,6 @@ class CalendarViewController: UIViewController {
         topView.addSubview(calendarView)
         
         NSLayoutConstraint.activate([
-            
-            // MARK: - previous, next Button Width Height
-            previousButton.widthAnchor.constraint(equalToConstant: 17),
-            previousButton.heightAnchor.constraint(equalToConstant: 17),
-            
-            nextButton.widthAnchor.constraint(equalToConstant: 17),
-            nextButton.heightAnchor.constraint(equalToConstant: 17),
-            
             // MARK: - headerStack Layout
             headerStack.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20),
             headerStack.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 40),

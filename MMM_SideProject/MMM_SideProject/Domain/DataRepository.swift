@@ -77,7 +77,6 @@ class DataRepository : DataRepositoryInterface {
     func readAmountsDict() -> [String : Int] {
         var amountsDict : [String : Int] = .init()
         
-        // TODO: - Concurrency 적용 필요
         guard let realm = try? Realm() else {
             print("MockData - Realm Error readAmountsDict")
             return [:]

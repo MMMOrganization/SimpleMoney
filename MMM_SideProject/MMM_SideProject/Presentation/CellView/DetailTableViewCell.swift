@@ -9,12 +9,11 @@ import UIKit
 import RxSwift
 
 class DetailTableViewCell: UITableViewCell {
-
-    var cellStyle : DetailCellStyle = .compact
-    
-    var disposeBag : DisposeBag = .init()
     
     static let identifier = "DetailCell"
+    
+    var cellStyle : DetailCellStyle = .compact
+    var disposeBag : DisposeBag = .init()
     
     var entityData : Entity?
     
@@ -68,6 +67,7 @@ class DetailTableViewCell: UITableViewCell {
             contentView.frame = bounds.inset(by: UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0))
         }
         
+        contentView.layoutIfNeeded()
         imageBorderView.layer.cornerRadius = imageBorderView.frame.height / 2
     }
     
@@ -104,11 +104,13 @@ class DetailTableViewCell: UITableViewCell {
         self.cellStyle = style
         self.entityData = item
         
-        self.mainImageView.image = item.iconImage
+        self.mainImageView.image = item.iconImage.resize(targetSize: CGSize(width: 20, height: 20))
         self.mainLabel.text = item.typeStr
         self.dateLabel.text = item.dateStr
         self.moneyLabel.text = item.amount.toCurrency
+        self.backgroundColor = .white
         self.contentView.layer.cornerRadius = 15
+        self.contentView.backgroundColor = .white
         setNeedsLayout()
     }
     
@@ -126,8 +128,6 @@ class DetailTableViewCell: UITableViewCell {
             imageBorderView.heightAnchor.constraint(equalToConstant: 30),
             imageBorderView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
             
-            mainImageView.widthAnchor.constraint(equalToConstant: 20),
-            mainImageView.heightAnchor.constraint(equalToConstant: 20),
             mainImageView.centerXAnchor.constraint(equalTo: self.imageBorderView.centerXAnchor),
             mainImageView.centerYAnchor.constraint(equalTo: self.imageBorderView.centerYAnchor),
             
