@@ -115,6 +115,8 @@ class CreateViewController: UIViewController {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.isHidden = true
+        tf.layer.shouldRasterize = true
+        tf.layer.rasterizationScale = UIScreen.main.scale
         tf.keyboardType = .default
         return tf
     }()

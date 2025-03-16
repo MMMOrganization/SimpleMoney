@@ -251,6 +251,14 @@ class CalendarViewController: UIViewController {
             .subscribe { _ in
                 self.calendarView.reloadData()
             }.disposed(by: disposeBag)
+        
+        // MARK: - TableView 데이터가 없을 경우 대체할 View
+        viewModel.dataObservable
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] entityData in
+                guard let self = self, let entityData = entityData.element else { return }
+                tableView.backgroundView = (entityData.count == 0) ? UIView.getEmptyView(width: tableView.bounds.width, height: tableView.bounds.height) : nil
+            }.disposed(by: disposeBag)
     }
 }
 

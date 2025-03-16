@@ -179,8 +179,6 @@ class GraphViewController: UIViewController {
         )
     }
     
-    
-    
     func setLayout() {
         view.backgroundColor = .white
         
@@ -280,9 +278,15 @@ class GraphViewController: UIViewController {
                 guard let self = self else { return }
                 becomeToastView()
             }.disposed(by: disposeBag)
+        
+        // MARK: - TableView 데이터가 없을 경우 대체할 View
+        viewModel.entityDataObservable
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] entityData in
+                guard let self = self, let entityData = entityData.element else { return }
+                graphTableView.backgroundView = (entityData.count == 0) ? UIView.getEmptyView(width: graphTableView.bounds.width, height: graphTableView.bounds.height) : nil
+            }.disposed(by: disposeBag)
     }
-    
-    
 }
 
 // MARK: - ToastView

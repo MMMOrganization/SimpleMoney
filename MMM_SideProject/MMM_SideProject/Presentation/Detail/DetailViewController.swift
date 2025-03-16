@@ -502,6 +502,13 @@ final class DetailViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: topTotalPriceLabel.rx.text)
             .disposed(by: disposeBag)
+        
+        // MARK: - TableView 데이터가 없을 경우 대체할 View
+        viewModel.sectionModelObservable
+            .subscribe { [weak self] sectionModel in
+                guard let self = self, let sectionModel = sectionModel.element else { return }
+                tableView.backgroundView = (sectionModel.count == 0) ? UIView.getEmptyView(width: tableView.bounds.width, height: tableView.bounds.height) : nil
+            }.disposed(by: disposeBag)
     }
 }
 
