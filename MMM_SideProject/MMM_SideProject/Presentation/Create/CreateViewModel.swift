@@ -160,7 +160,7 @@ class CreateViewModel : CreateViewModelInterface {
                 realm.add(userDB)
             }
             
-            self.delegate?.popCreateVC()
+            delegate?.popCreateVC()
         }.disposed(by: disposeBag)
         
         // MARK: - CreateCell Icon 과 지출, 수입 버튼의 바인딩
@@ -175,13 +175,15 @@ class CreateViewModel : CreateViewModelInterface {
             guard let self = self, let index = indexPath.element else { return }
             dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: index))
             
+            // TODO: - 메소드 사용
             self.iconImage = CreateCellIcon.readIconImage(at: index)
-            // TODO: - iconImage 받아와야 함.
         }.disposed(by: disposeBag)
         
         // MARK: - Date 클릭시에 ViewModel이 가지는 dateString과의 바인딩
         stringDateSubject.subscribe { [weak self] stringDate in
             guard let self = self, let stringDate = stringDate.element else { return }
+            
+            // TODO: - 메소드 사용
             self.dateString = stringDate
         }.disposed(by: disposeBag)
         
@@ -239,7 +241,7 @@ extension CreateViewModel {
     func plusInputMoney(_ num : String) {
         //0을 계속 클릭하면 000000.. 하고 계속 늘어나는 것을 막기 위해
         guard let inputMoneyAmount = Int("\(inputMoney)\(num)") else { return }
-        self.inputMoney = String(inputMoneyAmount)
+        inputMoney = String(inputMoneyAmount)
     }
     
     func minusInputMoney() {
@@ -248,6 +250,6 @@ extension CreateViewModel {
     }
     
     func setTypeString(_ typeName : String) {
-        self.typeString = typeName
+        typeString = typeName
     }
 }

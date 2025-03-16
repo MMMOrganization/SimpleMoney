@@ -24,7 +24,7 @@ class CalendarCoordinator : Coordinator, CalendarViewModelDelegate {
         calendarViewModel.delegate = self
         let calendarViewController = CalendarViewController(viewModel: calendarViewModel)
         
-        self.navigationController.pushViewController(calendarViewController, animated: true)
+        navigationController.pushViewController(calendarViewController, animated: true)
     }
     
     func popCalendarVC() {

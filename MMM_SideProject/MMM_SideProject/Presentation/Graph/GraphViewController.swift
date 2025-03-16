@@ -150,8 +150,8 @@ class GraphViewController: UIViewController {
     }
     
     func setNavigationController() {
-        self.navigationItem.leftBarButtonItem = dismissButtonItem
-        self.navigationItem.titleView = navigationTitleButton
+        navigationItem.leftBarButtonItem = dismissButtonItem
+        navigationItem.titleView = navigationTitleButton
     }
     
     func setDelegate() {
@@ -264,7 +264,7 @@ class GraphViewController: UIViewController {
             .subscribe { [weak self] eventList in
                 guard let eventList = eventList.element else { return }
                 guard let self = self else { return }
-                self.setPieChart(eventList: eventList)
+                setPieChart(eventList: eventList)
             }.disposed(by: disposeBag)
         
         viewModel.dateObservable
@@ -304,7 +304,7 @@ extension GraphViewController {
     }
     
     func resignToastView() {
-        self.toastMainViewBottomAnchor.constant = toastMainViewHeight
+        toastMainViewBottomAnchor.constant = toastMainViewHeight
         
         UIView.animate(withDuration: 0.2) { [weak self] in
             guard let self = self else { return }

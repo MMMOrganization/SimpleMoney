@@ -190,7 +190,10 @@ class DetailViewModel : DetailViewModelInterface {
         
         // MARK: - Date 버튼 <-> Date에 따른 불러오는 Entity 바인딩
         [dateDecreaseButtonSubject, dateIncreaseButtonSubject].forEach {
-            $0.map { _ in (self.repository.readDate(), self.repository.readData()) }
+            $0.map { [weak self] _ in
+                guard let self = self else { return ("", [Entity]()) }
+                return (repository.readDate(), repository.readData())
+            }
             .subscribe { [weak self] emittedData in
             guard let (date, data) = emittedData.element, let self = self else {
                 return

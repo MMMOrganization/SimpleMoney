@@ -23,12 +23,12 @@ class GraphCoordinator : Coordinator, GraphViewModelDelegate {
         viewModel.delegate = self
         
         let graphViewController = GraphViewController(viewModel: viewModel)
-        self.navigationController.pushViewController(graphViewController, animated: true)
+        navigationController.pushViewController(graphViewController, animated: true)
     }
     
     func popGraphVC() {
         parentCoordinator?.removeChild(self)
-        self.navigationController.popViewController(animated: true)
+        navigationController.popViewController(animated: true)
     }
     
     deinit {

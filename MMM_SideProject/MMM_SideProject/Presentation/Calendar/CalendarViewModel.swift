@@ -122,6 +122,7 @@ class CalendarViewModel : CalendarViewModelInterface {
                 return
             }
             
+            // TODO: - 메소드 사용
             self.amountsDict = amountsDict
         }.disposed(by: disposeBag)
     }

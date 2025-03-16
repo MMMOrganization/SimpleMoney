@@ -248,8 +248,9 @@ class CalendarViewController: UIViewController {
         // MARK: - Calendar DayOfMonth Amount 바인딩
         viewModel.dailyAmountsObservable
             .observe(on: MainScheduler.instance)
-            .subscribe { _ in
-                self.calendarView.reloadData()
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                calendarView.reloadData()
             }.disposed(by: disposeBag)
         
         // MARK: - TableView 데이터가 없을 경우 대체할 View

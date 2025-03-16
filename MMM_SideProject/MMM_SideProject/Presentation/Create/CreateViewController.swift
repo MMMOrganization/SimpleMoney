@@ -115,8 +115,10 @@ class CreateViewController: UIViewController {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.isHidden = true
-        tf.layer.shouldRasterize = true
-        tf.layer.rasterizationScale = UIScreen.main.scale
+        // MARK: - 수정 제안 제거 (이걸로 인해서 Keyboard가 먹통이 되는 버그가 생김.)
+        // MARK: - 여전히 사라지지 않음. Xcode BuildTool 버그
+        tf.autocorrectionType = .no
+        tf.spellCheckingType = .no
         tf.keyboardType = .default
         return tf
     }()
@@ -375,7 +377,10 @@ class CreateViewController: UIViewController {
         typeTapGesture.rx.event
             .subscribe { [weak self] _ in
                 guard let self = self else { return }
-                typeHiddenTextField.becomeFirstResponder()
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    typeHiddenTextField.becomeFirstResponder()
+                }
             }.disposed(by: disposeBag)
         
         inputMoneyTapGesture.rx.event
@@ -419,8 +424,9 @@ class CreateViewController: UIViewController {
                     outLineViewLeadingAnchor.constant -= topStackView.frame.width / 2
                     outLineViewTrailingAnchor.constant -= topStackView.frame.width / 2
                 }
-                UIView.animate(withDuration: 0.3) {
-                    self.view.layoutIfNeeded()
+                UIView.animate(withDuration: 0.3) { [weak self] in
+                    guard let self = self else { return }
+                    view.layoutIfNeeded()
                 }
             }.disposed(by: disposeBag)
         
@@ -432,8 +438,9 @@ class CreateViewController: UIViewController {
                     outLineViewLeadingAnchor.constant += topStackView.frame.width / 2
                     outLineViewTrailingAnchor.constant += topStackView.frame.width / 2
                 }
-                UIView.animate(withDuration: 0.3) {
-                    self.view.layoutIfNeeded()
+                UIView.animate(withDuration: 0.3) { [weak self] in
+                    guard let self = self else { return }
+                    view.layoutIfNeeded()
                 }
             }.disposed(by: disposeBag)
         

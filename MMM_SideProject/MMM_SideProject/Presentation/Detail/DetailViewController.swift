@@ -387,8 +387,8 @@ final class DetailViewController: UIViewController {
                     print("DetailView - Gesture Subscribe Fail")
                     return }
                 
-                let touchPoint : CGPoint = gesture.location(in: self.tableView)
-                guard let indexPath = self.tableView.indexPathForRow(at: touchPoint) else {
+                let touchPoint : CGPoint = gesture.location(in: tableView)
+                guard let indexPath = tableView.indexPathForRow(at: touchPoint) else {
                     print("DetailView - Gesture IndexPath Fail")
                     return
                 }
@@ -413,7 +413,7 @@ final class DetailViewController: UIViewController {
     }
     
     func setReactive() {
-        self.rx.viewWillAppear
+        rx.viewWillAppear
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.viewWillAppearObserver)
             .disposed(by: disposeBag)
@@ -523,19 +523,11 @@ extension DetailViewController {
         // MARK: - 화면 정중앙에 애니메이션
         toastViewBottomAnchor.constant = -((view.frame.height / 2) - (toastViewHeight / 2))
         view.layoutIfNeeded()
-//        UIView.animate(withDuration: 0.1) { [weak self] in
-//            guard let self = self else { return }
-//            
-//        }
     }
     
     func resignToastView() {
         toastViewBottomAnchor.constant = toastViewHeight
         view.layoutIfNeeded()
-//        UIView.animate(withDuration: 0.1) { [weak self] in
-//            guard let self = self else { return }
-//            
-//        }
     }
     
     func setToastReactive() {

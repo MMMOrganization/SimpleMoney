@@ -287,14 +287,14 @@ class MainViewController: UIViewController {
     }
     
     func setLayout() {
-        self.view.backgroundColor = .white
+        view.backgroundColor = .white
         
         // MARK: - Scroll View 추가
-        self.view.addSubview(scrollView)
-        self.scrollView.addSubview(contentView)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
         
-        self.contentView.addSubview(topView)
-        self.contentView.addSubview(topConstantLabel)
+        contentView.addSubview(topView)
+        contentView.addSubview(topConstantLabel)
         self.contentView.addSubview(topExpendLabel)
         
         self.contentView.addSubview(recentlyStackView)

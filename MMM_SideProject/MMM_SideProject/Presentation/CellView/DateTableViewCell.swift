@@ -24,7 +24,7 @@ class DateTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.disposeBag = .init()
+        disposeBag = .init()
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -42,7 +42,7 @@ class DateTableViewCell: UITableViewCell {
     }
     
     func setLayout() {
-        self.contentView.addSubview(dateLabel)
+        contentView.addSubview(dateLabel)
         
         NSLayoutConstraint.activate([
             dateLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),

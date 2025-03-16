@@ -25,7 +25,7 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
         
         let detailViewController = DetailViewController(viewModel : detailViewModel)
         
-        self.navigationController.pushViewController(detailViewController, animated: true)
+        navigationController.pushViewController(detailViewController, animated: true)
     }
     
     func pushCalendarVC() {
