@@ -25,6 +25,10 @@ class CreateViewController: UIViewController {
     lazy var keyboardHeight : CGFloat = 400
     lazy var keyboardBottomAnchor = keyboardView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: keyboardHeight)
     
+    // MARK: - dateToastView 애니메이션
+    lazy var toastDateHeight : CGFloat = 250
+    lazy var toastDateViewBottomAnchor = toastDateView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: toastDateHeight)
+    
     // MARK: - Gesture 설정
     lazy var typeTapGesture = UITapGestureRecognizer()
     lazy var inputMoneyTapGesture = UITapGestureRecognizer()
@@ -92,10 +96,8 @@ class CreateViewController: UIViewController {
     lazy var dateButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle(YearMonthDay().toStringYearMonthDay(), for: .normal)
         button.setBackgroundColor(UIColor(hexCode: ColorConst.mainColorString, alpha: 0.20), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .medium)
-        button.addTarget(self, action: #selector(buttontapped), for: .touchUpInside)
         button.setTitleColor(.blackColor, for: .normal)
         button.clipsToBounds = true
         return button
@@ -163,6 +165,25 @@ class CreateViewController: UIViewController {
         return v
     }()
     
+    lazy var toastDateView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 15
+        view.backgroundColor = .white
+        return view
+    }()
+    
+    let toastDatePicker : UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        picker.preferredDatePickerStyle = .wheels
+        picker.datePickerMode = .date
+        picker.overrideUserInterfaceStyle = .light
+        picker.locale = Locale(identifier: "ko_KR")
+        return picker
+    }()
+    
     lazy var keyboardStackView : UIStackView = {
         let sv = UIStackView()
         sv.translatesAutoresizingMaskIntoConstraints = false
@@ -208,6 +229,7 @@ class CreateViewController: UIViewController {
         setLayout()
         setCollectionView()
         setGesture()
+        setToastReactive()
         setReactive()
         // Do any additional setup after loading the view.
     }
@@ -239,15 +261,7 @@ class CreateViewController: UIViewController {
         super.touchesBegan(touches, with: event)
         typeHiddenTextField.resignFirstResponder()
         customKeyboardResign()
-    }
-    
-    // TODO: - Lagacy (바인딩으로 변경 필요)
-    @objc func buttontapped() {
-        let dateVC = DateToastView(viewModel: viewModel)
-        addChild(dateVC)
-        view.addSubview(dateVC.view)
-        dateVC.didMove(toParent: self)
-        dateVC.view.frame = view.bounds
+        resignToastDateView()
     }
     
     func setLayout() {
@@ -267,6 +281,9 @@ class CreateViewController: UIViewController {
         view.addSubview(iconConstLabel)
         view.addSubview(iconCollectionView)
         view.addSubview(keyboardView)
+        view.addSubview(toastDateView)
+        
+        toastDateView.addSubview(toastDatePicker)
         
         keyboardView.addSubview(keyboardStackView)
         
@@ -327,6 +344,18 @@ class CreateViewController: UIViewController {
             keyboardStackView.topAnchor.constraint(equalTo: self.keyboardView.topAnchor),
             keyboardStackView.bottomAnchor.constraint(equalTo: self.keyboardView.bottomAnchor),
         ])
+        
+        // MARK: - ToastDate Layout
+        NSLayoutConstraint.activate([
+            toastDateView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 5),
+            toastDateView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -5),
+            toastDateView.heightAnchor.constraint(equalToConstant: toastDateHeight),
+            toastDateView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            toastDateViewBottomAnchor,
+            
+            toastDatePicker.centerXAnchor.constraint(equalTo: self.toastDateView.centerXAnchor),
+            toastDatePicker.topAnchor.constraint(equalTo: self.toastDateView.topAnchor, constant: 20),
+        ])
     }
     
     func setReactive() {
@@ -354,6 +383,7 @@ class CreateViewController: UIViewController {
                 guard let self = self else { return }
                 customKeyboardResign()
                 typeHiddenTextField.resignFirstResponder()
+                resignToastDateView()
             }.disposed(by: disposeBag)
         
         // MARK: - SaveButton 바인딩
@@ -454,15 +484,24 @@ class CreateViewController: UIViewController {
                 
                 ToastManager.shared.showToast(message: errorMessage)
             }.disposed(by: disposeBag)
+        
+        dateButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                becomeToastDateView()
+                typeHiddenTextField.resignFirstResponder()
+                customKeyboardResign()
+            }.disposed(by: disposeBag)
     }
 }
-
-
 
 
 // MARK: - Custom Keyboard, KeyBoard Method
 private extension CreateViewController {
     func customKeyboardResign() {
+        if keyboardBottomAnchor.constant == keyboardHeight { return }
+        
         keyboardBottomAnchor.constant = keyboardHeight
         UIView.animate(withDuration: 0.2) { [weak self] in
             guard let self = self else { return }
@@ -471,6 +510,8 @@ private extension CreateViewController {
     }
     
     func customKeyboardBecome() {
+        if keyboardBottomAnchor.constant == 0 { return }
+        
         keyboardBottomAnchor.constant = 0
         UIView.animate(withDuration: 0.2) { [weak self] in
             guard let self = self else { return }
@@ -543,6 +584,44 @@ private extension CreateViewController {
     }
 }
 
-extension CreateViewController : UITextFieldDelegate {
+
+// MARK: - DateToastView Method
+private extension CreateViewController {
+    func setToastReactive() {
+        // MARK: - Date를 설정할 때마다 Date를 추적하는 스트림
+        toastDatePicker.rx.date
+            .observe(on: MainScheduler.instance)
+            .map {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                let formattedDate = dateFormatter.string(from: $0)
+                return formattedDate
+            }
+            .bind(to: viewModel.stringDateObserver)
+            .disposed(by: disposeBag)
+    }
     
+    func resignToastDateView() {
+        if toastDateViewBottomAnchor.constant == toastDateHeight { return }
+        
+        toastDateViewBottomAnchor.constant = toastDateHeight
+        
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
+            view.layoutIfNeeded()
+        }
+    }
+    
+    func becomeToastDateView() {
+        if toastDateViewBottomAnchor.constant == 0 { return }
+        
+        toastDateViewBottomAnchor.constant = 0
+        
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
+            view.layoutIfNeeded()
+        }
+    }
 }
+
+

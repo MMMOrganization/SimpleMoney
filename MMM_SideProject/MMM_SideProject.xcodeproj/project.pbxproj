@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2602BF0A2D7EB39E0002DECD /* DateToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602BF092D7EB39E0002DECD /* DateToast.swift */; };
 		2602BF102D7FFBB20002DECD /* DateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602BF0F2D7FFBB20002DECD /* DateTableViewCell.swift */; };
 		2602BF122D8162820002DECD /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602BF112D8162820002DECD /* UIViewController+Extension.swift */; };
 		2602BF352D855A530002DECD /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602BF342D855A530002DECD /* UIImage+Extension.swift */; };
@@ -70,7 +69,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2602BF092D7EB39E0002DECD /* DateToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateToast.swift; sourceTree = "<group>"; };
 		2602BF0F2D7FFBB20002DECD /* DateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTableViewCell.swift; sourceTree = "<group>"; };
 		2602BF112D8162820002DECD /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		2602BF342D855A530002DECD /* UIImage+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
@@ -149,7 +147,6 @@
 			isa = PBXGroup;
 			children = (
 				267DDB732D75ABBD00F66CB8 /* ToastMessage.swift */,
-				2602BF092D7EB39E0002DECD /* DateToast.swift */,
 			);
 			path = Toast;
 			sourceTree = "<group>";
@@ -450,7 +447,6 @@
 				267DDA262D2ADA1000F66CB8 /* UIFont+Extension.swift in Sources */,
 				267DDABA2D3391A500F66CB8 /* CreateCoordinator.swift in Sources */,
 				267DD9F02D24405900F66CB8 /* CalendarViewController.swift in Sources */,
-				2602BF0A2D7EB39E0002DECD /* DateToast.swift in Sources */,
 				267DD9D22D211AF800F66CB8 /* DetailTableViewCell.swift in Sources */,
 				267DDAC62D33C93200F66CB8 /* CreateViewModel.swift in Sources */,
 				267DD9D12D211AF800F66CB8 /* CreateViewController.swift in Sources */,
