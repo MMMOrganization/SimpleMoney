@@ -115,6 +115,10 @@ class CreateViewController: UIViewController {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.isHidden = true
+        // MARK: - 수정 제안 제거 (이걸로 인해서 Keyboard가 먹통이 되는 버그가 생김.)
+        // MARK: - 여전히 사라지지 않음. Xcode BuildTool 버그
+        tf.autocorrectionType = .no
+        tf.spellCheckingType = .no
         tf.keyboardType = .default
         return tf
     }()
@@ -131,7 +135,7 @@ class CreateViewController: UIViewController {
     let separatorLine : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.70)
+        view.backgroundColor = .mainColor.withAlphaComponent(0.7)
         return view
     }()
     
@@ -144,13 +148,17 @@ class CreateViewController: UIViewController {
         return label
     }()
     
-    let iconCollectionView : UICollectionView = {
+    lazy var iconCollectionView : UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         
         flowLayout.scrollDirection = .vertical
-        flowLayout.itemSize = CGSize(width: 70, height: 70)
-        flowLayout.minimumInteritemSpacing = 23 // 아이템 사이 간격
-        flowLayout.minimumLineSpacing = 20 // 줄 간격
+        
+        let beforeItemSize = (view.frame.width - 30) / 4
+        let itemSize = beforeItemSize - (beforeItemSize / 4)
+        
+        flowLayout.itemSize = CGSize(width: itemSize, height: itemSize)
+        flowLayout.minimumInteritemSpacing = (itemSize / 4) // 아이템 사이 간격
+        flowLayout.minimumLineSpacing = (itemSize / 4) // 줄 간격
     
         let cv = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         cv.backgroundColor = .white
@@ -226,6 +234,8 @@ class CreateViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        setNavigation()
         setLayout()
         setCollectionView()
         setGesture()
@@ -264,14 +274,15 @@ class CreateViewController: UIViewController {
         resignToastDateView()
     }
     
-    func setLayout() {
+    func setNavigation() {
         navigationController?.navigationBar.backgroundColor = .white
         navigationController?.navigationBar.scrollEdgeAppearance =
         navigationController?.navigationBar.standardAppearance
         navigationItem.leftBarButtonItem = dismissButtonItem
         navigationItem.rightBarButtonItem = saveButtonItem
-        
-        view.backgroundColor = .white
+    }
+    
+    func setLayout() {
         view.addSubview(topStackView)
         view.addSubview(outLineView)
         view.addSubview(dateButton)
@@ -369,7 +380,10 @@ class CreateViewController: UIViewController {
         typeTapGesture.rx.event
             .subscribe { [weak self] _ in
                 guard let self = self else { return }
-                typeHiddenTextField.becomeFirstResponder()
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    typeHiddenTextField.becomeFirstResponder()
+                }
             }.disposed(by: disposeBag)
         
         inputMoneyTapGesture.rx.event
@@ -413,8 +427,9 @@ class CreateViewController: UIViewController {
                     outLineViewLeadingAnchor.constant -= topStackView.frame.width / 2
                     outLineViewTrailingAnchor.constant -= topStackView.frame.width / 2
                 }
-                UIView.animate(withDuration: 0.3) {
-                    self.view.layoutIfNeeded()
+                UIView.animate(withDuration: 0.3) { [weak self] in
+                    guard let self = self else { return }
+                    view.layoutIfNeeded()
                 }
             }.disposed(by: disposeBag)
         
@@ -426,8 +441,9 @@ class CreateViewController: UIViewController {
                     outLineViewLeadingAnchor.constant += topStackView.frame.width / 2
                     outLineViewTrailingAnchor.constant += topStackView.frame.width / 2
                 }
-                UIView.animate(withDuration: 0.3) {
-                    self.view.layoutIfNeeded()
+                UIView.animate(withDuration: 0.3) { [weak self] in
+                    guard let self = self else { return }
+                    view.layoutIfNeeded()
                 }
             }.disposed(by: disposeBag)
         

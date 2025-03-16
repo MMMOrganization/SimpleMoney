@@ -22,7 +22,7 @@ class CalendarViewController: UIViewController {
         }
         
         cell.configure(item: item)
-        cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.05)
+        cell.contentView.backgroundColor = .mainColor.withAlphaComponent(0.05)
         return cell
     })
     
@@ -40,8 +40,6 @@ class CalendarViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.clipsToBounds = true
         view.layer.cornerRadius = 20
-        //view.layer.borderWidth = 1
-        //view.layer.borderColor = UIColor.mainColor.cgColor
         view.backgroundColor = .clear
         return view
     }()
@@ -147,6 +145,8 @@ class CalendarViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        setNavigation()
         setCalendar()
         setLayout()
         setTableView()
@@ -163,13 +163,13 @@ class CalendarViewController: UIViewController {
     func setCalendar() {
         calendarView.delegate = self
         calendarView.dataSource = self
-        //updateHeaderTitle()
+    }
+    
+    func setNavigation() {
+        navigationItem.leftBarButtonItem = dismissButtonItem
     }
     
     func setLayout() {
-        navigationItem.leftBarButtonItem = dismissButtonItem
-        view.backgroundColor = .white
-        
         view.addSubview(topView)
         view.addSubview(tableView)
         
@@ -248,8 +248,17 @@ class CalendarViewController: UIViewController {
         // MARK: - Calendar DayOfMonth Amount 바인딩
         viewModel.dailyAmountsObservable
             .observe(on: MainScheduler.instance)
-            .subscribe { _ in
-                self.calendarView.reloadData()
+            .subscribe { [weak self] _ in
+                guard let self = self else { return }
+                calendarView.reloadData()
+            }.disposed(by: disposeBag)
+        
+        // MARK: - TableView 데이터가 없을 경우 대체할 View
+        viewModel.dataObservable
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] entityData in
+                guard let self = self, let entityData = entityData.element else { return }
+                tableView.backgroundView = (entityData.count == 0) ? UIView.getEmptyView(width: tableView.bounds.width, height: tableView.bounds.height) : nil
             }.disposed(by: disposeBag)
     }
 }

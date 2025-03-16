@@ -17,12 +17,12 @@ class CreateCoordinator : Coordinator, CreateViewModelDelegate {
     }
     
     func start() {
-        let repository = MockDataRepository()
+        let repository = DataRepository()
         let createViewModel = CreateViewModel(repository: repository)
         createViewModel.delegate = self
         
         let createViewController = CreateViewController(viewModel: createViewModel)
-        self.navigationController.pushViewController(createViewController, animated: true)
+        navigationController.pushViewController(createViewController, animated: true)
     }
     
     func popCreateVC() {
@@ -30,7 +30,7 @@ class CreateCoordinator : Coordinator, CreateViewModelDelegate {
         // 그렇기 때문에 없애줘서 참조를 해제해 줘야 함.
         parentCoordinator?.removeChild(self)
         
-        self.navigationController.popViewController(animated: true)
+        navigationController.popViewController(animated: true)
     }
     
     deinit {

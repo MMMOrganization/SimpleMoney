@@ -43,6 +43,7 @@ class CreateViewModel : CreateViewModelInterface {
     
     var disposeBag : DisposeBag = DisposeBag()
     
+    // MARK: - Subject Observer
     var dismissButtonSubject: PublishSubject<Void>
     var createTypeSubject : BehaviorSubject<CreateType>
     var stringDateSubject : BehaviorSubject<String>
@@ -54,9 +55,11 @@ class CreateViewModel : CreateViewModelInterface {
     var keyboardNumberTapSubject : PublishSubject<String>
     var keyboardCancelTapSubject : PublishSubject<Void>
     
+    // MARK: - Subject Observable
     var dataSubject : BehaviorSubject<[CreateCellIcon]>
     var errorSubject : PublishSubject<CreateError>
     
+    // MARK: - Observer
     var dismissButtonObserver: AnyObserver<Void>
     var createTypeObserver: AnyObserver<CreateType>
     var stringDateObserver: AnyObserver<String>
@@ -68,6 +71,7 @@ class CreateViewModel : CreateViewModelInterface {
     var keyboardNumberTapObserver: AnyObserver<String>
     var keyboardCancelTapObserver: AnyObserver<Void>
     
+    // MARK: - Observable
     var dataObservable: Observable<[CreateCellIcon]>
     var stringDateObservable: Observable<String>
     var errorObservable: Observable<CreateError>
@@ -160,30 +164,27 @@ class CreateViewModel : CreateViewModelInterface {
                 realm.add(userDB)
             }
             
-            self.delegate?.popCreateVC()
+            delegate?.popCreateVC()
         }.disposed(by: disposeBag)
         
         // MARK: - CreateCell Icon 과 지출, 수입 버튼의 바인딩
         createTypeSubject.subscribe { [weak self] createType in
             guard let self = self, let createType = createType.element else { return }
-            self.createType = createType
-            stringDateSubject.onNext(repository.readDate())
-            dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: 0))
+            setCreateType(createType)
+            dataSubject.onNext(repository.readDataForCreateCell(of: getCreateType(), selectedIndex: 0))
         }.disposed(by: disposeBag)
         
         // MARK: - CreateCell Click 바인딩
         selectedCellIndexSubject.subscribe { [weak self] indexPath in
             guard let self = self, let index = indexPath.element else { return }
             dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: index))
-            
-            self.iconImage = CreateCellIcon.readIconImage(at: index)
-            // TODO: - iconImage 받아와야 함.
+            setIconImage(CreateCellIcon.readIconImage(at: index))
         }.disposed(by: disposeBag)
         
         // MARK: - Date 클릭시에 ViewModel이 가지는 dateString과의 바인딩
         stringDateSubject.subscribe { [weak self] stringDate in
             guard let self = self, let stringDate = stringDate.element else { return }
-            self.dateString = stringDate
+            setDateString(stringDate)
         }.disposed(by: disposeBag)
         
         // MARK: - 타입 클릭시에 ViewModel이 가지는 typeLabel과의 바인딩
@@ -214,7 +215,6 @@ class CreateViewModel : CreateViewModelInterface {
             
             plusInputMoney(number)
             inputMoneySubject.onNext(getInputMoney())
-            print(getInputMoney())
         }.disposed(by: disposeBag)
         
         // MARK: - Custom KeyBoard 취소 탭과의 바인딩
@@ -228,7 +228,7 @@ class CreateViewModel : CreateViewModelInterface {
 }
 
 extension CreateViewModel {
-    // MARK: - InputMoney 조정
+    // MARK: - Property Get
     func getInputMoney() -> String {
         return inputMoney
     }
@@ -237,10 +237,15 @@ extension CreateViewModel {
         return typeString ?? ""
     }
     
+    func getCreateType() -> CreateType {
+        return createType
+    }
+    
+    // MARK: - Property Set
     func plusInputMoney(_ num : String) {
         //0을 계속 클릭하면 000000.. 하고 계속 늘어나는 것을 막기 위해
         guard let inputMoneyAmount = Int("\(inputMoney)\(num)") else { return }
-        self.inputMoney = String(inputMoneyAmount)
+        inputMoney = String(inputMoneyAmount)
     }
     
     func minusInputMoney() {
@@ -249,6 +254,18 @@ extension CreateViewModel {
     }
     
     func setTypeString(_ typeName : String) {
-        self.typeString = typeName
+        typeString = typeName
+    }
+    
+    func setIconImage(_ image : UIImage?) {
+        iconImage = image
+    }
+    
+    func setDateString(_ str : String) {
+        dateString = str
+    }
+    
+    func setCreateType(_ type : CreateType) {
+        createType = type
     }
 }

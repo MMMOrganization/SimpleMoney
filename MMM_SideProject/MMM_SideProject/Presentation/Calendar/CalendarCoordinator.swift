@@ -19,12 +19,12 @@ class CalendarCoordinator : Coordinator, CalendarViewModelDelegate {
     }
     
     func start() {
-        let repository = MockDataRepository()
+        let repository = DataRepository()
         let calendarViewModel = CalendarViewModel(repository: repository)
         calendarViewModel.delegate = self
         let calendarViewController = CalendarViewController(viewModel: calendarViewModel)
         
-        self.navigationController.pushViewController(calendarViewController, animated: true)
+        navigationController.pushViewController(calendarViewController, animated: true)
     }
     
     func popCalendarVC() {

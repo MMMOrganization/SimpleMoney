@@ -28,6 +28,8 @@ final class DetailViewController: UIViewController {
         return dataSource.sectionModels[index].header
     }
     
+    lazy var tapGesture = UITapGestureRecognizer()
+    
     lazy var calendarBarButton : UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "dateImage")?.resize(targetSize: CGSize(width: 25, height: 25)), for: .normal)
@@ -54,7 +56,7 @@ final class DetailViewController: UIViewController {
         // 160 height
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.08)
+        view.backgroundColor = .mainColor.withAlphaComponent(0.08)
         return view
     }()
     
@@ -86,7 +88,7 @@ final class DetailViewController: UIViewController {
             cornerRadius: 20,
             maskedCorners: CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
         )
-        view.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.10)
+        view.backgroundColor = .mainColor.withAlphaComponent(0.1)
         return view
     }()
     
@@ -165,7 +167,7 @@ final class DetailViewController: UIViewController {
     let separatorLine : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.20)
+        view.backgroundColor = .mainColor.withAlphaComponent(0.2)
         return view
     }()
     
@@ -179,7 +181,7 @@ final class DetailViewController: UIViewController {
     lazy var contentAddButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "addImage"), for: .normal)
+        button.setImage(UIImage(named: "addImage")?.resize(targetSize: CGSize(width: 35, height: 35)), for: .normal)
         button.contentMode = .scaleAspectFit
         button.backgroundColor = .white
         button.clipsToBounds = true
@@ -246,16 +248,14 @@ final class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        setNavigation()
         setLayout()
         setGestures()
         setAnimate()
         setTableView()
         setReactive()
         setToastReactive()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
     }
     
     override func viewDidLayoutSubviews() {
@@ -271,17 +271,17 @@ final class DetailViewController: UIViewController {
         tableView.delegate = self
         tableView.rowHeight = 50
     }
-
-    func setLayout() {
+    
+    func setNavigation() {
         navigationController?.navigationBar.backgroundColor = .white
-        navigationController?.navigationBar.scrollEdgeAppearance = 
+        navigationController?.navigationBar.scrollEdgeAppearance =
         navigationController?.navigationBar.standardAppearance
         navigationController?.isToolbarHidden = true
         navigationItem.rightBarButtonItem = calendarBarButtonItem
         navigationItem.leftBarButtonItem = graphBarButtonItem
-        
-        view.backgroundColor = .white
-        
+    }
+
+    func setLayout() {
         view.addSubview(topView)
         view.addSubview(buttonView)
         view.addSubview(separatorLine)
@@ -306,11 +306,11 @@ final class DetailViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             topView.heightAnchor.constraint(equalToConstant: 160),
-            topView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            topView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             topView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
             topView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
             
-            topMonthLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 155),
+            topMonthLabel.centerYAnchor.constraint(equalTo: self.topView.centerYAnchor),
             topMonthLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
             
             topTotalPriceLabel.topAnchor.constraint(equalTo: self.topMonthLabel.bottomAnchor, constant: 5),
@@ -350,6 +350,9 @@ final class DetailViewController: UIViewController {
             expendShowButton.centerYAnchor.constraint(equalTo: self.buttonView.centerYAnchor),
             expendShowButton.leadingAnchor.constraint(equalTo: self.incomeShowButton.trailingAnchor, constant: 5),
             
+            contentAddButton.centerYAnchor.constraint(equalTo: self.buttonView.centerYAnchor),
+            contentAddButton.trailingAnchor.constraint(equalTo: self.buttonView.trailingAnchor, constant: -10),
+            
             separatorLine.heightAnchor.constraint(equalToConstant: 1),
             separatorLine.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             separatorLine.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
@@ -359,11 +362,6 @@ final class DetailViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            
-            contentAddButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
-            contentAddButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30),
-            contentAddButton.widthAnchor.constraint(equalToConstant: 60),
-            contentAddButton.heightAnchor.constraint(equalToConstant: 60),
         ])
         
         // MARK: - ToastView
@@ -384,30 +382,7 @@ final class DetailViewController: UIViewController {
     }
     
     func setGestures() {
-        let tapGesture = UITapGestureRecognizer()
         tableView.addGestureRecognizer(tapGesture)
-        
-        tapGesture.rx.event
-            .subscribe { [weak self] gesture in
-                guard let self = self, let gesture = gesture.element else {
-                    print("DetailView - Gesture Subscribe Fail")
-                    return }
-                
-                let touchPoint : CGPoint = gesture.location(in: self.tableView)
-                guard let indexPath = self.tableView.indexPathForRow(at: touchPoint) else {
-                    print("DetailView - Gesture IndexPath Fail")
-                    return
-                }
-                
-                guard let cell = tableView.cellForRow(at: indexPath) as? DetailTableViewCell else {
-                    return
-                }
-                
-                guard let entityData = cell.entityData else { return }
-                
-                viewModel.selectedCellObserver.onNext(entityData)
-                becomeToastView()
-            }.disposed(by: disposeBag)
     }
     
     func setAnimate() {
@@ -419,7 +394,7 @@ final class DetailViewController: UIViewController {
     }
     
     func setReactive() {
-        self.rx.viewWillAppear
+        rx.viewWillAppear
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.viewWillAppearObserver)
             .disposed(by: disposeBag)
@@ -439,6 +414,29 @@ final class DetailViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: viewModel.plusButtonObserver)
             .disposed(by: disposeBag)
+        
+        // MARK: - tapGeture Entity 삭제 로직 바인딩
+        tapGesture.rx.event
+            .subscribe { [weak self] gesture in
+                guard let self = self, let gesture = gesture.element else {
+                    print("DetailView - Gesture Subscribe Fail")
+                    return }
+                
+                let touchPoint : CGPoint = gesture.location(in: tableView)
+                guard let indexPath = tableView.indexPathForRow(at: touchPoint) else {
+                    print("DetailView - Gesture IndexPath Fail")
+                    return
+                }
+                
+                guard let cell = tableView.cellForRow(at: indexPath) as? DetailTableViewCell else {
+                    return
+                }
+                
+                guard let entityData = cell.entityData else { return }
+                
+                viewModel.selectedCellObserver.onNext(entityData)
+                becomeToastView()
+            }.disposed(by: disposeBag)
     
         // MARK: - 수입 데이터 바인딩
         incomeShowButton.rx.tap
@@ -504,6 +502,13 @@ final class DetailViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(to: topTotalPriceLabel.rx.text)
             .disposed(by: disposeBag)
+        
+        // MARK: - TableView 데이터가 없을 경우 대체할 View
+        viewModel.sectionModelObservable
+            .subscribe { [weak self] sectionModel in
+                guard let self = self, let sectionModel = sectionModel.element else { return }
+                tableView.backgroundView = (sectionModel.count == 0) ? UIView.getEmptyView(width: tableView.bounds.width, height: tableView.bounds.height) : nil
+            }.disposed(by: disposeBag)
     }
 }
 
@@ -519,21 +524,14 @@ extension DetailViewController : UITableViewDelegate {
 // MARK: - Toast 관련 코드
 extension DetailViewController {
     func becomeToastView() {
+        // MARK: - 화면 정중앙에 애니메이션
         toastViewBottomAnchor.constant = -((view.frame.height / 2) - (toastViewHeight / 2))
         view.layoutIfNeeded()
-//        UIView.animate(withDuration: 0.1) { [weak self] in
-//            guard let self = self else { return }
-//            
-//        }
     }
     
     func resignToastView() {
         toastViewBottomAnchor.constant = toastViewHeight
         view.layoutIfNeeded()
-//        UIView.animate(withDuration: 0.1) { [weak self] in
-//            guard let self = self else { return }
-//            
-//        }
     }
     
     func setToastReactive() {

@@ -18,17 +18,17 @@ class GraphCoordinator : Coordinator, GraphViewModelDelegate {
     }
     
     func start() {
-        let dataRepository = MockDataRepository()
+        let dataRepository = DataRepository()
         let viewModel = GraphViewModel(repository: dataRepository)
         viewModel.delegate = self
         
         let graphViewController = GraphViewController(viewModel: viewModel)
-        self.navigationController.pushViewController(graphViewController, animated: true)
+        navigationController.pushViewController(graphViewController, animated: true)
     }
     
     func popGraphVC() {
         parentCoordinator?.removeChild(self)
-        self.navigationController.popViewController(animated: true)
+        navigationController.popViewController(animated: true)
     }
     
     deinit {

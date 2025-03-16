@@ -19,13 +19,13 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
     }
     
     func start() {
-        let repository = MockDataRepository()
+        let repository = DataRepository()
         let detailViewModel = DetailViewModel(repository: repository)
         detailViewModel.delegate = self
         
         let detailViewController = DetailViewController(viewModel : detailViewModel)
         
-        self.navigationController.pushViewController(detailViewController, animated: true)
+        navigationController.pushViewController(detailViewController, animated: true)
     }
     
     func pushCalendarVC() {

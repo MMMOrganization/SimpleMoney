@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowScene)
         let navigationController = UINavigationController()
-        self.window?.rootViewController = navigationController
+        window?.rootViewController = navigationController
         
         appCoordinator = AppCoordinator(navigationController: navigationController)
         appCoordinator?.start()
@@ -33,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // AppDelegate.swift 또는 SceneDelegate.swift에서 호출
         setupNavigationBarAppearance()
         
-        self.window?.makeKeyAndVisible()
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

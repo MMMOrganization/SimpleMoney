@@ -121,8 +121,7 @@ class CalendarViewModel : CalendarViewModelInterface {
             guard let amountsDict = amountsDict.element, let self = self else {
                 return
             }
-            
-            self.amountsDict = amountsDict
+            setAmountsDict(amountsDict)
         }.disposed(by: disposeBag)
     }
     
@@ -133,5 +132,9 @@ class CalendarViewModel : CalendarViewModelInterface {
         
         let dateString = formatter.string(from: date)
         return amountsDict[dateString]
+    }
+    
+    func setAmountsDict(_ dict : [String:Int]) {
+        amountsDict = dict
     }
 }

@@ -28,7 +28,7 @@ class CreateCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.iconImageView.image = nil
+        iconImageView.image = nil
     }
     
     override func layoutSubviews() {
@@ -36,18 +36,18 @@ class CreateCollectionViewCell: UICollectionViewCell {
     }
     
     func configure(item : CreateCellIcon) {
-        self.contentView.clipsToBounds = true
-        self.contentView.layer.cornerRadius = 10
-        self.contentView.backgroundColor = UIColor(hexCode: ColorConst.grayColorString, alpha: 0.05)
-        self.contentView.layer.borderWidth = 1
+        contentView.clipsToBounds = true
+        contentView.layer.cornerRadius = 10
+        contentView.backgroundColor = .grayColor.withAlphaComponent(0.05)
+        contentView.layer.borderWidth = 1
         
-        self.contentView.layer.borderColor = item.isSelected ? UIColor.mainColor.cgColor : UIColor.clear.cgColor
+        contentView.layer.borderColor = item.isSelected ? UIColor.mainColor.cgColor : UIColor.clear.cgColor
         
-        self.iconImageView.image = item.iconImage
+        iconImageView.image = item.iconImage
     }
     
     func setLayout() {
-        self.contentView.addSubview(iconImageView)
+        contentView.addSubview(iconImageView)
         
         NSLayoutConstraint.activate([
             iconImageView.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),

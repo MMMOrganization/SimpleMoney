@@ -59,7 +59,13 @@ class GraphViewController: UIViewController {
         return c
     }()
     
-    lazy var headerView : UIView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 300))
+    lazy var headerView : UIView = {
+        let v = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 350))
+        // MARK: - TableView의 header, footer는 Frame 기반으로 설정됨.
+        v.translatesAutoresizingMaskIntoConstraints = true
+        v.backgroundColor = .white
+        return v
+    }()
     
     let graphTableView : UITableView = {
         let tv = UITableView()
@@ -131,6 +137,7 @@ class GraphViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         setNavigationController()
         setDelegate()
         setAnimate()
@@ -145,8 +152,8 @@ class GraphViewController: UIViewController {
     }
     
     func setNavigationController() {
-        self.navigationItem.leftBarButtonItem = dismissButtonItem
-        self.navigationItem.titleView = navigationTitleButton
+        navigationItem.leftBarButtonItem = dismissButtonItem
+        navigationItem.titleView = navigationTitleButton
     }
     
     func setDelegate() {
@@ -174,38 +181,32 @@ class GraphViewController: UIViewController {
         )
     }
     
-    
-    
     func setLayout() {
-        self.view.backgroundColor = .white
-        
+        view.addSubview(graphTableView)
         headerView.addSubview(pieChartView)
-        self.view.addSubview(buttonCollectionView)
-        self.view.addSubview(graphTableView)
+        headerView.addSubview(buttonCollectionView)
         
-        self.view.addSubview(toastMainView)
-        
+        view.addSubview(toastMainView)
         toastMainView.addSubview(toastHeaderStackView)
         toastMainView.addSubview(toastTableView)
         
         NSLayoutConstraint.activate([
-            buttonCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
-            buttonCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
-            buttonCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            buttonCollectionView.leadingAnchor.constraint(equalTo: self.headerView.leadingAnchor),
+            buttonCollectionView.trailingAnchor.constraint(equalTo: self.headerView.trailingAnchor),
+            buttonCollectionView.topAnchor.constraint(equalTo: self.headerView.topAnchor),
             buttonCollectionView.heightAnchor.constraint(equalToConstant: 50),
             
             pieChartView.leadingAnchor.constraint(equalTo: self.headerView.leadingAnchor),
             pieChartView.trailingAnchor.constraint(equalTo: self.headerView.trailingAnchor),
-            pieChartView.topAnchor.constraint(equalTo: self.headerView.topAnchor),
+            pieChartView.topAnchor.constraint(equalTo: self.buttonCollectionView.bottomAnchor),
             pieChartView.heightAnchor.constraint(equalToConstant: 300),
             
             graphTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
             graphTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
-            graphTableView.topAnchor.constraint(equalTo: self.buttonCollectionView.bottomAnchor, constant: 10),
+            graphTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             graphTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
         ])
         
-        headerView.backgroundColor = .white
         graphTableView.tableHeaderView = headerView
         
         // MARK: - ToastView Layout
@@ -262,7 +263,7 @@ class GraphViewController: UIViewController {
             .subscribe { [weak self] eventList in
                 guard let eventList = eventList.element else { return }
                 guard let self = self else { return }
-                self.setPieChart(eventList: eventList)
+                setPieChart(eventList: eventList)
             }.disposed(by: disposeBag)
         
         viewModel.dateObservable
@@ -276,9 +277,15 @@ class GraphViewController: UIViewController {
                 guard let self = self else { return }
                 becomeToastView()
             }.disposed(by: disposeBag)
+        
+        // MARK: - TableView 데이터가 없을 경우 대체할 View
+        viewModel.entityDataObservable
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] entityData in
+                guard let self = self, let entityData = entityData.element else { return }
+                graphTableView.backgroundView = (entityData.count == 0) ? UIView.getEmptyView(width: graphTableView.bounds.width, height: graphTableView.bounds.height) : nil
+            }.disposed(by: disposeBag)
     }
-    
-    
 }
 
 // MARK: - ToastView
@@ -296,7 +303,7 @@ extension GraphViewController {
     }
     
     func resignToastView() {
-        self.toastMainViewBottomAnchor.constant = toastMainViewHeight
+        toastMainViewBottomAnchor.constant = toastMainViewHeight
         
         UIView.animate(withDuration: 0.2) { [weak self] in
             guard let self = self else { return }

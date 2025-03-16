@@ -93,24 +93,24 @@ class DetailTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.disposeBag = .init()
+        disposeBag = .init()
     }
     
     func configure(with style : DetailCellStyle = .spacious, item : Entity) {
         // MARK: - 이전 재활용 될 셀들의 스트림 모두 끊어주기.
         disposeBag = .init()
         
-        self.selectionStyle = .none
-        self.cellStyle = style
-        self.entityData = item
+        selectionStyle = .none
+        cellStyle = style
+        entityData = item
         
-        self.mainImageView.image = item.iconImage.resize(targetSize: CGSize(width: 20, height: 20))
-        self.mainLabel.text = item.typeStr
-        self.dateLabel.text = item.dateStr
-        self.moneyLabel.text = item.amount.toCurrency
-        self.backgroundColor = .white
-        self.contentView.layer.cornerRadius = 15
-        self.contentView.backgroundColor = .white
+        mainImageView.image = item.iconImage.resize(targetSize: CGSize(width: 20, height: 20))
+        mainLabel.text = item.typeStr
+        dateLabel.text = item.dateStr
+        moneyLabel.text = item.amount.toCurrency
+        backgroundColor = .white
+        contentView.layer.cornerRadius = 15
+        contentView.backgroundColor = .white
         setNeedsLayout()
     }
     
