@@ -8,55 +8,40 @@
 import UIKit
 
 struct CreateCellIcon {
-    let iconImage : UIImage
-    let createType : CreateType
-    var isSelected : Bool
+    private let iconImageType : IconImageType
+    private var isSelected : Bool = false
     
-    init(iconImage: UIImage, createType: CreateType, isSelected : Bool = false) {
-        self.iconImage = iconImage
-        self.createType = createType
+    init(iconImageType: IconImageType, isSelected : Bool = false) {
+        self.iconImageType = iconImageType
         self.isSelected = isSelected
     }
     
-    static func readExpendData(at index : Int) -> [CreateCellIcon] {
+    static func initReadData() -> [CreateCellIcon] {
         var dummyDataList = [
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType:.expend)
+            CreateCellIcon(iconImageType: .date),
+            CreateCellIcon(iconImageType: .bank),
+            CreateCellIcon(iconImageType: .game),
+            CreateCellIcon(iconImageType: .network),
+            CreateCellIcon(iconImageType: .shopping),
                             ]
         
-        dummyDataList[index] =
-        CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend, isSelected: true)
-        
+        dummyDataList[0].isSelected = true
         return dummyDataList
     }
     
-    static func readIncomeData(at index : Int) -> [CreateCellIcon] {
-        var dummyDataList = [
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income),
-                            CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .income)
-                            ]
-        
-        dummyDataList[index] =
-        CreateCellIcon(iconImage: UIImage(named: "dateImage") ?? UIImage(), createType: .expend, isSelected: true)
-        
-        return dummyDataList
+    mutating func noneSelected() {
+        isSelected = false
     }
     
-    static func readIconImage(at index : Int) -> UIImage {
-        return UIImage(named : "dateImage") ?? UIImage()
+    mutating func doneSelected() {
+        isSelected = true
+    }
+    
+    func getIsSelected() -> Bool {
+        return isSelected
+    }
+    
+    func getImageType() -> IconImageType {
+        return iconImageType
     }
 }

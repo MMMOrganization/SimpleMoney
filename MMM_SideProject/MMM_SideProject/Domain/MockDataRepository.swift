@@ -10,11 +10,12 @@ import RealmSwift
 import Realm
 
 class MockDataRepository : DataRepositoryInterface {
-    
     // MARK: - CalendarVM 에서 사용하는 repository에서는 항상 total 타입
     private var stateType : ButtonType = .total
     
     private var dateType : YearMonthDay = .init()
+    
+    private var cellIconList : [CreateCellIcon] = .init()
     
     func readData() -> [Entity] {
         switch stateType {
@@ -118,15 +119,22 @@ class MockDataRepository : DataRepositoryInterface {
         return resultList
     }
     
-    func readDataForCreateCell(of type : CreateType, selectedIndex : Int) -> [CreateCellIcon] {
-        switch type {
-        case .expend:
-            return CreateCellIcon.readExpendData(at : selectedIndex)
-        case .income:
-            return CreateCellIcon.readIncomeData(at : selectedIndex)
-        default:
-            return []
-        }
+    func readInitIconCell() -> [CreateCellIcon] {
+        cellIconList = CreateCellIcon.initReadData()
+        return cellIconList
+    }
+    
+    func readIconCell() -> [CreateCellIcon] {
+        return cellIconList
+    }
+    
+    func setSelectedIconCell(index: Int) {
+        for i in 0..<cellIconList.count { cellIconList[i].noneSelected() }
+        cellIconList[index].doneSelected()
+    }
+    
+    func readSelectedIconImageType(index: Int) -> IconImageType {
+        return cellIconList[index].getImageType()
     }
     
     func readDateList() -> [String] {

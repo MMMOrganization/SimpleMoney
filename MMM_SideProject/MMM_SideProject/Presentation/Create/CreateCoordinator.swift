@@ -17,7 +17,7 @@ class CreateCoordinator : Coordinator, CreateViewModelDelegate {
     }
     
     func start() {
-        let repository = DataRepository()
+        let repository = MockDataRepository()
         let createViewModel = CreateViewModel(repository: repository)
         createViewModel.delegate = self
         
