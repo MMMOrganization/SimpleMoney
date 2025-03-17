@@ -38,7 +38,7 @@ class CreateViewModel : CreateViewModelInterface {
     var inputMoney : String = ""
     var dateString : String?
     var typeString : String?
-    var iconImage : UIImage?
+    var iconImageType : IconImageType = .date
     var createType : CreateType = .expend
     
     var disposeBag : DisposeBag = DisposeBag()
@@ -106,7 +106,7 @@ class CreateViewModel : CreateViewModelInterface {
         keyboardCancelTapSubject = PublishSubject<Void>()
         errorSubject = PublishSubject<CreateError>()
         
-        dataSubject = BehaviorSubject<[CreateCellIcon]>(value: repository.readDataForCreateCell(of: createType, selectedIndex: 0))
+        dataSubject = BehaviorSubject<[CreateCellIcon]>(value: repository.readInitIconCell())
         
         
         dismissButtonObserver = dismissButtonSubject.asObserver()
@@ -158,7 +158,7 @@ class CreateViewModel : CreateViewModelInterface {
                 return
             }
             
-            let userDB = UserDB(createType: createType, moneyAmount: inputMoney.toAmount(with: createType), iconImageType: .date, typeString: typeString, dateString: dateString)
+            let userDB = UserDB(createType: createType, moneyAmount: inputMoney.toAmount(with: createType), iconImageType: iconImageType, typeString: typeString, dateString: dateString)
             
             try! realm.write {
                 realm.add(userDB)
@@ -171,14 +171,15 @@ class CreateViewModel : CreateViewModelInterface {
         createTypeSubject.subscribe { [weak self] createType in
             guard let self = self, let createType = createType.element else { return }
             setCreateType(createType)
-            dataSubject.onNext(repository.readDataForCreateCell(of: getCreateType(), selectedIndex: 0))
+            dataSubject.onNext(repository.readInitIconCell())
         }.disposed(by: disposeBag)
         
         // MARK: - CreateCell Click 바인딩
         selectedCellIndexSubject.subscribe { [weak self] indexPath in
             guard let self = self, let index = indexPath.element else { return }
-            dataSubject.onNext(repository.readDataForCreateCell(of: createType, selectedIndex: index))
-            setIconImage(CreateCellIcon.readIconImage(at: index))
+            repository.setSelectedIconCell(index: index)
+            dataSubject.onNext(repository.readIconCell())
+            setIconImageType(repository.readSelectedIconImageType(index: index))
         }.disposed(by: disposeBag)
         
         // MARK: - Date 클릭시에 ViewModel이 가지는 dateString과의 바인딩
@@ -257,8 +258,8 @@ extension CreateViewModel {
         typeString = typeName
     }
     
-    func setIconImage(_ image : UIImage?) {
-        iconImage = image
+    func setIconImageType(_ imagetype : IconImageType) {
+        iconImageType = imagetype
     }
     
     func setDateString(_ str : String) {

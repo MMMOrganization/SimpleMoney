@@ -17,7 +17,9 @@ protocol DataRepositoryInterface {
     func readDataOfDay() -> [Entity]
     func readGraphData() -> [(String, Double)]
     func readAmountsDict() -> [String : Int]
-    func readDataForCreateCell(of type : CreateType, selectedIndex : Int) -> [CreateCellIcon]
+    func readInitIconCell() -> [CreateCellIcon]
+    func readIconCell() -> [CreateCellIcon]
+    func readSelectedIconImageType(index: Int) -> IconImageType
     func readDateList() -> [String]
     
     // MARK: - Update, Create
@@ -25,7 +27,7 @@ protocol DataRepositoryInterface {
     func setDate(dateStr : String)
     func setState(type : ButtonType)
     func setDay(of day : Int)
-    
+    func setSelectedIconCell(index: Int)
     // MARK: - Delete
     func deleteData(id : UUID)
 }

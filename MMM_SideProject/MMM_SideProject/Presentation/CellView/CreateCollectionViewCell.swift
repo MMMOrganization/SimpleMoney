@@ -41,9 +41,8 @@ class CreateCollectionViewCell: UICollectionViewCell {
         contentView.backgroundColor = .grayColor.withAlphaComponent(0.05)
         contentView.layer.borderWidth = 1
         
-        contentView.layer.borderColor = item.isSelected ? UIColor.mainColor.cgColor : UIColor.clear.cgColor
-        
-        iconImageView.image = item.iconImage
+        contentView.layer.borderColor = item.getIsSelected() ? UIColor.mainColor.cgColor : UIColor.clear.cgColor
+        iconImageView.image = item.getImageType().getImage.resize(targetSize: CGSize(width: contentView.frame.height / 2, height: contentView.frame.height / 2))
     }
     
     func setLayout() {
@@ -52,9 +51,6 @@ class CreateCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             iconImageView.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
             iconImageView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
-            
-            iconImageView.widthAnchor.constraint(equalToConstant: 35),
-            iconImageView.heightAnchor.constraint(equalToConstant: 35),
         ])
     }
 }

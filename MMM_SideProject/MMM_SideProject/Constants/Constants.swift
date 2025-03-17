@@ -48,11 +48,23 @@ public enum DetailCellStyle {
 
 public enum IconImageType : String, PersistableEnum {
     case date
+    case bank
+    case game
+    case network
+    case shopping
     
     var getImage : UIImage {
         switch self {
         case .date:
             return UIImage(named: "dateImage") ?? UIImage()
+        case .bank:
+            return UIImage(named: "bankImage") ?? UIImage()
+        case .game:
+            return UIImage(named: "gameImage") ?? UIImage()
+        case .network:
+            return UIImage(named: "networkImage") ?? UIImage()
+        case .shopping:
+            return UIImage(named: "shoppingImage") ?? UIImage()
         }
     }
 }
