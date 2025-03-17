@@ -62,6 +62,7 @@ class GraphViewController: UIViewController {
     lazy var headerView : UIView = {
         let v = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 350))
         // MARK: - TableView의 header, footer는 Frame 기반으로 설정됨.
+        // MARK: - 헤더 뷰의 너비를 테이블 뷰의 너비와 일치하도록 자동으로 조정합니다.
         v.translatesAutoresizingMaskIntoConstraints = true
         v.backgroundColor = .white
         return v
