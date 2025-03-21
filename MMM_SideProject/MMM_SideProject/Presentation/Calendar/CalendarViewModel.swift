@@ -137,4 +137,8 @@ class CalendarViewModel : CalendarViewModelInterface {
     func setAmountsDict(_ dict : [String:Int]) {
         amountsDict = dict
     }
+    
+    deinit {
+        print("CalendarViewController - 메모리 해제")
+    }
 }

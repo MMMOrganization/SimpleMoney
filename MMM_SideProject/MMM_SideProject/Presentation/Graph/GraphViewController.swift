@@ -287,6 +287,10 @@ class GraphViewController: UIViewController {
                 graphTableView.backgroundView = (entityData.count == 0) ? UIView.getEmptyView(width: graphTableView.bounds.width, height: graphTableView.bounds.height) : nil
             }.disposed(by: disposeBag)
     }
+    
+    deinit {
+        print("GraphViewController - 메모리 해제")
+    }
 }
 
 // MARK: - ToastView

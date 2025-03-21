@@ -81,4 +81,8 @@ class TypeButtonCVCell: UICollectionViewCell {
             typeButton.heightAnchor.constraint(equalToConstant: 29),
         ])
     }
+    
+    deinit {
+        print("TypeButtonCVCell - 메모리 해제")
+    }
 }

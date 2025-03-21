@@ -507,6 +507,10 @@ class CreateViewController: UIViewController {
                 customKeyboardResign()
             }.disposed(by: disposeBag)
     }
+    
+    deinit {
+        print("CreateViewController - 메모리 해제")
+    }
 }
 
 

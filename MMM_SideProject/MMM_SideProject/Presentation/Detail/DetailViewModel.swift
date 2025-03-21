@@ -34,7 +34,6 @@ protocol DetailViewModelDelegate : AnyObject {
     func pushCalendarVC()
     func pushCreateVC()
     func pushGraphVC()
-    func pushDeleteToastVC()
 }
 
 class DetailViewModel : DetailViewModelInterface {

@@ -55,4 +55,8 @@ class DateTableViewCell: UITableViewCell {
         contentView.backgroundColor = .white
         selectionStyle = .none
     }
+    
+    deinit {
+        print("DateTableViewCell - 메모리 해제")
+    }
 }

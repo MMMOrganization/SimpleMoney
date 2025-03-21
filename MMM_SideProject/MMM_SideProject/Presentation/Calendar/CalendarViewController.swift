@@ -261,6 +261,10 @@ class CalendarViewController: UIViewController {
                 tableView.backgroundView = (entityData.count == 0) ? UIView.getEmptyView(width: tableView.bounds.width, height: tableView.bounds.height) : nil
             }.disposed(by: disposeBag)
     }
+    
+    deinit {
+        print("CalendarViewController - 메모리 해제")
+    }
 }
 
 extension CalendarViewController : FSCalendarDataSource, FSCalendarDelegate {

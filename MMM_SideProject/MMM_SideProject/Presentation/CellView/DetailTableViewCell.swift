@@ -141,4 +141,8 @@ class DetailTableViewCell: UITableViewCell {
             moneyLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -3)
         ])
     }
+    
+    deinit {
+        print("DetailTableViewCell - 메모리 해제")
+    }
 }

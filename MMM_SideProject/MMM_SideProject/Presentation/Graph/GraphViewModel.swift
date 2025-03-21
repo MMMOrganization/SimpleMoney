@@ -26,6 +26,8 @@ protocol GraphViewModelDelegate : AnyObject {
     func popGraphVC()
 }
 
+
+
 class GraphViewModel : GraphViewModelInterface {
     
     // MARK: - Subject (Observer)
@@ -88,28 +90,29 @@ class GraphViewModel : GraphViewModelInterface {
     }
     
     func setCoordinator() {
-        dismissButtonSubject.subscribe { [weak self] _ in
-            self?.delegate?.popGraphVC()
+        dismissButtonSubject.subscribe(with: self) { owner, _ in
+            owner.delegate?.popGraphVC()
         }.disposed(by: disposeBag)
     }
     
     func setReactive() {
         typeButtonTapSubject
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] typeItem in
-                guard let self = self, let typeItem = typeItem.element else { return }
-                entityDataSubject.onNext(repository.readData(typeName: typeItem))
+            .subscribe(with: self) { owner, typeItem in
+                owner.entityDataSubject.onNext(owner.repository.readData(typeName: typeItem))
             }.disposed(by: disposeBag)
         
         selectDateSubject
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] selectedDate in
-                guard let self = self else { return }
-                guard let dateStr = selectedDate.element else { return }
-                dateSubject.onNext(dateStr)
-                repository.setDate(dateStr: dateStr)
-                graphDataSubject.onNext(repository.readGraphData())
-                entityDataSubject.onNext(repository.readData(typeName: ""))
+            .subscribe(with: self) { owner, dateStr in
+                owner.dateSubject.onNext(dateStr)
+                owner.repository.setDate(dateStr: dateStr)
+                owner.graphDataSubject.onNext(owner.repository.readGraphData())
+                owner.entityDataSubject.onNext(owner.repository.readData(typeName: ""))
             }.disposed(by: disposeBag)
+    }
+    
+    deinit {
+        print("GraphViewModel - 메모리 해제")
     }
 }

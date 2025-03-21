@@ -623,6 +623,8 @@
 				DEVELOPMENT_TEAM = W35T2QAC67;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MMM_SideProject/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "심플머니";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -655,6 +657,8 @@
 				DEVELOPMENT_TEAM = W35T2QAC67;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MMM_SideProject/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "심플머니";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

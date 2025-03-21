@@ -226,6 +226,10 @@ class CreateViewModel : CreateViewModelInterface {
             inputMoneySubject.onNext(getInputMoney())
         }.disposed(by: disposeBag)
     }
+    
+    deinit {
+        print("CreateViewModel - 메모리 해제")
+    }
 }
 
 extension CreateViewModel {
