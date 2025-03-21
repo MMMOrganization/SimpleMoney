@@ -261,30 +261,28 @@ class GraphViewController: UIViewController {
         // MARK: - graphData 바인딩
         viewModel.graphDataObservable
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] eventList in
-                guard let eventList = eventList.element else { return }
-                guard let self = self else { return }
-                setPieChart(eventList: eventList)
+            .subscribe(with: self) { owner, eventList in
+                owner.setPieChart(eventList: eventList)
             }.disposed(by: disposeBag)
         
+        // MARK: - NavigationTitle 날짜 바인딩
         viewModel.dateObservable
             .observe(on: MainScheduler.instance)
             .bind(to: navigationTitleButton.rx.title())
             .disposed(by: disposeBag)
         
+        // MARK: - NavigationTitle Tap 애니메이션 바인딩
         navigationTitleButton.rx.tap
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
-                becomeToastView()
+            .subscribe(with: self) { owner, _ in
+                owner.becomeToastView()
             }.disposed(by: disposeBag)
         
         // MARK: - TableView 데이터가 없을 경우 대체할 View
         viewModel.entityDataObservable
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] entityData in
-                guard let self = self, let entityData = entityData.element else { return }
-                graphTableView.backgroundView = (entityData.count == 0) ? UIView.getEmptyView(width: graphTableView.bounds.width, height: graphTableView.bounds.height) : nil
+            .subscribe(with: self) { owner, entityData in
+                owner.graphTableView.backgroundView = (entityData.count == 0) ? UIView.getEmptyView(width: owner.graphTableView.bounds.width, height: owner.graphTableView.bounds.height) : nil
             }.disposed(by: disposeBag)
     }
     
@@ -327,20 +325,17 @@ extension GraphViewController {
         // MARK: - Dismiss 버튼 탭 바인딩
         toastHeaderButton.rx.tap
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
-                resignToastView()
+            .subscribe(with: self) { owner, _ in
+                owner.resignToastView()
             }.disposed(by: disposeBag)
         
         // MARK: - Cell Index 클릭 바인딩
         toastTableView.rx.itemSelected
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] indexPath in
-                guard let self = self else { return }
-                guard let indexPath = indexPath.element else { return }
-                guard let cellData = toastTableView.cellForRow(at: indexPath) as? DateTableViewCell, let dateStr = cellData.dateLabel.text else { return }
-                resignToastView()
-                viewModel.selectDateObserver.onNext(dateStr)
+            .subscribe(with: self) { owner, indexPath in
+                guard let cellData = owner.toastTableView.cellForRow(at: indexPath) as? DateTableViewCell, let dateStr = cellData.dateLabel.text else { return }
+                owner.resignToastView()
+                owner.viewModel.selectDateObserver.onNext(dateStr)
             }.disposed(by: disposeBag)
     }
 }

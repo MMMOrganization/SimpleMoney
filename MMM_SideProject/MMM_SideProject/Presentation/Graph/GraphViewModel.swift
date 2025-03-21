@@ -26,8 +26,6 @@ protocol GraphViewModelDelegate : AnyObject {
     func popGraphVC()
 }
 
-
-
 class GraphViewModel : GraphViewModelInterface {
     
     // MARK: - Subject (Observer)
