@@ -417,25 +417,21 @@ final class DetailViewController: UIViewController {
         
         // MARK: - tapGeture Entity 삭제 로직 바인딩
         tapGesture.rx.event
-            .subscribe { [weak self] gesture in
-                guard let self = self, let gesture = gesture.element else {
-                    print("DetailView - Gesture Subscribe Fail")
-                    return }
-                
-                let touchPoint : CGPoint = gesture.location(in: tableView)
-                guard let indexPath = tableView.indexPathForRow(at: touchPoint) else {
+            .subscribe(with: self) { owner, gesture in
+                let touchPoint : CGPoint = gesture.location(in: owner.tableView)
+                guard let indexPath = owner.tableView.indexPathForRow(at: touchPoint) else {
                     print("DetailView - Gesture IndexPath Fail")
                     return
                 }
                 
-                guard let cell = tableView.cellForRow(at: indexPath) as? DetailTableViewCell else {
+                guard let cell = owner.tableView.cellForRow(at: indexPath) as? DetailTableViewCell else {
                     return
                 }
                 
                 guard let entityData = cell.entityData else { return }
                 
-                viewModel.selectedCellObserver.onNext(entityData)
-                becomeToastView()
+                owner.viewModel.selectedCellObserver.onNext(entityData)
+                owner.becomeToastView()
             }.disposed(by: disposeBag)
     
         // MARK: - 수입 데이터 바인딩
@@ -462,10 +458,9 @@ final class DetailViewController: UIViewController {
         // MARK: - Button Color 바인딩
         viewModel.selectedButtonIndexObservable
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] selectedIndex in
-                guard let selectedIndex = selectedIndex.element, let self = self else { return }
-                showButtons.forEach { $0.backgroundColor = .white }
-                showButtons[selectedIndex].backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.10)
+            .subscribe(with: self) { owner, selectedIndex in
+                owner.showButtons.forEach { $0.backgroundColor = .white }
+                owner.showButtons[selectedIndex].backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.10)
             }.disposed(by: disposeBag)
         
         // MARK: - DateLabel 바인딩
@@ -505,9 +500,8 @@ final class DetailViewController: UIViewController {
         
         // MARK: - TableView 데이터가 없을 경우 대체할 View
         viewModel.sectionModelObservable
-            .subscribe { [weak self] sectionModel in
-                guard let self = self, let sectionModel = sectionModel.element else { return }
-                tableView.backgroundView = (sectionModel.count == 0) ? UIView.getEmptyView(width: tableView.bounds.width, height: tableView.bounds.height) : nil
+            .subscribe(with: self) { owner, sectionModel in
+                owner.tableView.backgroundView = (sectionModel.count == 0) ? UIView.getEmptyView(width: owner.tableView.bounds.width, height: owner.tableView.bounds.height) : nil
             }.disposed(by: disposeBag)
     }
 }
@@ -524,12 +518,13 @@ extension DetailViewController : UITableViewDelegate {
 // MARK: - Toast 관련 코드
 extension DetailViewController {
     func becomeToastView() {
-        // MARK: - 화면 정중앙에 애니메이션
+        // MARK: - 화면 정중앙 배치
         toastViewBottomAnchor.constant = -((view.frame.height / 2) - (toastViewHeight / 2))
         view.layoutIfNeeded()
     }
     
     func resignToastView() {
+        // MARK: - 화면 제거
         toastViewBottomAnchor.constant = toastViewHeight
         view.layoutIfNeeded()
     }
@@ -538,19 +533,16 @@ extension DetailViewController {
         // MARK: - cancelButton 클릭 바인딩
         toastCancelButton.rx.tap
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
-                resignToastView()
+            .subscribe(with: self) { owner, _ in
+                owner.resignToastView()
             }.disposed(by: disposeBag)
         
         // MARK: - deleteButton 클릭 바인딩 (Entity 제거)
         toastDeleteButton.rx.tap
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
-                resignToastView()
-                viewModel.removeCellObserver.onNext(())
-            }
-            .disposed(by: disposeBag)
+            .subscribe(with: self) { owner, _ in
+                owner.resignToastView()
+                owner.viewModel.removeCellObserver.onNext(())
+            }.disposed(by: disposeBag)
     }
 }
