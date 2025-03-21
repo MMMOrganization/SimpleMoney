@@ -28,7 +28,7 @@ protocol CalendarViewModelInterface {
     func getAmountForDay(_ date : Date) -> Int?
 }
 
-class CalendarViewModel : CalendarViewModelInterface {
+final class CalendarViewModel : CalendarViewModelInterface {
     
     var amountsDict : [String:Int] = .init()
     

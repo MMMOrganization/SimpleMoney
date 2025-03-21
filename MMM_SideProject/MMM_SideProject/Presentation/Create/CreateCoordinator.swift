@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CreateCoordinator : Coordinator, CreateViewModelDelegate {
+final class CreateCoordinator : Coordinator, CreateViewModelDelegate {
     weak var parentCoordinator : Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController : UINavigationController

@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class TypeButtonCVCell: UICollectionViewCell {
+final class TypeButtonCVCell: UICollectionViewCell {
     
     static let identifier = "TypeCell"
     

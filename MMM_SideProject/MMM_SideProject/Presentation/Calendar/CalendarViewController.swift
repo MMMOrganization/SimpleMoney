@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-class CalendarViewController: UIViewController {
+final class CalendarViewController: UIViewController {
     
     var disposeBag : DisposeBag = DisposeBag()
     var viewModel : CalendarViewModelInterface!

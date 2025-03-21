@@ -33,7 +33,7 @@ protocol CreateViewModelDelegate : AnyObject {
     func popCreateVC()
 }
 
-class CreateViewModel : CreateViewModelInterface {
+final class CreateViewModel : CreateViewModelInterface {
     
     var inputMoney : String = ""
     var dateString : String?

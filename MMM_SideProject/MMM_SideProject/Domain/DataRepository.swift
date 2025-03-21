@@ -9,7 +9,7 @@ import UIKit
 import RealmSwift
 import Realm
 
-class DataRepository : DataRepositoryInterface {
+final class DataRepository : DataRepositoryInterface {
     // MARK: - CalendarVM 에서 사용하는 repository에서는 항상 total 타입
     private var stateType : ButtonType = .total
     

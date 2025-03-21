@@ -8,7 +8,7 @@
 import UIKit
 
 // Flow가 이어지게끔 보이기 위해서 Graph, Calendar 의 화면 전환 로직을 담음.
-class DetailCoordinator : Coordinator, DetailViewModelDelegate {
+final class DetailCoordinator : Coordinator, DetailViewModelDelegate {
     
     weak var parentCoordinator : Coordinator?
     var childCoordinators : [Coordinator] = []

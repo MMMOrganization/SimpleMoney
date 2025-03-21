@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class CalendarCoordinator : Coordinator, CalendarViewModelDelegate {
+final class CalendarCoordinator : Coordinator, CalendarViewModelDelegate {
     weak var parentCoordinator : Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController : UINavigationController

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CalendarTableViewCell: UITableViewCell {
+final class CalendarTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()

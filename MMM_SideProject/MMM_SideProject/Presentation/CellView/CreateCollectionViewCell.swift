@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CreateCollectionViewCell: UICollectionViewCell {
+final class CreateCollectionViewCell: UICollectionViewCell {
     static let identifier : String = "CreateCell"
     
     lazy var iconImageView : UIImageView = {

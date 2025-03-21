@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class CreateViewController: UIViewController {
+final class CreateViewController: UIViewController {
     
     let disposeBag : DisposeBag = DisposeBag()
     var viewModel : CreateViewModelInterface!
