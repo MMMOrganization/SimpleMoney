@@ -33,8 +33,7 @@ class TypeButtonCVCell: UICollectionViewCell {
         
         typeButton.rx.tap
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
+            .subscribe { _ in
                 viewModel.typeButtonTapObserver.onNext(item.0)
             }.disposed(by: disposeBag)
         
