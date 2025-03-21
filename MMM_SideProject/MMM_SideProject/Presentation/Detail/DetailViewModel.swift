@@ -36,7 +36,7 @@ protocol DetailViewModelDelegate : AnyObject {
     func pushGraphVC()
 }
 
-class DetailViewModel : DetailViewModelInterface {
+final class DetailViewModel : DetailViewModelInterface {
     
     var selectedData : Entity?
     

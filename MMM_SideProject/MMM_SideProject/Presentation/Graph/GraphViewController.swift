@@ -12,7 +12,7 @@ import SwiftUI
 import RxDataSources
 import DGCharts
 
-class GraphViewController: UIViewController {
+final class GraphViewController: UIViewController {
     
     var disposeBag : DisposeBag = DisposeBag()
     var viewModel : GraphViewModelInterface!

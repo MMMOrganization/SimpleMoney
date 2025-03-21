@@ -9,7 +9,7 @@ import Foundation
 import Realm
 import RealmSwift
 
-class UserDB : Object {
+final class UserDB : Object {
     @Persisted(primaryKey: true) var id : UUID = UUID()
     @Persisted var createType : CreateType
     @Persisted var moneyAmount : Int

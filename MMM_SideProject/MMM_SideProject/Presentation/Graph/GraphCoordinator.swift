@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GraphCoordinator : Coordinator, GraphViewModelDelegate {
+final class GraphCoordinator : Coordinator, GraphViewModelDelegate {
     
     weak var parentCoordinator : Coordinator?
     var childCoordinators: [Coordinator] = []

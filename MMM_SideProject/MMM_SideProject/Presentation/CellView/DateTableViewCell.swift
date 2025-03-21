@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class DateTableViewCell: UITableViewCell {
+final class DateTableViewCell: UITableViewCell {
     
     static let identifier = "DateTVC"
     var disposeBag : DisposeBag = .init()

@@ -8,7 +8,7 @@
 import UIKit
 import RxSwift
 
-class DetailTableViewCell: UITableViewCell {
+final class DetailTableViewCell: UITableViewCell {
     
     static let identifier = "DetailCell"
     

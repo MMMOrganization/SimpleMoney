@@ -26,7 +26,7 @@ protocol GraphViewModelDelegate : AnyObject {
     func popGraphVC()
 }
 
-class GraphViewModel : GraphViewModelInterface {
+final class GraphViewModel : GraphViewModelInterface {
     
     // MARK: - Subject (Observer)
     var dismissButtonSubject: PublishSubject<Void>

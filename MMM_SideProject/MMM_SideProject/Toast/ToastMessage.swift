@@ -1,6 +1,6 @@
 import UIKit
 
-class ToastManager {
+final class ToastManager {
     
     static let shared = ToastManager()
     
