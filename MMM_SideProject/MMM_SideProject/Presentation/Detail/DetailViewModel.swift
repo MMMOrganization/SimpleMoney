@@ -38,9 +38,9 @@ protocol DetailViewModelDelegate : AnyObject {
 
 class DetailViewModel : DetailViewModelInterface {
     
-    var disposeBag : DisposeBag = DisposeBag()
-    
     var selectedData : Entity?
+    
+    var disposeBag : DisposeBag = .init()
     
     // MARK: - Observer (Subject)
     var dateButtonSubject : PublishSubject<Void>
@@ -148,44 +148,44 @@ class DetailViewModel : DetailViewModelInterface {
     }
     
     func setCoordinator() {
-        dateButtonSubject.subscribe { [weak self] _ in
-            self?.delegate?.pushCalendarVC()
+        dateButtonSubject.subscribe(with: self) { owner, _ in
+            owner.delegate?.pushCalendarVC()
         }.disposed(by: disposeBag)
         
-        plusButtonSubject.subscribe { [weak self] _ in
-            self?.delegate?.pushCreateVC()
+        plusButtonSubject.subscribe(with: self) { owner, _ in
+            owner.delegate?.pushCreateVC()
         }.disposed(by: disposeBag)
         
-        graphButtonSubject.subscribe { [weak self] _ in
-            self?.delegate?.pushGraphVC()
+        graphButtonSubject.subscribe(with: self) { owner, _ in
+            owner.delegate?.pushGraphVC()
         }.disposed(by: disposeBag)
     }
     
     func setBind() {
         // MARK: - viewWillAppear 셀 데이터 초기화 바인딩
-        viewWillAppearSubject.subscribe { [weak self] _ in
-            guard let self = self else { return }
-            entitySubject.onNext(repository.readData())
+        viewWillAppearSubject.subscribe(with: self) { owner, _ in
+            owner.entitySubject.onNext(owner.repository.readData())
         }.disposed(by: disposeBag)
         
         // MARK: - showButton <-> Data 바인딩
-        [totalDataSubject, incomeDataSubject, expendDataSubject].forEach { $0.subscribe { [weak self] selectedButton in
-            guard let self = self, let selectedButtonType = selectedButton.element else { return }
-            repository.setState(type: selectedButtonType)
-            entitySubject.onNext(repository.readData())
-        }.disposed(by: disposeBag) }
+        [totalDataSubject, incomeDataSubject, expendDataSubject].forEach {
+            $0.subscribe(with: self) { owner, selectedButtonType in
+                owner.repository.setState(type: selectedButtonType)
+                owner.entitySubject.onNext(owner.repository.readData())
+            }.disposed(by: disposeBag)
+        }
         
         // MARK: - showButton <-> Color 바인딩
-        [totalDataSubject, incomeDataSubject, expendDataSubject].forEach { $0.subscribe { [weak self] buttonType in
-            guard let self = self, let buttonType = buttonType.element else { return }
-            selectedButtonIndexSubject.onNext(buttonType.rawValue)
-        }.disposed(by: disposeBag) }
+        [totalDataSubject, incomeDataSubject, expendDataSubject].forEach { $0.subscribe(with: self) { owner, buttonType in
+                owner.selectedButtonIndexSubject.onNext(buttonType.rawValue)
+            }.disposed(by: disposeBag)
+        }
         
         // MARK: - Date 버튼 <-> DateString 바인딩
-        [dateDecreaseButtonSubject, dateIncreaseButtonSubject].forEach { $0.subscribe { [weak self] dateButtonType in
-            guard let dateButtonType = dateButtonType.element, let self = self else { return }
-            repository.setDate(type: dateButtonType)
-        }.disposed(by: disposeBag) }
+        [dateDecreaseButtonSubject, dateIncreaseButtonSubject].forEach {    $0.subscribe(with: self) { owner, dateButtonType in
+                owner.repository.setDate(type: dateButtonType)
+            }.disposed(by: disposeBag)
+        }
         
         // MARK: - Date 버튼 <-> Date에 따른 불러오는 Entity 바인딩
         [dateDecreaseButtonSubject, dateIncreaseButtonSubject].forEach {
@@ -193,25 +193,22 @@ class DetailViewModel : DetailViewModelInterface {
                 guard let self = self else { return ("", [Entity]()) }
                 return (repository.readDate(), repository.readData())
             }
-            .subscribe { [weak self] emittedData in
-            guard let (date, data) = emittedData.element, let self = self else {
-                return
-            }
-            dateSubject.onNext(date)
-            entitySubject.onNext(data)
-        }.disposed(by: disposeBag) }
+            .subscribe(with: self) { owner, emittedData in
+                owner.dateSubject.onNext(emittedData.0)
+                owner.entitySubject.onNext(emittedData.1)
+            }.disposed(by: disposeBag)
+        }
         
         // MARK: - Toast Delete 버튼 Click 바인딩
-        selectedCellSubject.subscribe { [weak self] entityData in
-            guard let self = self, let entityData = entityData.element else { return }
-            setSelectedData(entityData)
+        selectedCellSubject.subscribe(with: self) { owner, entityData in
+            owner.setSelectedData(entityData)
         }.disposed(by: disposeBag)
         
-        removeCellSubject.subscribe { [weak self] _ in
-            guard let self = self else { return }
-            guard let entityData = getSelectedData() else { return }
-            repository.deleteData(id: entityData.id)
-            entitySubject.onNext(repository.readData())
+        // MARK: - Cell 삭제 바인딩
+        removeCellSubject.subscribe(with: self) { owner, _ in
+            guard let entityData = owner.getSelectedData() else { return }
+            owner.repository.deleteData(id: entityData.id)
+            owner.entitySubject.onNext(owner.repository.readData())
         }.disposed(by: disposeBag)
     }
 }
