@@ -378,23 +378,20 @@ class CreateViewController: UIViewController {
         
         // MARK: - Gesture 바인딩
         typeTapGesture.rx.event
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
-                typeHiddenTextField.becomeFirstResponder()
+            .subscribe(with: self) { owner, _ in
+                owner.typeHiddenTextField.becomeFirstResponder()
             }.disposed(by: disposeBag)
         
         inputMoneyTapGesture.rx.event
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
-                customKeyboardBecome()
+            .subscribe(with: self) { owner, _ in
+                owner.customKeyboardBecome()
             }.disposed(by: disposeBag)
         
         iconCVTapGesture.rx.event
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
-                customKeyboardResign()
-                typeHiddenTextField.resignFirstResponder()
-                resignToastDateView()
+            .subscribe(with: self) { owner, _ in
+                owner.customKeyboardResign()
+                owner.typeHiddenTextField.resignFirstResponder()
+                owner.resignToastDateView()
             }.disposed(by: disposeBag)
         
         // MARK: - SaveButton 바인딩
@@ -418,29 +415,25 @@ class CreateViewController: UIViewController {
         
         // MARK: - 지출 버튼 클릭했을 때의 애니메이션 작동
         expendButton.rx.tap
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
-                if outLineViewLeadingAnchor.constant > 0 {
-                    outLineViewLeadingAnchor.constant -= topStackView.frame.width / 2
-                    outLineViewTrailingAnchor.constant -= topStackView.frame.width / 2
+            .subscribe(with: self) { owner, _ in
+                if owner.outLineViewLeadingAnchor.constant > 0 {
+                    owner.outLineViewLeadingAnchor.constant -= owner.topStackView.frame.width / 2
+                    owner.outLineViewTrailingAnchor.constant -= owner.topStackView.frame.width / 2
                 }
-                UIView.animate(withDuration: 0.3) { [weak self] in
-                    guard let self = self else { return }
-                    view.layoutIfNeeded()
+                UIView.animate(withDuration: 0.3) {
+                    owner.view.layoutIfNeeded()
                 }
             }.disposed(by: disposeBag)
         
         // MARK: - 수입 버튼 클릭했을 때의 애니메이션 작동
         incomeButton.rx.tap
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
-                if outLineViewLeadingAnchor.constant <= 0 {
-                    outLineViewLeadingAnchor.constant += topStackView.frame.width / 2
-                    outLineViewTrailingAnchor.constant += topStackView.frame.width / 2
+            .subscribe(with: self) { owner, _ in
+                if owner.outLineViewLeadingAnchor.constant <= 0 {
+                    owner.outLineViewLeadingAnchor.constant += owner.topStackView.frame.width / 2
+                    owner.outLineViewTrailingAnchor.constant += owner.topStackView.frame.width / 2
                 }
-                UIView.animate(withDuration: 0.3) { [weak self] in
-                    guard let self = self else { return }
-                    view.layoutIfNeeded()
+                UIView.animate(withDuration: 0.3) {
+                    owner.view.layoutIfNeeded()
                 }
             }.disposed(by: disposeBag)
         
@@ -494,18 +487,20 @@ class CreateViewController: UIViewController {
         viewModel.errorObservable
             .subscribe { errorType in
                 guard let errorMessage = errorType.element?.description else { return }
-                
                 ToastManager.shared.showToast(message: errorMessage)
             }.disposed(by: disposeBag)
         
         dateButton.rx.tap
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
-                becomeToastDateView()
-                typeHiddenTextField.resignFirstResponder()
-                customKeyboardResign()
+            .subscribe(with: self) { owner, _ in
+                owner.becomeToastDateView()
+                owner.typeHiddenTextField.resignFirstResponder()
+                owner.customKeyboardResign()
             }.disposed(by: disposeBag)
+    }
+    
+    deinit {
+        print("CreateViewController - 메모리 해제")
     }
 }
 
@@ -578,9 +573,8 @@ private extension CreateViewController {
         switch button.tag {
         case doneButtonTag:
             button.rx.tap
-                .subscribe { [weak self] _ in
-                    guard let self = self else { return }
-                    customKeyboardResign()
+                .subscribe(with: self) { owner, _ in
+                    owner.customKeyboardResign()
                 }.disposed(by: disposeBag)
         case cancelButtonTag:
             button.rx.tap

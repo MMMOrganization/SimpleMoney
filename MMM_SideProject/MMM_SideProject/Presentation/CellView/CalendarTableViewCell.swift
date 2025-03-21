@@ -20,4 +20,7 @@ class CalendarTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    deinit {
+        print("CalendarTableViewCell - 메모리 해제")
+    }
 }

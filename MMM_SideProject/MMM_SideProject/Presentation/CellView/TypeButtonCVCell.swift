@@ -33,8 +33,7 @@ class TypeButtonCVCell: UICollectionViewCell {
         
         typeButton.rx.tap
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
+            .subscribe { _ in
                 viewModel.typeButtonTapObserver.onNext(item.0)
             }.disposed(by: disposeBag)
         
@@ -80,5 +79,9 @@ class TypeButtonCVCell: UICollectionViewCell {
             typeButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 54),
             typeButton.heightAnchor.constraint(equalToConstant: 29),
         ])
+    }
+    
+    deinit {
+        print("TypeButtonCVCell - 메모리 해제")
     }
 }

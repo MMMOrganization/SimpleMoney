@@ -52,10 +52,6 @@ class DetailCoordinator : Coordinator, DetailViewModelDelegate {
         graphCoordinator.start()
     }
     
-    func pushDeleteToastVC() {
-        
-    }
-    
     deinit {
         print("DetailCoordinator 메모리 해제")
     }

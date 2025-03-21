@@ -231,12 +231,10 @@ class CalendarViewController: UIViewController {
         // MARK: - headerTitle 변경 시에 Calendar 바인딩
         viewModel.dateButtonTypeObservable
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] dateButtonType in
-                guard let dateButtonType = dateButtonType.element, let self = self else { return }
-                
-                let currentMonth = calendarView.currentPage
-                let month = Calendar.current.date(byAdding: .month, value: dateButtonType.rawValue, to: currentMonth)!
-                calendarView.setCurrentPage(month, animated: true)
+            .subscribe(with: self) { owner, dateButtonType in
+                let currentMonth = owner.calendarView.currentPage
+                guard let month = Calendar.current.date(byAdding: .month, value: dateButtonType.rawValue, to: currentMonth) else { return }
+                owner.calendarView.setCurrentPage(month, animated: true)
             }.disposed(by: disposeBag)
         
         viewModel.dataObservable
@@ -248,18 +246,20 @@ class CalendarViewController: UIViewController {
         // MARK: - Calendar DayOfMonth Amount 바인딩
         viewModel.dailyAmountsObservable
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] _ in
-                guard let self = self else { return }
-                calendarView.reloadData()
+            .subscribe(with: self) { owner, _ in
+                owner.calendarView.reloadData()
             }.disposed(by: disposeBag)
         
         // MARK: - TableView 데이터가 없을 경우 대체할 View
         viewModel.dataObservable
             .observe(on: MainScheduler.instance)
-            .subscribe { [weak self] entityData in
-                guard let self = self, let entityData = entityData.element else { return }
-                tableView.backgroundView = (entityData.count == 0) ? UIView.getEmptyView(width: tableView.bounds.width, height: tableView.bounds.height) : nil
+            .subscribe(with: self) { owner, entityData in
+                owner.tableView.backgroundView = (entityData.count == 0) ? UIView.getEmptyView(width: owner.tableView.bounds.width, height: owner.tableView.bounds.height) : nil
             }.disposed(by: disposeBag)
+    }
+    
+    deinit {
+        print("CalendarViewController - 메모리 해제")
     }
 }
 

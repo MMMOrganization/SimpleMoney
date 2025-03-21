@@ -128,11 +128,12 @@ class CreateViewModel : CreateViewModelInterface {
     }
     
     func setReactive() {
-        dismissButtonSubject.subscribe { [weak self] _ in
-            self?.delegate?.popCreateVC()
+        dismissButtonSubject.subscribe(with: self) { owner, _ in
+            owner.delegate?.popCreateVC()
         }.disposed(by: disposeBag)
         
         // MARK: - 저장버튼과의 바인딩 (예외 처리)
+        // MARK: - [weak self] 를 사용해서 얻는 이점이 더 많음.
         completeButtonSubject.subscribe { [weak self] _ in
             guard let self = self else { return }
             
@@ -168,33 +169,28 @@ class CreateViewModel : CreateViewModelInterface {
         }.disposed(by: disposeBag)
         
         // MARK: - CreateCell Icon 과 지출, 수입 버튼의 바인딩
-        createTypeSubject.subscribe { [weak self] createType in
-            guard let self = self, let createType = createType.element else { return }
-            setCreateType(createType)
-            dataSubject.onNext(repository.readInitIconCell())
+        createTypeSubject.subscribe(with: self) { owner, createType in
+            owner.setCreateType(createType)
+            owner.dataSubject.onNext(owner.repository.readInitIconCell())
         }.disposed(by: disposeBag)
         
         // MARK: - CreateCell Click 바인딩
-        selectedCellIndexSubject.subscribe { [weak self] indexPath in
-            guard let self = self, let index = indexPath.element else { return }
-            repository.setSelectedIconCell(index: index)
-            dataSubject.onNext(repository.readIconCell())
-            setIconImageType(repository.readSelectedIconImageType(index: index))
+        selectedCellIndexSubject.subscribe(with: self) { owner, index in
+            owner.repository.setSelectedIconCell(index: index)
+            owner.dataSubject.onNext(owner.repository.readIconCell())
+            owner.setIconImageType(owner.repository.readSelectedIconImageType(index: index))
         }.disposed(by: disposeBag)
         
         // MARK: - Date 클릭시에 ViewModel이 가지는 dateString과의 바인딩
-        stringDateSubject.subscribe { [weak self] stringDate in
-            guard let self = self, let stringDate = stringDate.element else { return }
-            setDateString(stringDate)
+        stringDateSubject.subscribe(with: self) { owner, stringDate in
+            owner.setDateString(stringDate)
         }.disposed(by: disposeBag)
         
         // MARK: - 타입 클릭시에 ViewModel이 가지는 typeLabel과의 바인딩
-        keyboardTypeTapSubject.subscribe { [weak self] stringType in
-            guard let self = self, let stringType = stringType.element else { return }
-            
+        keyboardTypeTapSubject.subscribe(with: self) { owner, stringType in
             guard stringType != "" else {
-                stringTypeSubject.onNext("기타")
-                setTypeString("기타")
+                owner.stringTypeSubject.onNext("기타")
+                owner.setTypeString("기타")
                 return
             }
             
@@ -202,29 +198,29 @@ class CreateViewModel : CreateViewModelInterface {
                 return
             }
             
-            setTypeString(stringType)
-            stringTypeSubject.onNext(getTypeString())
+            owner.setTypeString(stringType)
+            owner.stringTypeSubject.onNext(owner.getTypeString())
         }.disposed(by: disposeBag)
         
         // MARK: - Custom KeyBoard 숫자 탭과의 바인딩
-        keyboardNumberTapSubject.subscribe { [weak self] tappedNumber in
-            guard let self = self, let number = tappedNumber.element else { return }
-            
-            guard (0...10) ~= getInputMoney().count else {
+        keyboardNumberTapSubject.subscribe(with: self) { owner, number in
+            guard (0...10) ~= owner.getInputMoney().count else {
                 return
             }
             
-            plusInputMoney(number)
-            inputMoneySubject.onNext(getInputMoney())
+            owner.plusInputMoney(number)
+            owner.inputMoneySubject.onNext(owner.getInputMoney())
         }.disposed(by: disposeBag)
         
         // MARK: - Custom KeyBoard 취소 탭과의 바인딩
-        keyboardCancelTapSubject.subscribe { [weak self] _ in
-            guard let self = self else { return }
-            
-            minusInputMoney()
-            inputMoneySubject.onNext(getInputMoney())
+        keyboardCancelTapSubject.subscribe(with: self) { owner, _ in
+            owner.minusInputMoney()
+            owner.inputMoneySubject.onNext(owner.getInputMoney())
         }.disposed(by: disposeBag)
+    }
+    
+    deinit {
+        print("CreateViewModel - 메모리 해제")
     }
 }
 

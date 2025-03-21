@@ -53,4 +53,8 @@ class CreateCollectionViewCell: UICollectionViewCell {
             iconImageView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
         ])
     }
+    
+    deinit {
+        print("CreateCollectionViewCell - 메모리 해제")
+    }
 }
