@@ -94,34 +94,29 @@ class CalendarViewModel : CalendarViewModelInterface {
     }
     
     func setCoordinator() {
-        dismissButtonSubject.subscribe { [weak self] _ in
-            self?.delegate?.popCalendarVC()
+        dismissButtonSubject.subscribe(with: self) { owner, _ in
+            owner.delegate?.popCalendarVC()
         }.disposed(by: disposeBag)
     }
     
     func setReactive() {
         // MARK: - headerTitle UI 바인딩
-        [decreaseSubject, increaseSubject].forEach { $0.subscribe { [weak self] dateButtonType in
-            guard let dateButtonType = dateButtonType.element, let self = self else { return }
-            repository.setDate(type: dateButtonType)
-            dateSubject.onNext(repository.readDate())
-            dateButtonTypeSubject.onNext(dateButtonType)
-            dailyAmountsSubject.onNext(repository.readAmountsDict())
+        [decreaseSubject, increaseSubject].forEach { $0.subscribe(with: self) { owner, dateButtonType in
+            owner.repository.setDate(type: dateButtonType)
+            owner.dateSubject.onNext(owner.repository.readDate())
+            owner.dateButtonTypeSubject.onNext(dateButtonType)
+            owner.dailyAmountsSubject.onNext(owner.repository.readAmountsDict())
         }.disposed(by: disposeBag) }
         
         // MARK: - Calendar Day Click 바인딩
-        dayOfMonthClickSubject.subscribe { [weak self] dayInteger in
-            guard let self = self, let dayInteger = dayInteger.element else { return }
-            repository.setDay(of: dayInteger)
-            dataSubject.onNext(repository.readDataOfDay())
+        dayOfMonthClickSubject.subscribe(with: self) { owner, dayInteger in
+            owner.repository.setDay(of: dayInteger)
+            owner.dataSubject.onNext(owner.repository.readDataOfDay())
         }.disposed(by: disposeBag)
         
         // MARK: - Calendar dayAmount 구독
-        dailyAmountsSubject.subscribe { [weak self] amountsDict in
-            guard let amountsDict = amountsDict.element, let self = self else {
-                return
-            }
-            setAmountsDict(amountsDict)
+        dailyAmountsSubject.subscribe(with: self) { owner, amountsDict in
+            owner.setAmountsDict(amountsDict)
         }.disposed(by: disposeBag)
     }
     
