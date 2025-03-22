@@ -13,7 +13,7 @@ final class DataRepository : DataRepositoryInterface {
     // MARK: - CalendarVM 에서 사용하는 repository에서는 항상 total 타입
     private var stateType : ButtonType = .total
     
-    private var dateType : YearMonthDay = .init()
+    private var dateService : DateService = .init()
     
     private var cellIconList : [CreateCellIcon] = .init()
     
@@ -39,7 +39,7 @@ final class DataRepository : DataRepositoryInterface {
         
         let realmData = realm.objects(UserDB.self)
         
-        return realmData.where { $0.dateString == dateType.toStringYearMonthDay() }
+        return realmData.where { $0.dateString == dateService.yearmonthday }
             .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString , createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
     }
     
@@ -55,7 +55,7 @@ final class DataRepository : DataRepositoryInterface {
         if typeName == "" { tempTypeName = readMostTypeName() }
         
         return realm.objects(UserDB.self)
-            .filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())' AND createType == 'expend' AND typeString == '\(tempTypeName)'")
+            .filter("dateString BEGINSWITH '\(dateService.yearmonthComparison)' AND createType == 'expend' AND typeString == '\(tempTypeName)'")
             .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString, createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage)}
             .sorted {
                 $0.dateStr > $1.dateStr
@@ -63,7 +63,7 @@ final class DataRepository : DataRepositoryInterface {
     }
     
     func readDate() -> String {
-        return dateType.toStringYearMonth()
+        return dateService.yearmonth
     }
     
     func readAmountsDict() -> [String : Int] {
@@ -97,7 +97,7 @@ final class DataRepository : DataRepositoryInterface {
             return []
         }
         
-        let userDB = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+        let userDB = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateService.yearmonthComparison)'")
             .where { $0.createType == .expend }
         
         var tempDict : [String : Double] = .init()
@@ -168,10 +168,10 @@ final class DataRepository : DataRepositoryInterface {
     func setDate(type : DateButtonType) {
         switch type {
         case .increase:
-            dateType.increase()
+            dateService.increase()
             return
         case .decrease:
-            dateType.decrease()
+            dateService.decrease()
             return
         }
     }
@@ -185,12 +185,12 @@ final class DataRepository : DataRepositoryInterface {
             return
         }
         
-        dateType.setYear(of: year)
-        dateType.setMonth(of: month)
+        dateService.setYear(of: year)
+        dateService.setMonth(of: month)
     }
     
     func setDay(of day : Int) {
-        dateType.setDay(of: day)
+        dateService.setDay(of: day)
     }
     
     func deleteData(id: UUID) {
@@ -216,7 +216,7 @@ private extension DataRepository {
             return []
         }
         
-        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateService.yearmonthComparison)'")
         
         return realmData.sorted { $0.dateString > $1.dateString }
             .map { Entity(id: $0.id, dateStr: $0.dateString, typeStr: $0.typeString , createType: $0.createType, amount: $0.moneyAmount, iconImage: $0.iconImageType.getImage) }
@@ -228,7 +228,7 @@ private extension DataRepository {
             return []
         }
         
-        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateService.yearmonthComparison)'")
             .where { $0.createType == .income }
         
         return realmData.sorted { $0.dateString > $1.dateString }
@@ -241,7 +241,7 @@ private extension DataRepository {
             return []
         }
         
-        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateService.yearmonthComparison)'")
             .where { $0.createType == .expend }
         
         return realmData.sorted { $0.dateString > $1.dateString }
@@ -254,7 +254,7 @@ private extension DataRepository {
             return ""
         }
         
-        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateType.toStringYearMonthForRealmData())'")
+        let realmData = realm.objects(UserDB.self).filter("dateString BEGINSWITH '\(dateService.yearmonthComparison)'")
             .where { $0.createType == .expend }
             
         var tempDict : [String : Double] = .init()
