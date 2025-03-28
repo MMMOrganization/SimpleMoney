@@ -3,3 +3,9 @@
 
 ## MVVM-C 아키텍처 적용
 <img width="870" alt="image" src="https://github.com/user-attachments/assets/990f21a9-fe87-4217-871c-db2755f48103"/>
+
+### 사용된 라이브러리 (서드파티)
+- FSCalendar
+- RxSwift
+- DGCharts
+- RealmDB
