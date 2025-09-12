@@ -19,8 +19,7 @@ final class DetailCoordinator : Coordinator, DetailViewModelDelegate {
     }
     
     func start() {
-        let repository = DataRepository()
-        let detailViewModel = DetailViewModel(repository: repository)
+        let detailViewModel = DetailViewModel()
         detailViewModel.delegate = self
         
         let detailViewController = DetailViewController(viewModel : detailViewModel)

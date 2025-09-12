@@ -18,8 +18,7 @@ final class GraphCoordinator : Coordinator, GraphViewModelDelegate {
     }
     
     func start() {
-        let dataRepository = DataRepository()
-        let viewModel = GraphViewModel(repository: dataRepository)
+        let viewModel = GraphViewModel()
         viewModel.delegate = self
         
         let graphViewController = GraphViewController(viewModel: viewModel)

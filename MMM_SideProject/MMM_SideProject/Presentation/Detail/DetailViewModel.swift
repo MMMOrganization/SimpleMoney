@@ -105,7 +105,7 @@ final class DetailViewModel : DetailViewModelInterface {
     
     var repository : DataRepositoryInterface
     
-    init(repository : DataRepositoryInterface) {
+    init(repository : DataRepositoryInterface = DataRepository()) {
         self.repository = repository
         
         // MARK: - Observer (Subject)
