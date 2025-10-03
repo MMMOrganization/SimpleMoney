@@ -6,3 +6,19 @@
 //
 
 import Foundation
+
+protocol GraphVMProducing {
+    func createViewModel() -> GraphViewModel
+}
+
+final class GraphViewModelFactory: GraphVMProducing {
+    private let repository: DataRepositoryInterface
+    
+    init(repository: DataRepositoryInterface) {
+        self.repository = repository
+    }
+    
+    func createViewModel() -> GraphViewModel {
+        return GraphViewModel(repository: repository)
+    }
+}

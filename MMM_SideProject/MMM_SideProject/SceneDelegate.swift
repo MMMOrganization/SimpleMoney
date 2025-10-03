@@ -27,13 +27,52 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let navigationController = UINavigationController()
         window?.rootViewController = navigationController
         
-        appCoordinator = AppCoordinator(navigationController: navigationController)
+        registerContainer()
+        let factories = makeFactories()
+        
+        appCoordinator = AppCoordinator(navigationController: navigationController, factories: factories)
         appCoordinator?.start()
 
-        // AppDelegate.swift 또는 SceneDelegate.swift에서 호출
         setupNavigationBarAppearance()
         
         window?.makeKeyAndVisible()
+    }
+    
+    private func registerContainer() {
+        do {
+            registerRepository()
+            try registerViewModel()
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    private func registerRepository() {
+        DIContainer.shared.register(key: DataRepository.self, value: DataRepository())
+        DIContainer.shared.register(key: MockDataRepository.self, value: MockDataRepository())
+    }
+    
+    private func registerViewModel() throws {
+        let repository = try DIContainer.shared.resolve(key: DataRepository.self)
+        let mockRepository = try DIContainer.shared.resolve(key: MockDataRepository.self)
+        
+        DIContainer.shared.register(key: GraphViewModelFactory.self, value: GraphViewModelFactory(repository: repository))
+        DIContainer.shared.register(key: DetailViewModelFactory.self, value: DetailViewModelFactory(repository: repository))
+        DIContainer.shared.register(key: CreateViewModelFactory.self, value: CreateViewModelFactory(repository: repository))
+        DIContainer.shared.register(key: CalendarViewModelFactory.self, value: CalendarViewModelFactory(repository: repository))
+    }
+    
+    private func makeFactories() -> Factories {
+        do {
+            let graphFactory = try DIContainer.shared.resolve(key: GraphViewModelFactory.self)
+            let detailFactory = try DIContainer.shared.resolve(key: DetailViewModelFactory.self)
+            let createFactory = try DIContainer.shared.resolve(key: CreateViewModelFactory.self)
+            let calendarFactory = try DIContainer.shared.resolve(key: CalendarViewModelFactory.self)
+            
+            return Factories(graph: graphFactory, detail: detailFactory, create: createFactory, calendar: calendarFactory)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

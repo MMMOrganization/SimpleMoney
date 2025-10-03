@@ -7,16 +7,18 @@
 
 import UIKit
 
-final class AppCoordinator : Coordinator {
+final class AppCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController : UINavigationController
+    var factories: Factories
     
-    init(navigationController : UINavigationController) {
+    init(navigationController : UINavigationController, factories: Factories) {
         self.navigationController = navigationController
+        self.factories = factories
     }
     
     func pushDetailVC() {
-        let detailCoordinator = DetailCoordinator(navigationController: navigationController)
+        let detailCoordinator = DetailCoordinator(navigationController: navigationController, factories: factories)
         detailCoordinator.parentCoordinator = self
         childCoordinators.append(detailCoordinator)
         

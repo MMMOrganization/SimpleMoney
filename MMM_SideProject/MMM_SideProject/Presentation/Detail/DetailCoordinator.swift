@@ -9,26 +9,30 @@ import UIKit
 
 // Flow가 이어지게끔 보이기 위해서 Graph, Calendar 의 화면 전환 로직을 담음.
 final class DetailCoordinator : Coordinator, DetailViewModelDelegate {
-    
     weak var parentCoordinator : Coordinator?
     var childCoordinators : [Coordinator] = []
     var navigationController : UINavigationController
+    let factories: Factories
     
-    init(navigationController : UINavigationController) {
+    init(
+        navigationController : UINavigationController,
+        factories: Factories
+    ) {
         self.navigationController = navigationController
+        self.factories = factories
     }
     
     func start() {
-        let detailViewModel = DetailViewModel()
+        let detailViewModel = factories.detail.createViewModel()
         detailViewModel.delegate = self
         
-        let detailViewController = DetailViewController(viewModel : detailViewModel)
+        let detailViewController = DetailViewController(viewModel: detailViewModel)
         
         navigationController.pushViewController(detailViewController, animated: true)
     }
     
     func pushCalendarVC() {
-        let calendarCoordinator = CalendarCoordinator(navigationController : navigationController)
+        let calendarCoordinator = CalendarCoordinator(navigationController: navigationController, viewModelFactory: factories.calendar)
         calendarCoordinator.parentCoordinator = self
         addChild(calendarCoordinator)
         
@@ -36,7 +40,7 @@ final class DetailCoordinator : Coordinator, DetailViewModelDelegate {
     }
     
     func pushCreateVC() {
-        let createCoordinator = CreateCoordinator(navigationController : navigationController)
+        let createCoordinator = CreateCoordinator(navigationController : navigationController, viewModelFactory: factories.create)
         createCoordinator.parentCoordinator = self
         addChild(createCoordinator)
         
@@ -44,7 +48,7 @@ final class DetailCoordinator : Coordinator, DetailViewModelDelegate {
     }
     
     func pushGraphVC() {
-        let graphCoordinator = GraphCoordinator(navigationController: navigationController)
+        let graphCoordinator = GraphCoordinator(navigationController: navigationController, viewModelFactory: factories.graph)
         graphCoordinator.parentCoordinator = self
         addChild(graphCoordinator)
         

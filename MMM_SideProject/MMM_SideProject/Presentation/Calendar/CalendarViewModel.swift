@@ -64,7 +64,7 @@ final class CalendarViewModel : CalendarViewModelInterface {
     
     var repository : DataRepositoryInterface
     
-    init(repository : DataRepositoryInterface = DataRepository()) {
+    init(repository : DataRepositoryInterface) {
         self.repository = repository
         
         dismissButtonSubject = PublishSubject<Void>()

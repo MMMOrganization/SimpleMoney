@@ -91,7 +91,7 @@ final class CreateViewModel : CreateViewModelInterface {
     
     var repository : DataRepositoryInterface
     
-    init(repository : DataRepositoryInterface = DataRepository()) {
+    init(repository: DataRepositoryInterface) {
         self.repository = repository
         
         dismissButtonSubject = PublishSubject<Void>()

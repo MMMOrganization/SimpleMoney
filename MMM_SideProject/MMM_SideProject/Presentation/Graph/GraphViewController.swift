@@ -25,6 +25,7 @@ final class GraphViewController: UIViewController {
         guard let cell = graphTableView.dequeueReusableCell(withIdentifier: DetailTableViewCell.identifier, for: indexPath) as? DetailTableViewCell else {
             return UITableViewCell()
         }
+        
         cell.configure(item: item)
         cell.contentView.backgroundColor = UIColor(hexCode: ColorConst.mainColorString, alpha: 0.05)
         return cell

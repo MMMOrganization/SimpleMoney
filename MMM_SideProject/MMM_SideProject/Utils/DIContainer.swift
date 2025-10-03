@@ -5,10 +5,6 @@
 //  Created by 강대훈 on 9/13/25.
 //
 
-enum DIContainerError {
-    
-}
-
 public class DIContainer {
     static let shared = DIContainer()
     
@@ -22,8 +18,9 @@ public class DIContainer {
     
     public func resolve<T>(key: T.Type) throws -> T {
         guard let value = dictionaries[String(describing: key)] as? T else {
-            throw DIContainerError.containerResolveFailure
+            throw DIContainerError.containerResolveFailure(type: String(describing: key))
         }
+        
         return value
     }
 }

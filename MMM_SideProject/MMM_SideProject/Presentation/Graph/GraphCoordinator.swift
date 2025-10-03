@@ -8,19 +8,19 @@
 import UIKit
 
 final class GraphCoordinator : Coordinator, GraphViewModelDelegate {
-    
     weak var parentCoordinator : Coordinator?
     var childCoordinators: [Coordinator] = []
-    var navigationController : UINavigationController
+    var navigationController: UINavigationController
+    var viewModelFactory: GraphVMProducing
     
-    init(navigationController : UINavigationController) {
+    init(navigationController : UINavigationController, viewModelFactory: GraphVMProducing) {
         self.navigationController = navigationController
+        self.viewModelFactory = viewModelFactory
     }
     
     func start() {
-        let viewModel = GraphViewModel()
+        let viewModel = viewModelFactory.createViewModel()
         viewModel.delegate = self
-        
         let graphViewController = GraphViewController(viewModel: viewModel)
         navigationController.pushViewController(graphViewController, animated: true)
     }
@@ -34,3 +34,6 @@ final class GraphCoordinator : Coordinator, GraphViewModelDelegate {
         print("GraphCoordinator 메모리 해제")
     }
 }
+
+
+

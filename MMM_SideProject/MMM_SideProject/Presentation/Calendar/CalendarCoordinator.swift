@@ -13,22 +13,23 @@ final class CalendarCoordinator : Coordinator, CalendarViewModelDelegate {
     weak var parentCoordinator : Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController : UINavigationController
+    var viewModelFactory: CalendarVMProducing
     
-    init(navigationController : UINavigationController) {
+    init(navigationController : UINavigationController, viewModelFactory: CalendarVMProducing) {
         self.navigationController = navigationController
+        self.viewModelFactory = viewModelFactory
     }
     
     func start() {
-        let calendarViewModel = CalendarViewModel()
-        calendarViewModel.delegate = self
-        let calendarViewController = CalendarViewController(viewModel: calendarViewModel)
+        let viewModel = viewModelFactory.createViewModel()
+        viewModel.delegate = self
         
+        let calendarViewController = CalendarViewController(viewModel: viewModel)
         navigationController.pushViewController(calendarViewController, animated: true)
     }
     
     func popCalendarVC() {
         parentCoordinator?.removeChild(self)
-        
         navigationController.popViewController(animated: true)
     }
     

@@ -28,6 +28,7 @@ protocol DataRepositoryInterface {
     func setState(type : ButtonType)
     func setDay(of day : Int)
     func setSelectedIconCell(index: Int)
+    
     // MARK: - Delete
     func deleteData(id : UUID)
 }
