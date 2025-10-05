@@ -1,0 +1,6 @@
+git_url("https://github.com/kanghun1121/SimpleMoney-Fastlane.git")
+storage_mode("git") 
+type("appstore") 
+app_identifier(["com.kanghun.MMM-SideProject"]) 
+username("kanghun1121@icloud.com")
+
