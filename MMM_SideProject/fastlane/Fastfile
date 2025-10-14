@@ -16,14 +16,14 @@ platform :ios do
       clean: true,
       export_method: "app-store",
       export_options: {
-        signingStyle: "manual"
+        signingStyle: "automatic"
       }
     )
 
     api_key = app_store_connect_api_key(
-      key_id: "",
-      issuer_id: "",
-      key_filepath: "",
+      key_id: "8L83NWBUJ2",
+      issuer_id: "e0065728-0630-4b06-9561-31c2f1d10e95",
+      key_filepath: "/Users/kanghun/Desktop/MMM/MMM_SideProject/fastlane/AuthKey_8L83NWBUJ2.p8",
       in_house: false
     )
 
