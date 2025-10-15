@@ -27,34 +27,25 @@ platform :ios do
       readonly: true
     )
 
-    build_app(
-      scheme: "MMM_SideProject",
-      clean: true,
-      export_method: "app-store",
-      export_options: {
-        signingStyle: "manual",
-        provisioningProfiles: {
-          "com.kanghun.MMM-SideProject" => "match AppStore com.kanghun.MMM-SideProject"
-        }
-      }
-    )
+#    build_app(
+#      scheme: "MMM_SideProject",
+#      clean: true,
+#      export_method: "app-store",
+#      export_options: {
+#        signingStyle: "manual",
+#        provisioningProfiles: {
+#          "com.kanghun.MMM-SideProject" => "match AppStore com.kanghun.MMM-SideProject"
+#        }
+#      }
+#    )
 
     api_key =
-      if ENV["APP_STORE_CONNECT_KEY_CONTENT"]
         app_store_connect_api_key(
           key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
           issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
           key_content: ENV["APP_STORE_CONNECT_KEY_CONTENT"],
           in_house: false
         )
-      else
-        app_store_connect_api_key(
-          key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
-          issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
-          key_filepath: ENV["APP_STORE_CONNECT_KEY_PATH"],
-          in_house: false
-        )
-      end
 
     upload_to_testflight(
       api_key: api_key,
