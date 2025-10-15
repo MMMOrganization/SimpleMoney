@@ -1,0 +1,37 @@
+# This workflow will build a Swift project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+
+name: TestFlight Update
+
+on:
+  push:
+    tags: ['v*']
+    
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: xcodebuild -project MMM_SideProject/MMM_SideProject.xcodeproj -scheme MMM_SideProject -destination 'platform=iOS Simulator,name=iPhone 16' build-for-testing
+
+    - name: Extract version from tag
+      id: ver
+      run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+    - name: install fastlane
+      run: brew install fastlane
+      
+    - name: execute lane
+      run: fastlane testflight
+      env:
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+        APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+        APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+        VERSION: ${{ steps.ver.outputs.VERSION }}
+        
