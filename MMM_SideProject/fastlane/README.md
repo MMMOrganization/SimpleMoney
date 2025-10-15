@@ -15,10 +15,18 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
-### ios beta
+### ios set_version
 
 ```sh
-[bundle exec] fastlane ios beta
+[bundle exec] fastlane ios set_version
+```
+
+마케팅 버전과 빌드 버전 올리기
+
+### ios testflight
+
+```sh
+[bundle exec] fastlane ios testflight
 ```
 
 빌드하고 TestFlight에 업로드
