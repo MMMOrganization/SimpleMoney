@@ -14,9 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build
-      run: xcodebuild -project MMM_SideProject/MMM_SideProject.xcodeproj -scheme MMM_SideProject -destination 'platform=iOS Simulator,name=iPhone 16' build-for-testing
-
     - name: Extract version from tag
       id: ver
       run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
