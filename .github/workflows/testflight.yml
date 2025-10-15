@@ -26,18 +26,6 @@ jobs:
 
     - name: install fastlane
       run: brew install fastlane
-
-    - name: Check required secrets
-      shell: bash
-      run: |
-        set -euo pipefail
-        test -n "${MATCH_PASSWORD:-}" || (echo "MATCH_PASSWORD missing" && exit 1)
-        test -n "${MATCH_GIT_URL:-}"  || (echo "MATCH_GIT_URL missing" && exit 1)
-        test -n "${GIT_TOKEN:-}"      || (echo "GIT_TOKEN missing" && exit 1)
-      env:
-        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-        MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       
     - name: execute lane
       working-directory: MMM_SideProject
