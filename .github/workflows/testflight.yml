@@ -26,6 +26,13 @@ jobs:
 
     - name: install fastlane
       run: brew install fastlane
+
+    - name: Install certs & profiles (match, readonly)
+      run: bundle exec fastlane match appstore --readonly --verbose
+      env:
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Https PAT로 private match repo 읽기
       
     - name: execute lane
       working-directory: MMM_SideProject
