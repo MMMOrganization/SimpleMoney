@@ -4,13 +4,6 @@ platform :ios do
   desc "빌드하고 TestFlight에 업로드"
   lane :testflight do
 
-    increment_version_number(version_number: ENV["VERSION"])
-
-    increment_build_number(
-      build_number: 1,
-      xcodeproj: "./MMM_SideProject.xcodeproj"
-    )
-
     create_keychain(
         name: ENV["KEYCHAIN_NAME"],
         password: ENV["KEYCHAIN_PASSWORD"],
@@ -47,6 +40,21 @@ platform :ios do
           key_content: ENV["APP_STORE_CONNECT_KEY_CONTENT"],
           in_house: false
         )
+
+    increment_version_number(version_number: ENV["VERSION"])
+
+    latest = latest_testflight_build_number(
+      app_identifier: "com.kanghun.MMM-SideProject", 
+      version: ENV["VERSION"],                    
+      platform: "ios"             
+    )
+
+    UI.message("latest=#{latest}")
+
+    increment_build_number(
+      build_number: latest + 1,
+      xcodeproj: "./MMM_SideProject.xcodeproj"
+    )
 
     upload_to_testflight(
       api_key: api_key,
