@@ -1,31 +1,44 @@
 default_platform(:ios)
 
 platform :ios do
+  desc "마케팅 버전과 빌드 버전 올리기"
+  lane :set_version do |version|
+    increment_version_number(
+      version_number: version[:version],
+      xcodeproj: "./MMM_SideProject.xcodeproj"
+    )
+  
+    increment_build_number(
+      build_number: Time.new.strftime("%Y.%m%d.%H%M"),
+      xcodeproj: "./MMM_SideProject.xcodeproj"
+    )
+  end
+end
+
+platform :ios do
   desc "빌드하고 TestFlight에 업로드"
-  lane :beta do
+  lane :testflight do
 
     match(type: "appstore", readonly: true)
-
-    increment_version_number(
-      version_number: "1.0.2",
-      xcodeproj: "MMM_SideProject.xcodeproj"
-    )
 
     build_app(
       scheme: "MMM_SideProject",
       clean: true,
       export_method: "app-store",
       export_options: {
-        signingStyle: "automatic"
+        signingStyle: "manual",
+        provisioningProfiles: {
+          "com.kanghun.MMM-SideProject" => "match AppStore com.kanghun.MMM-SideProject",
+        }
       }
     )
 
     api_key = app_store_connect_api_key(
-      key_id: "8L83NWBUJ2",
-      issuer_id: "e0065728-0630-4b06-9561-31c2f1d10e95",
-      key_filepath: "/Users/kanghun/Desktop/MMM/MMM_SideProject/fastlane/AuthKey_8L83NWBUJ2.p8",
+      key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+      key_filepath: ENV["APP_STORE_CONNECT_KEY_PATH"],
       in_house: false
-    )
+    )    
 
     upload_to_testflight(
       api_key: api_key,
