@@ -13,6 +13,17 @@ platform :ios do
         lock_when_sleeps: false
     )
 
+    latest = latest_testflight_build_number(
+      app_identifier: "com.kanghun.MMM-SideProject", 
+      version: ENV["VERSION"],                    
+      platform: "ios"             
+    )
+
+    increment_build_number(
+      build_number: latest + 1,
+      xcodeproj: "./MMM_SideProject.xcodeproj",
+    )
+
     match(
       type: "appstore",
       keychain_name: ENV["KEYCHAIN_NAME"],
@@ -40,21 +51,6 @@ platform :ios do
           key_content: ENV["APP_STORE_CONNECT_KEY_CONTENT"],
           in_house: false
         )
-
-    increment_version_number(version_number: ENV["VERSION"])
-
-    latest = latest_testflight_build_number(
-      app_identifier: "com.kanghun.MMM-SideProject", 
-      version: ENV["VERSION"],                    
-      platform: "ios"             
-    )
-
-    UI.message("latest=#{latest}")
-
-    increment_build_number(
-      build_number: latest + 1,
-      xcodeproj: "./MMM_SideProject.xcodeproj"
-    )
 
     upload_to_testflight(
       api_key: api_key,
