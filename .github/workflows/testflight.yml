@@ -39,5 +39,4 @@ jobs:
         APP_STORE_CONNECT_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_KEY_CONTENT }}
         KEYCHAIN_NAME: ${{ secrets.KEYCHAIN_NAME }}
         KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-        VERSION: ${{ steps.ver.outputs.VERSION }}
         
