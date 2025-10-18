@@ -14,8 +14,7 @@ platform :ios do
     )
 
     latest = latest_testflight_build_number(
-      app_identifier: "com.kanghun.MMM-SideProject", 
-      version: ENV["VERSION"],                    
+      app_identifier: "com.kanghun.MMM-SideProject",                     
       platform: "ios"             
     )
 
