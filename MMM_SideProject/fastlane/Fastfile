@@ -13,15 +13,7 @@ platform :ios do
         lock_when_sleeps: false
     )
 
-    latest = latest_testflight_build_number(
-      app_identifier: "com.kanghun.MMM-SideProject",                     
-      platform: "ios"             
-    )
-
-    increment_build_number(
-      build_number: latest + 1,
-      xcodeproj: "./MMM_SideProject.xcodeproj",
-    )
+    increment_build_number
 
     match(
       type: "appstore",
